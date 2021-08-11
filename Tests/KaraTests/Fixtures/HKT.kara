@@ -1,0 +1,37 @@
+protocol Monad {
+  associatedtype Element
+
+  init(_ single: Element)
+
+  func flatMap<NewElement>(_ binder: (Element) -> Self<NewElement>) -> Self<NewElement>
+}
+
+enum Result<Success, Failure> {
+  case success(Success)
+  case failure(Failure)
+}
+
+extension Result: Monad {
+  typealias Element = Success
+
+  init(_ single: Element) {
+    self = .success(single)
+  }
+
+  func flatMap<NewElement>(
+    _: (Success) -> Result<NewElement, Failure>
+  ) -> Self<NewElement, Failure> {}
+}
+
+let x: Result<Int, Error> = do {
+  let y = try blah()
+  let z = try blah()
+
+  return y + z
+}
+
+let x = blah().flatMap { y in
+  blah().flatMap { z in
+    y + z
+  }
+}
