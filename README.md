@@ -1,3 +1,3 @@
 # Kara
 
-A lightweight programming language inspired by Swift.
+An experimental lightweight programming language inspired by Swift.
