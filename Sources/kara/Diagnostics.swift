@@ -5,8 +5,8 @@
 import Parsing
 
 struct SourceLocation<Element> {
-    let start: String.Index
-    let end: String.Index
+  let start: String.Index
+  let end: String.Index
 
-    let element: Element
+  let element: Element
 }
