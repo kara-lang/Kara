@@ -15,7 +15,7 @@ final class KaraTests: XCTestCase {
     // Mac Catalyst won't have `Process`, but it is supported for executables.
     #if !targetEnvironment(macCatalyst)
 
-    let fooBinary = productsDirectory.appendingPathComponent("Kara")
+    let fooBinary = productsDirectory.appendingPathComponent("kara")
 
     let process = Process()
     process.executableURL = fooBinary
@@ -29,7 +29,7 @@ final class KaraTests: XCTestCase {
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
     let output = String(data: data, encoding: .utf8)
 
-    XCTAssertEqual(output, "Hello, world!\n")
+    XCTAssertEqual(output, "")
     #endif
   }
 
