@@ -65,51 +65,13 @@ struct Solver {
         substitution: substitution,
         system: system
       ).solve()
-
-    case let .disjunction(id, type, alternatives):
-      switch type {
-      case .variable:
-        // run multiple independent solvers with each `alternative` prepended as
-        // a new `equal` constraint. Potentially, these solvers could run on
-        // multiple threads in parallel?
-        let result = alternatives.compactMap { alternative -> Substitution? in
-          do {
-            var localSystem = system
-            localSystem.prepend(.equal(type, alternative))
-            return try Solver(
-              substitution: substitution,
-              system: localSystem
-            ).solve()
-          } catch {
-            return nil
-          }
-        }
-
-        switch result.count {
-        case 0:
-          throw TypeError.noOverloadFound(id, type)
-        case 1:
-          return result[0]
-        default:
-          throw TypeError.ambiguous(id)
-        }
-
-      default:
-        guard alternatives.contains(type) else {
-          throw TypeError.noOverloadFound(id, type)
-        }
-        return try Solver(
-          substitution: substitution,
-          system: system
-        ).solve()
-      }
     }
   }
 
   private func unify(_ t1: Type, _ t2: Type) throws -> Solver {
     switch (t1, t2) {
     case let (.arrow(i1, o1), .arrow(i2, o2)):
-      let s1 = try unify(.tuple(i1), .tuple(i2))
+      let s1 = try unify(i1, i2)
       let s2 = try unify(o1.apply(s1.substitution), o2.apply(s1.substitution))
       return Solver(
         substitution: s2.substitution.compose(s1.substitution),
@@ -125,29 +87,6 @@ struct Solver {
     case let (.constructor(id1, args1), .constructor(id2, args2))
       where id1 == id2 && args1 == args2:
       return empty
-
-    case let (.namedTuple(t1), .namedTuple(t2)) where t1.count == t2.count:
-      return try zip(t1, t2).map {
-        // check that we are on the lowest level of the tuple, otherwise
-        // call unify on children
-        guard let name1 = $0.0, let name2 = $1.0 else {
-          return try unify($0.1, $1.1)
-        }
-
-        // if corresponding elements of both tuples have names,
-        // they need to be the same to unify the tuples
-        guard name1 == name2 else {
-          throw TypeError.tupleUnificationFailure(name1, name2)
-        }
-
-        return try unify($0.1, $1.1)
-      }.reduce(empty) { (s1: Solver, s2: Solver) -> Solver in
-        // merge new solver with a solver produced for previous tuple elements
-        Solver(
-          substitution: s1.substitution.compose(s2.substitution),
-          system: s1.system.appending(s2.system.constraints)
-        )
-      }
 
     case let (a, b):
       throw TypeError.unificationFailure(a, b)

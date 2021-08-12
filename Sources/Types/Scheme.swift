@@ -24,12 +24,3 @@ struct Scheme: Equatable {
     self.variables = variables
   }
 }
-
-extension FunctionDecl {
-  var scheme: Scheme {
-    Scheme(
-      parameters.map(\.typeAnnotation) --> (returns ?? .tuple([])),
-      variables: genericParameters
-    )
-  }
-}

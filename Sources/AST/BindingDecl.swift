@@ -15,12 +15,12 @@ let bindingParser = UTF8Terminal("let".utf8)
   .skip(whitespaceParser)
   .skip(StartsWith("=".utf8))
   .skip(whitespaceParser)
-  .take(literalParser)
-  .compactMap { identifierUTF8, literal -> BindingDecl? in
+  .take(exprParser)
+  .compactMap { identifierUTF8, expr -> BindingDecl? in
     guard let identifierString = String(identifierUTF8) else { return nil }
 
     return BindingDecl(
       identifier: Identifier(value: identifierString),
-      value: .literal(literal)
+      value: expr
     )
   }
