@@ -34,10 +34,16 @@ let package = Package(
         .product(name: "Parsing", package: "swift-parsing"),
       ]
     ),
+    .target(
+      name: "Types",
+      dependencies: [
+        "AST",
+      ]
+    ),
     .executableTarget(
       name: "kara",
       dependencies: [
-        "AST",
+        "Types",
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
       ]
     ),
@@ -51,6 +57,7 @@ let package = Package(
       name: "KaraTests",
       dependencies: [
         "AST",
+        "Types",
         "FileCheck",
       ],
       exclude: ["Fixtures"]

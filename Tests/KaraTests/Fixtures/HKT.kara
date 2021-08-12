@@ -35,3 +35,12 @@ let x = blah().flatMap { y in
     y + z
   }
 }
+
+let square: Int -> Int
+square a = mult a a
+
+let factorial: Int -> Int
+factorial 0 = 1
+factorial n = mult n (n - 1)
+
+let double x = plus x x

@@ -11,9 +11,15 @@ public indirect enum Expr {
   case member(Expr, Identifier)
   case namedTuple([(Identifier?, Expr)])
 
-  static func tuple(_ expressions: [Expr]) -> Expr {
+  public static func tuple(_ expressions: [Expr]) -> Expr {
     .namedTuple(expressions.enumerated().map {
       (nil, $0.1)
     })
+  }
+}
+
+extension Expr: ExpressibleByStringLiteral {
+  public init(stringLiteral value: String) {
+    self = .identifier(.init(value: value))
   }
 }
