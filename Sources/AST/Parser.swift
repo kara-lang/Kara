@@ -43,34 +43,12 @@ typealias UTF8Terminal = StartsWith<UTF8Subsequence>
 
 let newlineAndWhitespace = [UInt8(ascii: " "), UInt8(ascii: "\n"), UInt8(ascii: "\r")]
 
-let newlineAndWhitespaceParser = Many(
-  Whitespace<UTF8Subsequence>().ignoreOutput()
-    .orElse(Newline())
-).ignoreOutput()
+let whitespaceParser = Whitespace<UTF8Subsequence>()
+let requiredWhitespaceParser = OneOfMany(
+  newlineAndWhitespace
+    .compactMap { String(bytes: [$0], encoding: .utf8) }
+    .map { StartsWith<UTF8Subsequence>($0.utf8) }
+)
 
 let openingBraceParser = UTF8Terminal("{".utf8)
 let closingBraceParser = UTF8Terminal("}".utf8)
-
-let bindingParser = UTF8Terminal("let".utf8)
-  .skip(newlineAndWhitespaceParser)
-  .take(Prefix { newlineAndWhitespace.contains($0) })
-  .skip(newlineAndWhitespaceParser)
-  .skip(StartsWith("=".utf8))
-  .skip(newlineAndWhitespaceParser)
-  .take(literalParser)
-  .compactMap { identifierUTF8, literal -> BindingDecl? in
-    guard let identifierString = String(identifierUTF8) else { return nil }
-
-    return BindingDecl(
-      identifier: Identifier(value: identifierString),
-      value: .literal(literal)
-    )
-  }
-
-let structParser = UTF8Terminal("struct".utf8)
-  .skip(newlineAndWhitespaceParser)
-  .take(Prefix { newlineAndWhitespace.contains($0) })
-  .skip(newlineAndWhitespaceParser)
-  .skip(openingBraceParser)
-  .skip(newlineAndWhitespaceParser)
-  .skip(closingBraceParser)
