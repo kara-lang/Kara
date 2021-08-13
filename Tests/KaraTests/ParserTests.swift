@@ -43,4 +43,14 @@ final class ParserTests: XCTestCase {
     """))
     XCTAssertNil(requiredWhitespaceParser.parse(""))
   }
+
+  func testIdentifiers() {
+    XCTAssertNil(identifierParser.parse("123abc"))
+    XCTAssertEqual(identifierParser.parse("abc123"), "abc123")
+    XCTAssertEqual(identifierParser.parse("_abc123"), "_abc123")
+  }
+
+  func testExpr() {
+    XCTAssertEqual(exprParser.parse("abc123"), "abc123")
+  }
 }

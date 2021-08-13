@@ -2,7 +2,7 @@
 //  Created by Max Desiatov on 16/04/2019.
 //
 
-import AST
+@testable import AST
 @testable import Types
 import XCTest
 
@@ -213,19 +213,19 @@ final class InferenceTests: XCTestCase {
   }
 
   func testNamedTupleMember() throws {
-    let namedTuple = Expr.namedTuple([
-      ("text", .literal("some text")),
-      ("count", .literal(10)),
-    ])
+    let namedTuple = Expr.namedTuple(.init(elements: [
+      .init(name: "text", expr: .literal("some text")),
+      .init(name: "count", expr: .literal(10)),
+    ]))
     let tuple = Expr.tuple([.literal("some text"), .literal(10)])
-    let mixedTuple = Expr.namedTuple([
-      ("text", .literal("some text")),
-      (nil, .literal(10)),
-    ])
-    let mixedTuple2 = Expr.namedTuple([
-      (nil, .literal("some text")),
-      ("count", .literal(10)),
-    ])
+    let mixedTuple = Expr.namedTuple(.init(elements: [
+      .init(name: "text", expr: .literal("some text")),
+      .init(name: nil, expr: .literal(10)),
+    ]))
+    let mixedTuple2 = Expr.namedTuple(.init(elements: [
+      .init(name: nil, expr: .literal("some text")),
+      .init(name: "count", expr: .literal(10)),
+    ]))
     let fewArguments = Expr.tuple([.literal("some text")])
     let wrongOrder = Expr.tuple([.literal(10), .literal("some text")])
 
