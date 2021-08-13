@@ -6,10 +6,6 @@ public struct TypeVariable: Hashable {
   let value: String
 }
 
-extension TypeVariable: CustomStringConvertible {
-  public var description: String { value }
-}
-
 extension TypeVariable: ExpressibleByStringLiteral {
   public init(stringLiteral value: String) {
     self.value = value
@@ -24,10 +20,6 @@ extension TypeVariable: ExpressibleByStringInterpolation {
 
 public struct TypeIdentifier: Hashable {
   let value: String
-}
-
-extension TypeIdentifier: CustomStringConvertible {
-  public var description: String { value }
 }
 
 extension TypeIdentifier: ExpressibleByStringLiteral {
@@ -98,12 +90,30 @@ public enum Type {
    */
   case variable(TypeVariable)
 
-  /// `()` – type for a tuple with zero elements.
-  case unit
-
   /** Binary type operator `->` representing function types.
    */
-  indirect case arrow(Type, Type)
+  indirect case arrow([Type], Type)
+
+  /** Tuple types, where each element of an associated array is a corresponding
+   type of the tuple's element.
+
+   ```
+   (Int, String, Bool)
+   ```
+
+   is represented in Typology as
+
+   ```
+   Type.tuple([.int, .string, .bool])
+   ```
+   */
+  case namedTuple([(Identifier?, Type)])
+
+  public static func tuple(_ types: [Type]) -> Type {
+    .namedTuple(types.enumerated().map {
+      (nil, $0.1)
+    })
+  }
 
   public static let bool = Type.constructor("Bool", [])
   public static let string = Type.constructor("String", [])
@@ -111,11 +121,16 @@ public enum Type {
   public static let int = Type.constructor("Int", [])
 }
 
-infix operator -->: NilCoalescingPrecedence
+infix operator -->
+
+/// A shorthand version of `Type.arrow`
+public func --> (arguments: [Type], returned: Type) -> Type {
+  Type.arrow(arguments, returned)
+}
 
 /// A shorthand version of `Type.arrow` for single argument functions
 public func --> (argument: Type, returned: Type) -> Type {
-  Type.arrow(argument, returned)
+  Type.arrow([argument], returned)
 }
 
 extension Type: Equatable {
@@ -129,21 +144,6 @@ extension Type: Equatable {
       return i1 == i2 && o1 == o2
     default:
       return false
-    }
-  }
-}
-
-extension Type: CustomStringConvertible {
-  public var description: String {
-    switch self {
-    case let .arrow(argT, returnT):
-      return "\(argT) -> \(returnT)"
-    case let .constructor(typeID, argTs):
-      return "\(typeID)\(argTs.isEmpty ? "" : " ")\(argTs.map(\.description).joined(separator: " "))"
-    case .unit:
-      return "()"
-    case let .variable(tv):
-      return tv.description
     }
   }
 }

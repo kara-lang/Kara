@@ -69,8 +69,9 @@ let boolLiteralParser = UTF8Terminal("true".utf8)
   )
   .map(Literal.bool)
 
-let literalParser =
-  intLiteralParser
-    .orElse(floatLiteralParser)
-    .orElse(stringLiteralParser)
-    .orElse(boolLiteralParser)
+let literalParser = OneOfMany(
+  intLiteralParser.eraseToAnyParser(),
+  floatLiteralParser.eraseToAnyParser(),
+  stringLiteralParser.eraseToAnyParser(),
+  boolLiteralParser.eraseToAnyParser()
+)

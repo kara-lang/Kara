@@ -8,15 +8,24 @@ enum Constraint {
   /// Type equality constraint
   case equal(Type, Type)
 
+  /** Constraint used to resolve function overloads. This constraint is valid
+   if `assumption` can be unified with any of the types passed as
+   `alternatives`.
+   */
+  case disjunction(Identifier, assumption: Type, alternatives: [Type])
+
   /** Member constraint representing members of type declarations: functions and
    properties.
    */
   case member(Type, member: Identifier, memberType: Type)
 }
 
-/** Mapping of `Identifier` values in this environment to `Scheme` type signatures that they have declared on them.
+/** Environment of possible overloads for `Identifier`. There's an assumption
+ that `[Scheme]` array can't be empty, since an empty array of overloads is
+ meaningless. If no overloads are available for `Identifier`, it shouldn't be
+ in the `Environoment` dictionary as a key in the first place.
  */
-typealias Environment = [Identifier: Scheme]
+typealias Environment = [Identifier: [Scheme]]
 typealias Members = [TypeIdentifier: Environment]
 
 struct ConstraintSystem {
@@ -63,7 +72,7 @@ struct ConstraintSystem {
     defer { self.environment = old }
 
     for (id, scheme) in environment {
-      self.environment[id] = scheme
+      self.environment[id] = [scheme]
     }
     return try infer(inferred)
   }
@@ -99,9 +108,19 @@ struct ConstraintSystem {
     in environment: Environment,
     orThrow error: TypeError
   ) throws -> Type {
-    guard let scheme = environment[id] else { throw error }
+    guard let schemes = environment[id] else { throw error }
 
-    return instantiate(scheme)
+    let results = schemes.map { instantiate($0) }
+
+    assert(results.count > 0)
+    guard results.count > 1 else { return results[0] }
+
+    let typeVariable = fresh()
+
+    constraints.append(
+      .disjunction(id, assumption: typeVariable, alternatives: results)
+    )
+    return typeVariable
   }
 
   /// Converting a σ type into a τ type by creating fresh names for each type
@@ -121,9 +140,8 @@ struct ConstraintSystem {
 
     case let .lambda(ids, expr):
       let parameters = ids.map { _ in fresh() }
-
       return try .arrow(
-        parameters.first ?? .unit,
+        parameters,
         infer(inExtended: zip(ids, parameters.map { Scheme($0) }), expr)
       )
 
@@ -132,7 +150,7 @@ struct ConstraintSystem {
       let typeVariable = fresh()
       constraints.append(.equal(
         callableType,
-        .arrow(try infer(arguments), typeVariable)
+        .arrow(try arguments.map { try infer($0) }, typeVariable)
       ))
       return typeVariable
 
@@ -159,11 +177,25 @@ struct ConstraintSystem {
         )
         return memberType
 
-      case .unit:
-        return .unit
+      case let .namedTuple(elements):
+        if let idx = Int(id.value) {
+          guard (0..<elements.count).contains(idx) else {
+            throw TypeError.tupleIndexOutOfRange(
+              total: elements.count,
+              addressed: idx
+            )
+          }
+
+          return elements[idx].1
+        } else if let idx = elements.firstIndex(where: { $0.0 == id }) {
+          return elements[idx].1
+        } else {
+          throw TypeError.unknownTupleMember(id)
+        }
       }
-    case .unit:
-      return .unit
+
+    case let .namedTuple(expressions):
+      return try .namedTuple(expressions.map { ($0.0, try infer($0.1)) })
     }
   }
 }
