@@ -49,26 +49,11 @@ extension Expr: Equatable {
   }
 }
 
-let applicationParser = exprParserFactory()
+let applicationParser = exprParser
   .skip(Whitespace())
-  .skip(openParenParser)
-  .skip(Whitespace())
-  .take(
-    Many(
-      exprParserFactory()
-        .skip(Whitespace())
-        .skip(commaParser)
-        .skip(Whitespace())
-    )
-  )
-  .skip(Whitespace())
-  .skip(closeParenParser)
+  .take(tupleSequenceParser)
   .map { Expr.application($0, $1) }
 
-func exprParserFactory() -> AnyParser<UTF8Subsequence, Expr> {
+let exprParser =
   literalParser.map(Expr.literal)
     .orElse(identifierParser.map(Expr.identifier))
-    .eraseToAnyParser()
-}
-
-let exprParser = exprParserFactory()

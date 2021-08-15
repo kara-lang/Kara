@@ -20,8 +20,10 @@ let identifierHead = [
 
 let identifierTail = identifierHead + Array(UInt8(ascii: "0")...UInt8(ascii: "9"))
 
-let identifierParser =
+let identifierSequenceParser =
   FirstWhere<UTF8Subsequence> { identifierHead.contains($0) }
     .take(Prefix { identifierTail.contains($0) })
     .compactMap { String(bytes: [$0] + Array($1), encoding: .utf8) }
-    .map { Identifier(value: $0) }
+
+let identifierParser = identifierSequenceParser
+  .map { Identifier(value: $0) }

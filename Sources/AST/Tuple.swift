@@ -12,3 +12,19 @@ public struct Tuple: Equatable {
 
   public let elements: [Element]
 }
+
+let tupleSequenceParser = openParenParser
+  .skip(Whitespace())
+  .take(
+    Many(
+      exprParser
+        .skip(Whitespace())
+        .skip(commaParser)
+        .skip(Whitespace())
+    )
+  )
+  .skip(Whitespace())
+  .skip(closeParenParser)
+
+let tupleParser = tupleSequenceParser
+  .map(Expr.tuple)

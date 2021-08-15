@@ -101,7 +101,7 @@ public enum Type {
    (Int, String, Bool)
    ```
 
-   is represented in Typology as
+   is represented in Kara as
 
    ```
    Type.tuple([.int, .string, .bool])
