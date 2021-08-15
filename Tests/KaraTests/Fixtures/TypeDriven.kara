@@ -1,0 +1,65 @@
+protocol Monad {
+  associatedtype Element
+
+  static func new(Element) -> Self<Element>
+
+  func flatMap<NewElement>(Element -> Self<NewElement>) -> Self<NewElement>
+}
+
+enum Result<Success, Failure> {
+  case success(Success)
+  case failure(Failure)
+}
+
+extension Result: Monad {
+    typealias Element = Success
+
+    static func new(value) = .success(value)
+
+    func flatMap(binder) = switch self {
+        case .success(value):
+            switch binder(value) {
+                case .success(newValue):
+                    .success(newValue)
+                case .failure(error):
+                    .failure(error)
+            }
+        case .failure(error):
+            .failure(error)
+    }
+}
+
+let x: Result<Int, Error> = do {
+  let y = try blah()
+  let z = try blah()
+
+  return y + z
+}
+
+let x = blah().flatMap { y in
+  blah().flatMap { z in
+    y + z
+  }
+}
+
+func square(a: Int) -> Int = mult(a, a)
+
+func factorial(Int) -> Int
+factorial(0) = 1
+factorial(n) = mult(n, (n - 1))
+
+func fill<Element>(count: Nat, e: Element) -> Vec<count, Element>
+
+enum Nat {
+    case zero
+    case addOne(Nat)
+}
+
+enum Vec<count: Nat, Element> {
+    case empty -> Vec<.zero, Element>
+    case cons(Element, Vec<count, Element>) -> Vec<.addOne(count), Element>
+}
+
+func allCounts(Vec<n, String>) -> Vec<n, Nat>
+allCounts([]) = []
+allCounts(.cons(str, rest)) = .cons(str.count, allCounts(rest))

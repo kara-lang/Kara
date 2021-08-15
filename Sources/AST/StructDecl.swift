@@ -13,9 +13,9 @@ let structParser = UTF8Terminal("struct".utf8)
   .skip(requiredWhitespaceParser)
   .take(Prefix { $0 != .init(ascii: "{") && !newlineAndWhitespace.contains($0) })
   .skip(whitespaceParser)
-  .skip(openingBraceParser)
+  .skip(openBraceParser)
   .skip(whitespaceParser)
-  .skip(closingBraceParser)
+  .skip(closeBraceParser)
   // FIXME: generic parameters
   .compactMap(String.init)
   .map { StructDecl(name: .init(value: $0), genericParameters: []) }

@@ -50,5 +50,10 @@ let requiredWhitespaceParser = OneOfMany(
     .map { StartsWith<UTF8Subsequence>($0.utf8) }
 )
 
-let openingBraceParser = UTF8Terminal("{".utf8)
-let closingBraceParser = UTF8Terminal("}".utf8)
+let openBraceParser = UTF8Terminal("{".utf8)
+let closeBraceParser = UTF8Terminal("}".utf8)
+
+let openParenParser = UTF8Terminal("(".utf8)
+let closeParenParser = UTF8Terminal(")".utf8)
+
+let commaParser = UTF8Terminal(",".utf8)
