@@ -46,24 +46,28 @@ final class InferenceTests: XCTestCase {
 
   func testLambda() throws {
     let lambda = Expr.lambda(
-      ["x"],
-      .application(
-        "decode",
-        [.application(
-          "stringify",
-          [.application("increment", ["x"])]
-        )]
+      Lambda(
+        identifiers: ["x"],
+        body: .application(
+          "decode",
+          [.application(
+            "stringify",
+            [.application("increment", ["x"])]
+          )]
+        )
       )
     )
 
     let error = Expr.lambda(
-      ["x"],
-      .application(
-        "stringify",
-        [.application(
-          "decode",
-          [.application("increment", ["x"])]
-        )]
+      Lambda(
+        identifiers: ["x"],
+        body: .application(
+          "stringify",
+          [.application(
+            "decode",
+            [.application("increment", ["x"])]
+          )]
+        )
       )
     )
 
@@ -79,25 +83,28 @@ final class InferenceTests: XCTestCase {
 
   func testLambdaWithMultipleArguments() throws {
     let lambda = Expr.lambda(
-      ["x", "y"],
-      .application(
-        "decode",
-        [
-          .application(
-            "stringify",
-            [
-              .application("sum", ["x", "y"]),
-              .application("sum", ["x", "y"]),
-            ]
-          ),
-          .application(
-            "stringify",
-            [
-              .application("sum", ["x", "y"]),
-              .application("sum", ["x", "y"]),
-            ]
-          ),
-        ]
+      Lambda(
+        identifiers:
+        ["x", "y"],
+        body: .application(
+          "decode",
+          [
+            .application(
+              "stringify",
+              [
+                .application("sum", ["x", "y"]),
+                .application("sum", ["x", "y"]),
+              ]
+            ),
+            .application(
+              "stringify",
+              [
+                .application("sum", ["x", "y"]),
+                .application("sum", ["x", "y"]),
+              ]
+            ),
+          ]
+        )
       )
     )
 
@@ -112,13 +119,16 @@ final class InferenceTests: XCTestCase {
 
   func testLambdaWithMultipleArgumentsDiffrentTypes() throws {
     let lambda = Expr.lambda(
-      ["str", "int"],
-      .application(
-        "decode",
-        [
-          .application("concatenate", ["int", "str"]),
-          .application("sum", ["int", "int"]),
-        ]
+      Lambda(
+        identifiers:
+        ["str", "int"],
+        body: .application(
+          "decode",
+          [
+            .application("concatenate", ["int", "str"]),
+            .application("sum", ["int", "int"]),
+          ]
+        )
       )
     )
 
@@ -136,11 +146,18 @@ final class InferenceTests: XCTestCase {
 
   func testLambdaApplication() throws {
     let lambda = Expr.application(
-      .lambda(["x"], .ternary("x", .literal(1), .literal(0))), [.literal(true)]
+      .lambda(
+        .init(
+          identifiers: ["x"],
+          body: .ternary("x", .literal(1), .literal(0))
+        )
+      ),
+      [.literal(true)]
     )
 
     let error = Expr.application(
-      .lambda(["x"], .ternary("x", .literal(1), .literal(0))), [.literal("blah")]
+      .lambda(.init(identifiers: ["x"], body: .ternary("x", .literal(1), .literal(0)))),
+      [.literal("blah")]
     )
 
     XCTAssertEqual(try lambda.infer(), .int)
@@ -185,7 +202,9 @@ final class InferenceTests: XCTestCase {
 
   func testLambdaMember() throws {
     let lambda = Expr.application(
-      .lambda(["x"], .ternary("x", .literal("one"), .literal("zero"))),
+      .lambda(
+        .init(identifiers: ["x"], body: .ternary("x", .literal("one"), .literal("zero")))
+      ),
       [.literal(true)]
     )
     let count = Expr.member(lambda, "count")

@@ -138,11 +138,12 @@ struct ConstraintSystem {
     case let .identifier(id):
       return try lookup(id, in: environment, orThrow: .unbound(id))
 
-    case let .lambda(ids, expr):
+    case let .lambda(l):
+      let ids = l.parameters.map(\.identifier)
       let parameters = ids.map { _ in fresh() }
       return try .arrow(
         parameters,
-        infer(inExtended: zip(ids, parameters.map { Scheme($0) }), expr)
+        infer(inExtended: zip(ids, parameters.map { Scheme($0) }), l.body)
       )
 
     case let .application(callable, arguments):

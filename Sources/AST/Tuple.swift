@@ -13,18 +13,27 @@ public struct Tuple: Equatable {
   public let elements: [Element]
 }
 
-let tupleSequenceParser = openParenParser
+let tupleSequenceParser: AnyParser<UTF8Subsequence, [Expr]> = openParenParser
   .skip(Whitespace())
   .take(
     Many(
-      exprParser
+      Lazy { exprParser }
         .skip(Whitespace())
         .skip(commaParser)
         .skip(Whitespace())
     )
   )
+  .take(Optional.parser(of: Lazy { exprParser }))
   .skip(Whitespace())
   .skip(closeParenParser)
+  .map { head, tail -> [Expr] in
+    guard let tail = tail else {
+      return head
+    }
+
+    return head + [tail]
+  }
+  .eraseToAnyParser()
 
 let tupleParser = tupleSequenceParser
   .map(Expr.tuple)

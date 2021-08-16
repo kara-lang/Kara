@@ -11,7 +11,7 @@ final class ParserTests: XCTestCase {
     XCTAssertEqual(literalParser.parse("123"), 123)
     XCTAssertEqual(literalParser.parse("true"), true)
     XCTAssertEqual(literalParser.parse("false"), false)
-    XCTAssertEqual(literalParser.parse(#""blah""#), "blah")
+    XCTAssertEqual(literalParser.parse(#""string""#), "string")
     XCTAssertEqual(literalParser.parse("3.14"), 3.14)
   }
 
@@ -36,7 +36,7 @@ final class ParserTests: XCTestCase {
   func testWhitespaces() throws {
     var input = ""[...].utf8
     XCTAssertNotNil(Whitespace().parse(&input))
-    XCTAssertNotNil(whitespaceParser.parse("blah"))
+    XCTAssertNotNil(whitespaceParser.parse("string"))
     XCTAssertNotNil(whitespaceParser.parse("  "))
     XCTAssertNotNil(whitespaceParser.parse("""
 
@@ -48,6 +48,19 @@ final class ParserTests: XCTestCase {
     XCTAssertNil(identifierParser.parse("123abc"))
     XCTAssertEqual(identifierParser.parse("abc123"), "abc123")
     XCTAssertEqual(identifierParser.parse("_abc123"), "_abc123")
+  }
+
+  func testTuple() {
+    let intsTuple = Expr.tuple([1, 2, 3].map(Expr.literal))
+
+    XCTAssertNil(tupleParser.parse("(,)"))
+    XCTAssertEqual(tupleParser.parse("()"), .tuple([].map(Expr.literal)))
+    XCTAssertEqual(tupleParser.parse("(1 ,2 ,3 ,)"), intsTuple)
+    XCTAssertEqual(tupleParser.parse("(1,2,3,)"), intsTuple)
+    XCTAssertEqual(tupleParser.parse("(1,2,3)"), intsTuple)
+
+    XCTAssertEqual(tupleParser.parse("(1)"), Expr.tuple([.literal(1)]))
+    XCTAssertEqual(tupleParser.parse(#"("foo")"#), Expr.tuple([.literal("foo")]))
   }
 
   func testExpr() {

@@ -48,8 +48,29 @@ extension Literal: ExpressibleByBooleanLiteral {
   }
 }
 
+extension Literal: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    switch self {
+    case let .bool(b): return b.description
+    case let .float(f): return f.description
+    case let .integer(i): return i.description
+    case let .string(s): return #""\#(s)""#
+    }
+  }
+}
+
 let intLiteralParser = Int.parser(of: UTF8Subsequence.self)
-  .skip(End().orElse(StartsWith(" ".utf8)).orElse(Newline()))
+  .skip(
+    End()
+      .orElse(StartsWith(" ".utf8))
+      .orElse(Newline())
+  )
+  .orElse(
+    PrefixUpTo(",".utf8)
+      .orElse(PrefixUpTo(")".utf8))
+      .compactMap(String.init)
+      .compactMap(Int.init)
+  )
   .map(Literal.integer)
 
 let floatLiteralParser = Double.parser(of: UTF8Subsequence.self)
