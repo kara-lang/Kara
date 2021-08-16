@@ -68,6 +68,7 @@ let intLiteralParser = Int.parser(of: UTF8Subsequence.self)
   .orElse(
     PrefixUpTo(",".utf8)
       .orElse(PrefixUpTo(")".utf8))
+      .orElse(PrefixUpTo("}".utf8))
       .compactMap(String.init)
       .compactMap(Int.init)
   )

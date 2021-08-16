@@ -64,17 +64,22 @@ final class ParserTests: XCTestCase {
   }
 
   func testLambda() {
+    let singleParamaterLambda = Expr.lambda(.init(identifiers: ["x"], body: .literal(1)))
+    let multiParameterLambda = Expr.lambda(.init(identifiers: ["x", "y", "z"], body: .literal(1)))
+
     XCTAssertEqual(exprParser.parse("{}"), .lambda(.init(body: .unit)))
     XCTAssertEqual(exprParser.parse("{ 1 }"), .lambda(.init(body: .literal(1))))
-    XCTAssertEqual(
-      exprParser.parse("{ x in 1 }"),
-      .lambda(.init(identifiers: ["x"], body: .literal(1)))
-    )
-    XCTAssertEqual(
-      exprParser.parse("{ x, y in 1 }"),
-      .lambda(.init(identifiers: ["x", "y"], body: .literal(1)))
-    )
+    XCTAssertEqual(exprParser.parse("{1}"), .lambda(.init(body: .literal(1))))
+    XCTAssertEqual(exprParser.parse("{ x in 1 }"), singleParamaterLambda)
+    XCTAssertEqual(exprParser.parse("{x in 1}"), singleParamaterLambda)
+    XCTAssertEqual(exprParser.parse("{xin1}"), .lambda(.init(body: "xin1")))
+
+    XCTAssertEqual(exprParser.parse("{ x, y, z in 1 }"), multiParameterLambda)
+    XCTAssertEqual(exprParser.parse("{ x,y,z in 1 }"), multiParameterLambda)
+    XCTAssertEqual(exprParser.parse("{x,y,z in 1}"), multiParameterLambda)
+
     XCTAssertNil(exprParser.parse("{ x in y in 1 }"))
+    XCTAssertNil(exprParser.parse("{x in1}"))
   }
 
   func testIdentifierExpr() {
