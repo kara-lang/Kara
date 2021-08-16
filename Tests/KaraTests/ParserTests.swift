@@ -51,19 +51,33 @@ final class ParserTests: XCTestCase {
   }
 
   func testTuple() {
-    let intsTuple = Expr.tuple([1, 2, 3].map(Expr.literal))
+    let intsTuple = Expr.tuple(.init([1, 2, 3].map(Expr.literal)))
 
-    XCTAssertNil(tupleParser.parse("(,)"))
-    XCTAssertEqual(tupleParser.parse("()"), .tuple([].map(Expr.literal)))
-    XCTAssertEqual(tupleParser.parse("(1 ,2 ,3 ,)"), intsTuple)
-    XCTAssertEqual(tupleParser.parse("(1,2,3,)"), intsTuple)
-    XCTAssertEqual(tupleParser.parse("(1,2,3)"), intsTuple)
+    XCTAssertNil(exprParser.parse("(,)"))
+    XCTAssertEqual(exprParser.parse("()"), .tuple(.init([])))
+    XCTAssertEqual(exprParser.parse("(1 ,2 ,3 ,)"), intsTuple)
+    XCTAssertEqual(exprParser.parse("(1,2,3,)"), intsTuple)
+    XCTAssertEqual(exprParser.parse("(1,2,3)"), intsTuple)
 
-    XCTAssertEqual(tupleParser.parse("(1)"), Expr.tuple([.literal(1)]))
-    XCTAssertEqual(tupleParser.parse(#"("foo")"#), Expr.tuple([.literal("foo")]))
+    XCTAssertEqual(exprParser.parse("(1)"), Expr.tuple(.init([.literal(1)])))
+    XCTAssertEqual(exprParser.parse(#"("foo")"#), Expr.tuple(.init([.literal("foo")])))
   }
 
-  func testExpr() {
+  func testLambda() {
+    XCTAssertEqual(exprParser.parse("{}"), .lambda(.init(body: .unit)))
+    XCTAssertEqual(exprParser.parse("{ 1 }"), .lambda(.init(body: .literal(1))))
+    XCTAssertEqual(
+      exprParser.parse("{ x in 1 }"),
+      .lambda(.init(identifiers: ["x"], body: .literal(1)))
+    )
+    XCTAssertEqual(
+      exprParser.parse("{ x, y in 1 }"),
+      .lambda(.init(identifiers: ["x", "y"], body: .literal(1)))
+    )
+    XCTAssertNil(exprParser.parse("{ x in y in 1 }"))
+  }
+
+  func testIdentifierExpr() {
     XCTAssertEqual(exprParser.parse("abc123"), "abc123")
   }
 }

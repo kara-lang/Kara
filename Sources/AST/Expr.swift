@@ -11,13 +11,9 @@ public indirect enum Expr {
   case literal(Literal)
   case ternary(Expr, Expr, Expr)
   case member(Expr, Identifier)
-  case namedTuple(Tuple)
+  case tuple(Tuple)
 
-  public static func tuple(_ expressions: [Expr]) -> Expr {
-    .namedTuple(.init(elements: expressions.map {
-      .init(name: nil, expr: $0)
-    }))
-  }
+  static var unit: Expr { .tuple(.init()) }
 }
 
 extension Expr: ExpressibleByStringLiteral {
@@ -34,7 +30,7 @@ extension Expr: CustomDebugStringConvertible {
     case let .application(function, args):
       return "\(function)(\(args.map(\.debugDescription).joined(separator: ", "))"
     case let .lambda(l):
-      return "{ \(l.parameters.map(\.identifier.value).joined(separator: ", ")) in \(l.body.debugDescription)}"
+      return l.debugDescription
     case let .literal(l):
       return l.debugDescription
     case let .ternary(i, t, e):
@@ -48,7 +44,7 @@ extension Expr: CustomDebugStringConvertible {
         """
     case let .member(expr, member):
       return "\(expr.debugDescription).\(member.value)"
-    case let .namedTuple(tuple):
+    case let .tuple(tuple):
       return "(\(tuple.elements.map(\.expr.debugDescription).joined(separator: ", "))"
     }
   }
@@ -69,7 +65,7 @@ extension Expr: Equatable {
       return i1 == i2 && t1 == t2 && e1 == e2
     case let (.member(e1, i1), .member(e2, i2)):
       return e1 == e2 && i1 == i2
-    case let (.namedTuple(t1), .namedTuple(t2)):
+    case let (.tuple(t1), .tuple(t2)):
       return t1 == t2
     default:
       return false
@@ -82,7 +78,9 @@ let applicationParser = exprParser
   .take(tupleSequenceParser)
   .map { Expr.application($0, $1) }
 
-let exprParser =
+let exprParser: AnyParser<UTF8Subsequence, Expr> =
   literalParser.map(Expr.literal)
     .orElse(identifierParser.map(Expr.identifier))
-    .orElse(tupleParser)
+    .orElse(tupleParser.map(Expr.tuple))
+    .orElse(lambdaParser.map(Expr.lambda))
+    .eraseToAnyParser()

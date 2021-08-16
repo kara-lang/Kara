@@ -13,7 +13,15 @@ public struct Tuple: Equatable {
   public let elements: [Element]
 }
 
-let tupleSequenceParser: AnyParser<UTF8Subsequence, [Expr]> = openParenParser
+public extension Tuple {
+  init(_ expressions: [Expr] = []) {
+    self.init(elements: expressions.map {
+      .init(name: nil, expr: $0)
+    })
+  }
+}
+
+let tupleSequenceParser = openParenParser
   .skip(Whitespace())
   .take(
     Many(
@@ -33,7 +41,6 @@ let tupleSequenceParser: AnyParser<UTF8Subsequence, [Expr]> = openParenParser
 
     return head + [tail]
   }
-  .eraseToAnyParser()
 
 let tupleParser = tupleSequenceParser
-  .map(Expr.tuple)
+  .map(Tuple.init)

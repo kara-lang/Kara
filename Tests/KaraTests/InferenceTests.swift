@@ -224,7 +224,7 @@ final class InferenceTests: XCTestCase {
   }
 
   func testTupleMember() throws {
-    let tuple = Expr.tuple([.literal(42), .literal("forty two")])
+    let tuple = Expr.tuple(.init([.literal(42), .literal("forty two")]))
 
     XCTAssertEqual(try Expr.member(tuple, "0").infer(), .int)
     XCTAssertEqual(try Expr.member(tuple, "1").infer(), .string)
@@ -232,21 +232,21 @@ final class InferenceTests: XCTestCase {
   }
 
   func testNamedTupleMember() throws {
-    let namedTuple = Expr.namedTuple(.init(elements: [
+    let namedTuple = Expr.tuple(.init(elements: [
       .init(name: "text", expr: .literal("some text")),
       .init(name: "count", expr: .literal(10)),
     ]))
-    let tuple = Expr.tuple([.literal("some text"), .literal(10)])
-    let mixedTuple = Expr.namedTuple(.init(elements: [
+    let tuple = Expr.tuple(.init([.literal("some text"), .literal(10)]))
+    let mixedTuple = Expr.tuple(.init(elements: [
       .init(name: "text", expr: .literal("some text")),
       .init(name: nil, expr: .literal(10)),
     ]))
-    let mixedTuple2 = Expr.namedTuple(.init(elements: [
+    let mixedTuple2 = Expr.tuple(.init(elements: [
       .init(name: nil, expr: .literal("some text")),
       .init(name: "count", expr: .literal(10)),
     ]))
-    let fewArguments = Expr.tuple([.literal("some text")])
-    let wrongOrder = Expr.tuple([.literal(10), .literal("some text")])
+    let fewArguments = Expr.tuple(.init([.literal("some text")]))
+    let wrongOrder = Expr.tuple(.init([.literal(10), .literal("some text")]))
 
     let e: Environment = [
       "acceptNamedTuple": [.init(.namedTuple([
@@ -367,7 +367,9 @@ final class InferenceTests: XCTestCase {
       .application(
         "f",
         [.tuple(
-          [.literal("blah")]
+          .init(
+            [.literal("blah")]
+          )
         )]
       ), "count"
     )
