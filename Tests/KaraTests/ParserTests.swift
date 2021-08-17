@@ -100,6 +100,10 @@ final class ParserTests: XCTestCase {
       exprParser.parse("{x,y,z in 1}.description"),
       .member(multiParameterLambda, "description")
     )
+    XCTAssertEqual(
+      exprParser.parse("( 1 , 2, 3 ).description"),
+      .member(.tuple(.init([1, 2, 3])), "description")
+    )
   }
 
   func testApplication() {
@@ -108,6 +112,11 @@ final class ParserTests: XCTestCase {
 
     XCTAssertEqual(exprParser.parse("{x,y,z in x}(1,2,3)"), multiParameterApplication)
     XCTAssertEqual(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 )"), multiParameterApplication)
+    // FIXME:
+//    XCTAssertEqual(
+//        exprParser.parse("{x,y,z in x} ( 1 , 2, 3 ).description"),
+//        .member(multiParameterApplication, "description")
+//    )
   }
 
   func testIdentifierExpr() {

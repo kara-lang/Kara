@@ -34,7 +34,7 @@ extension Expr: CustomDebugStringConvertible {
     case let .identifier(i):
       return i.value
     case let .application(function, args):
-      return "\(function)(\(args.map(\.debugDescription).joined(separator: ", "))"
+      return "\(function)(\(args.map(\.debugDescription).joined(separator: ", ")))"
     case let .lambda(l):
       return l.debugDescription
     case let .literal(l):
@@ -51,7 +51,7 @@ extension Expr: CustomDebugStringConvertible {
     case let .member(expr, member):
       return "\(expr.debugDescription).\(member.value)"
     case let .tuple(tuple):
-      return "(\(tuple.elements.map(\.expr.debugDescription).joined(separator: ", "))"
+      return "(\(tuple.elements.map(\.expr.debugDescription).joined(separator: ", ")))"
     }
   }
 }
