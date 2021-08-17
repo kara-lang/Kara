@@ -4,7 +4,6 @@
 
 import ArgumentParser
 
-@main
 struct Driver: ParsableCommand {
   @Flag(help: "Include a counter with each repetition.")
   var includeCounter = false
@@ -25,3 +24,5 @@ struct Driver: ParsableCommand {
     print(elseVal) // 0.0112359550561798...
   }
 }
+
+Driver.main()
