@@ -84,13 +84,25 @@ let applicationParser = exprParser
   .take(tupleSequenceParser)
   .map { Expr.application($0, $1) }
 
-let memberAccessParser =
+private enum ExprTail {
+  case memberAccess(Identifier)
+  case applicationArguments([Expr])
+}
+
+private let memberAccessParser =
   Whitespace()
     .ignoreOutput()
     .skip(
       UTF8Terminal(".".utf8)
     )
     .take(identifierParser)
+    .map(ExprTail.memberAccess)
+
+private let applicationArgumentsParser =
+  Whitespace()
+    .ignoreOutput()
+    .take(tupleSequenceParser)
+    .map(ExprTail.applicationArguments)
 
 let identifierExprStart =
   identifierParser
@@ -100,14 +112,17 @@ let exprParser: AnyParser<UTF8SubSequence, Expr> =
     .orElse(identifierParser.map(Expr.identifier))
     .orElse(tupleParser.map(Expr.tuple))
     .orElse(lambdaParser.map(Expr.lambda))
-    .take(Optional.parser(of: memberAccessParser))
-    .map { expr, memberAccess -> Expr in
+    .take(Optional.parser(of: memberAccessParser.orElse(applicationArgumentsParser)))
+    .map { expr, tail -> Expr in
       // Structuring the parser this way with `map` and `Optional` to avoid left recursion for certain
       // derivations. Expressing left recursion with combinators directly without breaking up derivations
       // leads to infinite loops.
-      if let memberAccess = memberAccess {
-        return Expr.member(expr, memberAccess)
-      } else {
+      switch tail {
+      case let .memberAccess(identifier):
+        return Expr.member(expr, identifier)
+      case let .applicationArguments(arguments):
+        return Expr.application(expr, arguments)
+      case nil:
         return expr
       }
     }

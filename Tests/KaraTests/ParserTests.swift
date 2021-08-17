@@ -102,6 +102,14 @@ final class ParserTests: XCTestCase {
     )
   }
 
+  func testApplication() {
+    let multiParameterApplication =
+      Expr.application(.lambda(.init(identifiers: ["x", "y", "z"], body: "x")), [1, 2, 3])
+
+    XCTAssertEqual(exprParser.parse("{x,y,z in x}(1,2,3)"), multiParameterApplication)
+    XCTAssertEqual(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 )"), multiParameterApplication)
+  }
+
   func testIdentifierExpr() {
     XCTAssertEqual(exprParser.parse("abc123"), "abc123")
   }
