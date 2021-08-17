@@ -59,7 +59,7 @@ extension Literal: CustomDebugStringConvertible {
   }
 }
 
-let intLiteralParser = Int.parser(of: UTF8Subsequence.self)
+let intLiteralParser = Int.parser(of: UTF8SubSequence.self)
   .skip(
     End()
       .orElse(StartsWith(" ".utf8))
@@ -69,12 +69,23 @@ let intLiteralParser = Int.parser(of: UTF8Subsequence.self)
     PrefixUpTo(",".utf8)
       .orElse(PrefixUpTo(")".utf8))
       .orElse(PrefixUpTo("}".utf8))
+      .orElse(
+        PrefixUpTo(".".utf8)
+          // resolve ambiguity with floats
+          .lookahead(amount: 2) { (lookaheadPrefix: UTF8SubSequence) -> Bool in
+            // if `.` is located at the end of input, this looks like an invalid token.
+            guard lookaheadPrefix.count > 1,
+                  let lastPrefixElement = lookaheadPrefix.last else { return false }
+
+            return !(UInt8(ascii: "0")...UInt8(ascii: "9")).contains(lastPrefixElement)
+          }
+      )
       .compactMap(String.init)
       .compactMap(Int.init)
   )
   .map(Literal.integer)
 
-let floatLiteralParser = Double.parser(of: UTF8Subsequence.self)
+let floatLiteralParser = Double.parser(of: UTF8SubSequence.self)
   .map(Literal.float)
 
 let stringLiteralParser = UTF8Terminal("\"".utf8)

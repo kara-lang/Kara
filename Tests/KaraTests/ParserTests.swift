@@ -7,6 +7,8 @@ import Parsing
 import XCTest
 
 final class ParserTests: XCTestCase {
+  let multiParameterLambda = Expr.lambda(.init(identifiers: ["x", "y", "z"], body: .literal(1)))
+
   func testLiterals() throws {
     XCTAssertEqual(literalParser.parse("123"), 123)
     XCTAssertEqual(literalParser.parse("true"), true)
@@ -65,7 +67,6 @@ final class ParserTests: XCTestCase {
 
   func testLambda() {
     let singleParamaterLambda = Expr.lambda(.init(identifiers: ["x"], body: .literal(1)))
-    let multiParameterLambda = Expr.lambda(.init(identifiers: ["x", "y", "z"], body: .literal(1)))
 
     XCTAssertEqual(exprParser.parse("{}"), .lambda(.init(body: .unit)))
     XCTAssertEqual(exprParser.parse("{ 1 }"), .lambda(.init(body: .literal(1))))
@@ -80,6 +81,25 @@ final class ParserTests: XCTestCase {
 
     XCTAssertNil(exprParser.parse("{ x in y in 1 }"))
     XCTAssertNil(exprParser.parse("{x in1}"))
+  }
+
+  func testMemberAccess() {
+    XCTAssertEqual(exprParser.parse("5.description"), .member(5, "description"))
+    XCTAssertEqual(exprParser.parse("5  .description"), .member(5, "description"))
+    XCTAssertEqual(
+      exprParser.parse(
+        """
+        5
+        .description
+        """
+      ),
+      .member(5, "description")
+    )
+
+    XCTAssertEqual(
+      exprParser.parse("{x,y,z in 1}.description"),
+      .member(multiParameterLambda, "description")
+    )
   }
 
   func testIdentifierExpr() {

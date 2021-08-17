@@ -22,6 +22,12 @@ extension Expr: ExpressibleByStringLiteral {
   }
 }
 
+extension Expr: ExpressibleByIntegerLiteral {
+  public init(integerLiteral value: Int) {
+    self = .literal(.integer(value))
+  }
+}
+
 extension Expr: CustomDebugStringConvertible {
   public var debugDescription: String {
     switch self {
@@ -78,9 +84,33 @@ let applicationParser = exprParser
   .take(tupleSequenceParser)
   .map { Expr.application($0, $1) }
 
-let exprParser: AnyParser<UTF8Subsequence, Expr> =
+let memberAccessParser =
+  Whitespace()
+    .ignoreOutput()
+    .skip(
+      UTF8Terminal(".".utf8)
+    )
+    .take(identifierParser)
+
+let identifierExprStart =
+  identifierParser
+
+let exprParser: AnyParser<UTF8SubSequence, Expr> =
   literalParser.map(Expr.literal)
     .orElse(identifierParser.map(Expr.identifier))
     .orElse(tupleParser.map(Expr.tuple))
     .orElse(lambdaParser.map(Expr.lambda))
+    .take(Optional.parser(of: memberAccessParser))
+    .map { expr, memberAccess -> Expr in
+      // Structuring the parser this way with `map` and `Optional` to avoid left recursion for certain
+      // derivations. Expressing left recursion with combinators directly without breaking up derivations
+      // leads to infinite loops.
+      if let memberAccess = memberAccess {
+        return Expr.member(expr, memberAccess)
+      } else {
+        return expr
+      }
+    }
+    // Required to give `exprParser` an explicit type signature, otherwise this won't compile due to mutual
+    // recursion with subexpression parsers.
     .eraseToAnyParser()

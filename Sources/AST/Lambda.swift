@@ -30,8 +30,7 @@ let lambdaParser =
     .skip(Whitespace())
     .take(
       Optional.parser(
-        of:
-        Many(
+        of: Many(
           identifierParser
             .skip(Whitespace())
             .skip(commaParser)
