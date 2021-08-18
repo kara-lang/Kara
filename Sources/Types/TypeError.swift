@@ -2,7 +2,7 @@
 //  Created by Max Desiatov on 28/05/2019.
 //
 
-import AST
+import Syntax
 
 enum TypeError: Error {
   case ambiguous(Identifier)

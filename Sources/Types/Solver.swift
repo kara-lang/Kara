@@ -2,7 +2,7 @@
 //  Created by Max Desiatov on 27/04/2019.
 //
 
-import AST
+import Syntax
 
 /** `Solver` operates on a constraint system, which contains an array of
  `Constraint` values. These constraints are reduced one by one to find a

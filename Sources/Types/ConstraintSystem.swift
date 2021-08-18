@@ -2,7 +2,7 @@
 //  Created by Max Desiatov on 27/04/2019.
 //
 
-import AST
+import Syntax
 
 enum Constraint {
   /// Type equality constraint

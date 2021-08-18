@@ -29,7 +29,7 @@ let package = Package(
     // suite. Targets can depend on other targets in this package, and on products in packages this
     // package depends on.
     .target(
-      name: "AST",
+      name: "Syntax",
       dependencies: [
         .product(name: "Parsing", package: "swift-parsing"),
       ]
@@ -37,7 +37,7 @@ let package = Package(
     .target(
       name: "Types",
       dependencies: [
-        "AST",
+        "Syntax",
       ]
     ),
     .executableTarget(
@@ -56,7 +56,7 @@ let package = Package(
     .testTarget(
       name: "KaraTests",
       dependencies: [
-        "AST",
+        "Syntax",
         "Types",
         "FileCheck",
       ],

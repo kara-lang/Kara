@@ -2,7 +2,7 @@
 //  Created by Max Desiatov on 16/04/2019.
 //
 
-@testable import AST
+@testable import Syntax
 @testable import Types
 import XCTest
 

@@ -112,18 +112,19 @@ let exprParser: AnyParser<UTF8SubSequence, Expr> =
     .orElse(identifierParser.map(Expr.identifier))
     .orElse(tupleParser.map(Expr.tuple))
     .orElse(lambdaParser.map(Expr.lambda))
-    .take(Optional.parser(of: memberAccessParser.orElse(applicationArgumentsParser)))
+
+    // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain
+    // derivations. Expressing left recursion with combinators directly without breaking up derivations
+    // leads to infinite loops.
+    .take(Many(memberAccessParser.orElse(applicationArgumentsParser)))
     .map { expr, tail -> Expr in
-      // Structuring the parser this way with `map` and `Optional` to avoid left recursion for certain
-      // derivations. Expressing left recursion with combinators directly without breaking up derivations
-      // leads to infinite loops.
-      switch tail {
-      case let .memberAccess(identifier):
-        return Expr.member(expr, identifier)
-      case let .applicationArguments(arguments):
-        return Expr.application(expr, arguments)
-      case nil:
-        return expr
+      tail.reduce(expr) { reducedExpr, tailElement in
+        switch tailElement {
+        case let .memberAccess(identifier):
+          return Expr.member(reducedExpr, identifier)
+        case let .applicationArguments(arguments):
+          return Expr.application(reducedExpr, arguments)
+        }
       }
     }
     // Required to give `exprParser` an explicit type signature, otherwise this won't compile due to mutual

@@ -2,7 +2,7 @@
 //  Created by Max Desiatov on 27/05/2019.
 //
 
-import AST
+import Syntax
 
 /** Schemes are types containing one or more generic variables. A scheme
  explicitly specifies variables bound in the current type, which allows those

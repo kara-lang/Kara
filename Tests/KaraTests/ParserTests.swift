@@ -2,8 +2,8 @@
 //  Created by Max Desiatov on 11/08/2021.
 //
 
-@testable import AST
 import Parsing
+@testable import Syntax
 import XCTest
 
 final class ParserTests: XCTestCase {
@@ -101,6 +101,10 @@ final class ParserTests: XCTestCase {
       .member(multiParameterLambda, "description")
     )
     XCTAssertEqual(
+      exprParser.parse("{x,y,z in 1}.description.description"),
+      .member(.member(multiParameterLambda, "description"), "description")
+    )
+    XCTAssertEqual(
       exprParser.parse("( 1 , 2, 3 ).description"),
       .member(.tuple(.init([1, 2, 3])), "description")
     )
@@ -112,11 +116,10 @@ final class ParserTests: XCTestCase {
 
     XCTAssertEqual(exprParser.parse("{x,y,z in x}(1,2,3)"), multiParameterApplication)
     XCTAssertEqual(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 )"), multiParameterApplication)
-    // FIXME:
-//    XCTAssertEqual(
-//        exprParser.parse("{x,y,z in x} ( 1 , 2, 3 ).description"),
-//        .member(multiParameterApplication, "description")
-//    )
+    XCTAssertEqual(
+      exprParser.parse("{x,y,z in x} ( 1 , 2, 3 ).description"),
+      .member(multiParameterApplication, "description")
+    )
   }
 
   func testIdentifierExpr() {
