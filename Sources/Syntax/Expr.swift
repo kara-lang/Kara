@@ -51,7 +51,7 @@ extension Expr: CustomDebugStringConvertible {
     case let .member(expr, member):
       return "\(expr.debugDescription).\(member.value)"
     case let .tuple(tuple):
-      return "(\(tuple.elements.map(\.expr.debugDescription).joined(separator: ", ")))"
+      return "(\(tuple.elements.map(\.expr.element.debugDescription).joined(separator: ", ")))"
     }
   }
 }
@@ -79,54 +79,46 @@ extension Expr: Equatable {
   }
 }
 
-let applicationParser = exprParser
-  .skip(Whitespace())
-  .take(tupleSequenceParser)
-  .map { Expr.application($0, $1) }
+// private enum ExprTail {
+//  case memberAccess(Identifier)
+//  case applicationArguments([Expr])
+// }
+//
+// private let memberAccessParser =
+//  Whitespace()
+//    .ignoreOutput()
+//    .skip(
+//      UTF8Terminal(".".utf8)
+//    )
+//    .take(identifierParser)
+//    .map(ExprTail.memberAccess)
+//
+// private let applicationArgumentsParser =
+//  Whitespace()
+//    .ignoreOutput()
+//    .take(tupleSequenceParser)
+//    .map(ExprTail.applicationArguments)
 
-private enum ExprTail {
-  case memberAccess(Identifier)
-  case applicationArguments([Expr])
-}
-
-private let memberAccessParser =
-  Whitespace()
-    .ignoreOutput()
-    .skip(
-      UTF8Terminal(".".utf8)
-    )
-    .take(identifierParser)
-    .map(ExprTail.memberAccess)
-
-private let applicationArgumentsParser =
-  Whitespace()
-    .ignoreOutput()
-    .take(tupleSequenceParser)
-    .map(ExprTail.applicationArguments)
-
-let identifierExprStart =
-  identifierParser
-
-let exprParser: AnyParser<UTF8SubSequence, Expr> =
-  literalParser.map(Expr.literal)
-    .orElse(identifierParser.map(Expr.identifier))
-    .orElse(tupleParser.map(Expr.tuple))
-    .orElse(lambdaParser.map(Expr.lambda))
-
-    // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain
-    // derivations. Expressing left recursion with combinators directly without breaking up derivations
-    // leads to infinite loops.
-    .take(Many(memberAccessParser.orElse(applicationArgumentsParser)))
-    .map { expr, tail -> Expr in
-      tail.reduce(expr) { reducedExpr, tailElement in
-        switch tailElement {
-        case let .memberAccess(identifier):
-          return Expr.member(reducedExpr, identifier)
-        case let .applicationArguments(arguments):
-          return Expr.application(reducedExpr, arguments)
-        }
-      }
-    }
+public let exprParser: AnyParser<ParsingState, SourceLocation<Expr>> =
+  literalParser.map(Expr.literal).stateful()
+    .orElse(identifierParser.map(Expr.identifier).stateful())
+//    .orElse(tupleParser.map(Expr.tuple))
+//    .orElse(lambdaParser.map(Expr.lambda))
+//
+//    // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain
+//    // derivations. Expressing left recursion with combinators directly without breaking up derivations
+//    // leads to infinite loops.
+//    .take(Many(memberAccessParser.orElse(applicationArgumentsParser)))
+//    .map { expr, tail -> Expr in
+//      tail.reduce(expr) { reducedExpr, tailElement in
+//        switch tailElement {
+//        case let .memberAccess(identifier):
+//          return Expr.member(reducedExpr, identifier)
+//        case let .applicationArguments(arguments):
+//          return Expr.application(reducedExpr, arguments)
+//        }
+//      }
+//    }
     // Required to give `exprParser` an explicit type signature, otherwise this won't compile due to mutual
     // recursion with subexpression parsers.
     .eraseToAnyParser()

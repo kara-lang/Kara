@@ -196,7 +196,7 @@ struct ConstraintSystem {
       }
 
     case let .tuple(tuple):
-      return try .namedTuple(tuple.elements.map { ($0.name, try infer($0.expr)) })
+      return try .namedTuple(tuple.elements.map { ($0.name?.element, try infer($0.expr.element)) })
     }
   }
 }

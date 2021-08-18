@@ -25,39 +25,39 @@ extension Lambda: CustomDebugStringConvertible {
   }
 }
 
-let lambdaParser =
-  openBraceParser
-    .skip(Whitespace())
-    .take(
-      Optional.parser(
-        of: Many(
-          identifierParser
-            .skip(Whitespace())
-            .skip(commaParser)
-            .skip(Whitespace())
-        )
-        .take(
-          Optional.parser(of: identifierParser)
-        )
-        .skip(requiredWhitespaceParser)
-        .skip(UTF8Terminal("in".utf8))
-        .skip(requiredWhitespaceParser)
-        .map { head, tail -> [Identifier] in
-          guard let tail = tail else {
-            return head
-          }
-
-          return head + [tail]
-        }
-      )
-    )
-    .take(
-      Optional.parser(
-        of: Lazy {
-          exprParser
-        }
-      )
-    )
-    .skip(Whitespace())
-    .skip(closeBraceParser)
-    .map { Lambda(identifiers: $0 ?? [], body: $1 ?? .unit) }
+// let lambdaParser =
+//  openBraceParser
+//    .skip(Whitespace())
+//    .take(
+//      Optional.parser(
+//        of: Many(
+//          identifierParser
+//            .skip(Whitespace())
+//            .skip(commaParser)
+//            .skip(Whitespace())
+//        )
+//        .take(
+//          Optional.parser(of: identifierParser)
+//        )
+//        .skip(requiredWhitespaceParser)
+//        .skip(UTF8Terminal("in".utf8))
+//        .skip(requiredWhitespaceParser)
+//        .map { head, tail -> [Identifier] in
+//          guard let tail = tail else {
+//            return head
+//          }
+//
+//          return head + [tail]
+//        }
+//      )
+//    )
+//    .take(
+//      Optional.parser(
+//        of: Lazy {
+//          exprParser
+//        }
+//      )
+//    )
+//    .skip(Whitespace())
+//    .skip(closeBraceParser)
+//    .map { Lambda(identifiers: $0 ?? [], body: $1 ?? .unit) }

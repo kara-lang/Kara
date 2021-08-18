@@ -8,17 +8,14 @@ import XCTest
 
 final class SyntaxInferenceTests: XCTestCase {
   func testApplication() throws {
-    let increment = try XCTUnwrap(exprParser.parse("increment(0)"))
-    let stringify = try XCTUnwrap(exprParser.parse("stringify(0)"))
-    let error = try XCTUnwrap(exprParser.parse("increment(false)"))
-
     let e: Environment = [
       "increment": [.init(.int --> .int)],
       "stringify": [.init(.int --> .string)],
     ]
 
-    XCTAssertEqual(try increment.infer(environment: e), .int)
-    XCTAssertEqual(try stringify.infer(environment: e), .string)
-    XCTAssertThrowsError(try error.infer())
+    try XCTAssertEqual("increment(0)".inferParsedExpr(environment: e), .int)
+    try XCTAssertEqual("stringify(0)".inferParsedExpr(environment: e), .string)
+    XCTAssertThrowsError(try "increment(false)".inferParsedExpr())
+    XCTAssertThrowsError(try "increment(false)".inferParsedExpr(environment: e))
   }
 }

@@ -4,12 +4,13 @@
 
 import Parsing
 
-struct SourceLocation<Element> {
-  let start: String.Index
-  let end: String.Index
+public struct SourceLocation<Element> {
+  let range: ClosedRange<String.Index>
 
-  let element: Element
+  public let element: Element
 }
+
+extension SourceLocation: Equatable where Element: Equatable {}
 
 struct LineCount<Output> {
   /** Every element of this array encodes a number of characters found in a parsed string.

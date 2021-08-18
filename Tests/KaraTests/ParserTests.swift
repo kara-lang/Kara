@@ -55,57 +55,57 @@ final class ParserTests: XCTestCase {
   func testTuple() {
     let intsTuple = Expr.tuple(.init([1, 2, 3].map(Expr.literal)))
 
-    XCTAssertNil(exprParser.parse("(,)"))
-    XCTAssertEqual(exprParser.parse("()"), .tuple(.init([])))
-    XCTAssertEqual(exprParser.parse("(1 ,2 ,3 ,)"), intsTuple)
-    XCTAssertEqual(exprParser.parse("(1,2,3,)"), intsTuple)
-    XCTAssertEqual(exprParser.parse("(1,2,3)"), intsTuple)
+    XCTAssertNil(exprParser.parse("(,)").output)
+    XCTAssertEqual(exprParser.parse("()").output?.element, .tuple(.init([])))
+    XCTAssertEqual(exprParser.parse("(1 ,2 ,3 ,)").output?.element, intsTuple)
+    XCTAssertEqual(exprParser.parse("(1,2,3,)").output?.element, intsTuple)
+    XCTAssertEqual(exprParser.parse("(1,2,3)").output?.element, intsTuple)
 
-    XCTAssertEqual(exprParser.parse("(1)"), Expr.tuple(.init([.literal(1)])))
-    XCTAssertEqual(exprParser.parse(#"("foo")"#), Expr.tuple(.init([.literal("foo")])))
+    XCTAssertEqual(exprParser.parse("(1)").output?.element, Expr.tuple(.init([.literal(1)])))
+    XCTAssertEqual(exprParser.parse(#"("foo")"#).output?.element, Expr.tuple(.init([.literal("foo")])))
   }
 
   func testLambda() {
     let singleParamaterLambda = Expr.lambda(.init(identifiers: ["x"], body: .literal(1)))
 
-    XCTAssertEqual(exprParser.parse("{}"), .lambda(.init(body: .unit)))
-    XCTAssertEqual(exprParser.parse("{ 1 }"), .lambda(.init(body: .literal(1))))
-    XCTAssertEqual(exprParser.parse("{1}"), .lambda(.init(body: .literal(1))))
-    XCTAssertEqual(exprParser.parse("{ x in 1 }"), singleParamaterLambda)
-    XCTAssertEqual(exprParser.parse("{x in 1}"), singleParamaterLambda)
-    XCTAssertEqual(exprParser.parse("{xin1}"), .lambda(.init(body: "xin1")))
+    XCTAssertEqual(exprParser.parse("{}").output?.element, .lambda(.init(body: .unit)))
+    XCTAssertEqual(exprParser.parse("{ 1 }").output?.element, .lambda(.init(body: .literal(1))))
+    XCTAssertEqual(exprParser.parse("{1}").output?.element, .lambda(.init(body: .literal(1))))
+    XCTAssertEqual(exprParser.parse("{ x in 1 }").output?.element, singleParamaterLambda)
+    XCTAssertEqual(exprParser.parse("{x in 1}").output?.element, singleParamaterLambda)
+    XCTAssertEqual(exprParser.parse("{xin1}").output?.element, .lambda(.init(body: "xin1")))
 
-    XCTAssertEqual(exprParser.parse("{ x, y, z in 1 }"), multiParameterLambda)
-    XCTAssertEqual(exprParser.parse("{ x,y,z in 1 }"), multiParameterLambda)
-    XCTAssertEqual(exprParser.parse("{x,y,z in 1}"), multiParameterLambda)
+    XCTAssertEqual(exprParser.parse("{ x, y, z in 1 }").output?.element, multiParameterLambda)
+    XCTAssertEqual(exprParser.parse("{ x,y,z in 1 }").output?.element, multiParameterLambda)
+    XCTAssertEqual(exprParser.parse("{x,y,z in 1}").output?.element, multiParameterLambda)
 
     XCTAssertNil(exprParser.parse("{ x in y in 1 }"))
     XCTAssertNil(exprParser.parse("{x in1}"))
   }
 
   func testMemberAccess() {
-    XCTAssertEqual(exprParser.parse("5.description"), .member(5, "description"))
-    XCTAssertEqual(exprParser.parse("5  .description"), .member(5, "description"))
+    XCTAssertEqual(exprParser.parse("5.description").output?.element, .member(5, "description"))
+    XCTAssertEqual(exprParser.parse("5  .description").output?.element, .member(5, "description"))
     XCTAssertEqual(
       exprParser.parse(
         """
         5
         .description
         """
-      ),
+      ).output?.element,
       .member(5, "description")
     )
 
     XCTAssertEqual(
-      exprParser.parse("{x,y,z in 1}.description"),
+      exprParser.parse("{x,y,z in 1}.description").output?.element,
       .member(multiParameterLambda, "description")
     )
     XCTAssertEqual(
-      exprParser.parse("{x,y,z in 1}.description.description"),
+      exprParser.parse("{x,y,z in 1}.description.description").output?.element,
       .member(.member(multiParameterLambda, "description"), "description")
     )
     XCTAssertEqual(
-      exprParser.parse("( 1 , 2, 3 ).description"),
+      exprParser.parse("( 1 , 2, 3 ).description").output?.element,
       .member(.tuple(.init([1, 2, 3])), "description")
     )
   }
@@ -114,15 +114,15 @@ final class ParserTests: XCTestCase {
     let multiParameterApplication =
       Expr.application(.lambda(.init(identifiers: ["x", "y", "z"], body: "x")), [1, 2, 3])
 
-    XCTAssertEqual(exprParser.parse("{x,y,z in x}(1,2,3)"), multiParameterApplication)
-    XCTAssertEqual(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 )"), multiParameterApplication)
+    XCTAssertEqual(exprParser.parse("{x,y,z in x}(1,2,3)").output?.element, multiParameterApplication)
+    XCTAssertEqual(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 )").output?.element, multiParameterApplication)
     XCTAssertEqual(
-      exprParser.parse("{x,y,z in x} ( 1 , 2, 3 ).description"),
+      exprParser.parse("{x,y,z in x} ( 1 , 2, 3 ).description").output?.element,
       .member(multiParameterApplication, "description")
     )
   }
 
   func testIdentifierExpr() {
-    XCTAssertEqual(exprParser.parse("abc123"), "abc123")
+    XCTAssertEqual(exprParser.parse("abc123").output?.element, "abc123")
   }
 }
