@@ -4,16 +4,18 @@
 
 import Parsing
 
-public struct ParsingState {
-  public init(source: String) {
-    self.source = source
-    currentIndex = source.startIndex
-  }
-
+public struct ParsingState: Equatable {
   let source: String
   var currentIndex: String.UTF8View.Index
   var currentColumn = 0
   var currentLine = 0
+}
+
+public extension ParsingState {
+  init(source: String) {
+    self.source = source
+    currentIndex = source.startIndex
+  }
 }
 
 extension ParsingState: ExpressibleByStringLiteral {
@@ -25,8 +27,10 @@ extension ParsingState: ExpressibleByStringLiteral {
 struct StatefulParser<P: Parser>: Parser where P.Input == UTF8SubSequence {
   let inner: P
 
-  func parse(_ state: inout ParsingState) -> SourceLocation<P.Output>? {
-    let start = state.currentIndex
+  func parse(_ state: inout ParsingState) -> SourceRange<P.Output>? {
+    let startIndex = state.currentIndex
+    let startColumn = state.currentColumn
+    let startLine = state.currentLine
 
     var substring = state.source.utf8[state.currentIndex...]
     let initialCount = substring.count
@@ -38,8 +42,13 @@ struct StatefulParser<P: Parser>: Parser where P.Input == UTF8SubSequence {
     state.currentIndex = substring.startIndex
     state.currentColumn += initialCount - substring.count
 
-    return SourceLocation(
-      range: start...state.source.index(before: state.currentIndex),
+    return SourceRange(
+      start: .init(column: startColumn, line: startLine, index: startIndex),
+      end: .init(
+        column: state.currentColumn,
+        line: state.currentLine,
+        index: state.source.index(before: state.currentIndex)
+      ),
       element: output
     )
   }

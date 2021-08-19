@@ -35,17 +35,6 @@ final class ParserTests: XCTestCase {
     XCTAssertNil(structParser.parse("structBlorg{}"))
   }
 
-  func testWhitespaces() throws {
-    var input = ""[...].utf8
-    XCTAssertNotNil(Whitespace().parse(&input))
-    XCTAssertNotNil(whitespaceParser.parse("string"))
-    XCTAssertNotNil(whitespaceParser.parse("  "))
-    XCTAssertNotNil(whitespaceParser.parse("""
-
-    """))
-    XCTAssertNil(requiredWhitespaceParser.parse(""))
-  }
-
   func testIdentifiers() {
     XCTAssertNil(identifierParser.parse("123abc"))
     XCTAssertEqual(identifierParser.parse("abc123"), "abc123")
@@ -124,5 +113,171 @@ final class ParserTests: XCTestCase {
 
   func testIdentifierExpr() {
     XCTAssertEqual(exprParser.parse("abc123").output?.element, "abc123")
+  }
+
+  func testStatefulWhitespace() {
+    let emptyString = ""
+    var state = ParsingState(source: emptyString)
+    let parser = StatefulWhitespace()
+
+    XCTAssertNotNil(parser.parse(&state))
+
+    XCTAssertEqual(
+      state,
+      ParsingState(source: emptyString, currentIndex: emptyString.startIndex, currentColumn: 0, currentLine: 0)
+    )
+
+    let unixNewline = "\n"
+    state = ParsingState(source: unixNewline)
+
+    XCTAssertNotNil(parser.parse(&state))
+
+    XCTAssertEqual(
+      state,
+      ParsingState(source: unixNewline, currentIndex: unixNewline.endIndex, currentColumn: 0, currentLine: 1)
+    )
+
+    let classicMacNewline = "\r"
+    state = ParsingState(source: classicMacNewline)
+
+    XCTAssertNotNil(parser.parse(&state))
+
+    XCTAssertEqual(
+      state,
+      ParsingState(
+        source: classicMacNewline,
+        currentIndex: classicMacNewline.endIndex,
+        currentColumn: 0,
+        currentLine: 1
+      )
+    )
+
+    let windowsNewline = "\r\n"
+    state = ParsingState(source: windowsNewline)
+
+    XCTAssertNotNil(parser.parse(&state))
+
+    XCTAssertEqual(
+      state,
+      ParsingState(
+        source: windowsNewline,
+        currentIndex: windowsNewline.endIndex,
+        currentColumn: 0,
+        currentLine: 1
+      )
+    )
+
+    let trailingCharacters = "  \r\n  foo"
+    state = ParsingState(source: trailingCharacters)
+
+    XCTAssertNotNil(parser.parse(&state))
+
+    XCTAssertEqual(
+      state,
+      ParsingState(
+        source: trailingCharacters,
+        currentIndex: trailingCharacters.firstIndex(of: "f")!,
+        currentColumn: 2,
+        currentLine: 1
+      )
+    )
+
+    let noWhitespaces = "bar"
+    state = ParsingState(source: noWhitespaces)
+
+    XCTAssertNotNil(parser.parse(&state))
+
+    XCTAssertEqual(
+      state,
+      ParsingState(
+        source: noWhitespaces,
+        currentIndex: noWhitespaces.startIndex,
+        currentColumn: 0,
+        currentLine: 0
+      )
+    )
+  }
+
+  func testRequiredWhitespace() {
+    let emptyString = ""
+    var state = ParsingState(source: emptyString)
+    let parser = StatefulWhitespace(isRequired: true)
+
+    XCTAssertNil(parser.parse(&state))
+
+    XCTAssertEqual(
+      state,
+      ParsingState(source: emptyString, currentIndex: emptyString.startIndex, currentColumn: 0, currentLine: 0)
+    )
+
+    let unixNewline = "\n"
+    state = ParsingState(source: unixNewline)
+
+    XCTAssertNotNil(parser.parse(&state))
+
+    XCTAssertEqual(
+      state,
+      ParsingState(source: unixNewline, currentIndex: unixNewline.endIndex, currentColumn: 0, currentLine: 1)
+    )
+
+    let classicMacNewline = "\r"
+    state = ParsingState(source: classicMacNewline)
+
+    XCTAssertNotNil(parser.parse(&state))
+
+    XCTAssertEqual(
+      state,
+      ParsingState(
+        source: classicMacNewline,
+        currentIndex: classicMacNewline.endIndex,
+        currentColumn: 0,
+        currentLine: 1
+      )
+    )
+
+    let windowsNewline = "\r\n"
+    state = ParsingState(source: windowsNewline)
+
+    XCTAssertNotNil(parser.parse(&state))
+
+    XCTAssertEqual(
+      state,
+      ParsingState(
+        source: windowsNewline,
+        currentIndex: windowsNewline.endIndex,
+        currentColumn: 0,
+        currentLine: 1
+      )
+    )
+
+    let trailingCharacters = "  \r\n  foo"
+    state = ParsingState(source: trailingCharacters)
+
+    XCTAssertNotNil(parser.parse(&state))
+
+    XCTAssertEqual(
+      state,
+      ParsingState(
+        source: trailingCharacters,
+        currentIndex: trailingCharacters.firstIndex(of: "f")!,
+        currentColumn: 2,
+        currentLine: 1
+      )
+    )
+
+    let noWhitespaces = "bar"
+    state = ParsingState(source: noWhitespaces)
+
+    XCTAssertNil(parser.parse(&state))
+
+    XCTAssertEqual(
+      state,
+      ParsingState(
+        source: noWhitespaces,
+        currentIndex: noWhitespaces.startIndex,
+        currentColumn: 0,
+        currentLine: 0
+      )
+    )
   }
 }

@@ -99,10 +99,10 @@ extension Expr: Equatable {
 //    .take(tupleSequenceParser)
 //    .map(ExprTail.applicationArguments)
 
-public let exprParser: AnyParser<ParsingState, SourceLocation<Expr>> =
+public let exprParser: AnyParser<ParsingState, SourceRange<Expr>> =
   literalParser.map(Expr.literal).stateful()
     .orElse(identifierParser.map(Expr.identifier).stateful())
-//    .orElse(tupleParser.map(Expr.tuple))
+    .orElse(tupleParser.map { SourceRange(range: $0.range, element: Expr.tuple($0.element)) })
 //    .orElse(lambdaParser.map(Expr.lambda))
 //
 //    // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain

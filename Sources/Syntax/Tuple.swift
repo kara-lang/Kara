@@ -6,49 +6,40 @@ import Parsing
 
 public struct Tuple: Equatable {
   public struct Element: Equatable {
-    // FIXME: temporary internal initializer for XCTest. Remove when proper end-to-end test suite is established.
-    init(name: Identifier?, expr: Expr) {
-      let dummy = ""
-      self.name = name.map { SourceLocation(range: dummy.startIndex...dummy.endIndex, element: $0) }
-      self.expr = SourceLocation(range: dummy.startIndex...dummy.endIndex, element: expr)
-    }
-
-    public let name: SourceLocation<Identifier>?
-    public let expr: SourceLocation<Expr>
+    public let name: SourceRange<Identifier>?
+    public let expr: SourceRange<Expr>
   }
 
   public let elements: [Element]
 }
 
-extension Tuple {
-  // FIXME: temporary internal initializer for XCTest. Remove when proper end-to-end test suite is established.
-  init(_ expressions: [Expr] = []) {
-    self.init(elements: expressions.map {
-      .init(name: nil, expr: $0)
-    })
-  }
-}
+let tupleSequenceParser = openParenParser
+  .skip(StatefulWhitespace())
+  .take(
+    Many(
+      Lazy { exprParser }
+        .skip(StatefulWhitespace())
+        .skip(commaParser)
+        .skip(StatefulWhitespace())
+    )
+  )
+  .take(Optional.parser(of: Lazy { exprParser }))
+  .skip(StatefulWhitespace())
+  .take(closeParenParser)
+  .map { openParen, head, tail, closeParen -> SourceRange<[SourceRange<Expr>]> in
+    let completeRange = openParen.range.lowerBound...closeParen.range.upperBound
 
-// let tupleSequenceParser = openParenParser
-//  .skip(Whitespace())
-//  .take(
-//    Many(
-//      Lazy { exprParser }
-//        .skip(Whitespace())
-//        .skip(commaParser)
-//        .skip(Whitespace())
-//    )
-//  )
-//  .take(Optional.parser(of: Lazy { exprParser }))
-//  .skip(Whitespace())
-//  .skip(closeParenParser)
-//  .map { head, tail -> [Expr] in
-//    guard let tail = tail else {
-//      return head
-//    }
-//
-//    return head + [tail]
-//  }
-//
-// let tupleParser = tupleSequenceParser
-//  .map(Tuple.init)
+    guard let tail = tail else {
+      return SourceRange(range: completeRange, element: head)
+    }
+
+    return SourceRange(range: completeRange, element: head + [tail])
+  }
+
+let tupleParser = tupleSequenceParser
+  .map {
+    SourceRange(
+      range: $0.range,
+      element: Tuple(elements: $0.element.map { .init(name: nil, expr: $0) })
+    )
+  }
