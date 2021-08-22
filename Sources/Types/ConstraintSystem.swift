@@ -108,7 +108,9 @@ struct ConstraintSystem {
     in environment: Environment,
     orThrow error: TypeError
   ) throws -> Type {
-    guard let schemes = environment[id] else { throw error }
+    guard let schemes = environment[id] else {
+      throw error
+    }
 
     let results = schemes.map { instantiate($0) }
 

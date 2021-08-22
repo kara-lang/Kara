@@ -4,7 +4,7 @@
 
 import Syntax
 
-enum TypeError: Error {
+enum TypeError: Error, Equatable {
   case ambiguous(Identifier)
   case arrowMember(Identifier)
   case infiniteType(TypeVariable, Type)

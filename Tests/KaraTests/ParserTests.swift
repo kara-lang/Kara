@@ -63,45 +63,29 @@ final class ParserTests: XCTestCase {
     XCTAssertNil(exprParser.parse("{x in1}").output)
   }
 
-//  func testMemberAccess() {
-//    XCTAssertEqual(exprParser.parse("5.description").output?.element, .member(5, "description"))
-//    XCTAssertEqual(exprParser.parse("5  .description").output?.element, .member(5, "description"))
-//    XCTAssertEqual(
-//      exprParser.parse(
-//        """
-//        5
-//        .description
-//        """
-//      ).output?.element,
-//      .member(5, "description")
-//    )
-//
-//    XCTAssertEqual(
-//      exprParser.parse("{x,y,z in 1}.description").output?.element,
-//      .member(multiParameterLambda, "description")
-//    )
-//    XCTAssertEqual(
-//      exprParser.parse("{x,y,z in 1}.description.description").output?.element,
-//      .member(.member(multiParameterLambda, "description"), "description")
-//    )
-//    assertSnapshot(matching: exprParser.parse("( 1 , 2, 3 ).description").output, as: .dump)
-//    XCTAssertEqual(
-//      exprParser.parse("( 1 , 2, 3 ).description").output?.element,
-//        .member(.tuple(.init(elements: [1, 2, 3])), "description")
-//    )
-//  }
+  func testMemberAccess() {
+    assertSnapshot(exprParser.parse("5.description"))
+    assertSnapshot(exprParser.parse("5  .description"))
+    assertSnapshot(
+      exprParser.parse(
+        """
+        5
+        .description
+        """
+      )
+    )
 
-//  func testApplication() {
-//    let multiParameterApplication =
-//      Expr.application(.closure(.init(identifiers: ["x", "y", "z"], body: "x")), [1, 2, 3])
-//
-//    XCTAssertEqual(exprParser.parse("{x,y,z in x}(1,2,3)").output?.element, multiParameterApplication)
-//    XCTAssertEqual(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 )").output?.element, multiParameterApplication)
-//    XCTAssertEqual(
-//      exprParser.parse("{x,y,z in x} ( 1 , 2, 3 ).description").output?.element,
-//      .member(multiParameterApplication, "description")
-//    )
-//  }
+    assertSnapshot(exprParser.parse("{x,y,z in 1}.description"))
+    assertSnapshot(exprParser.parse("{x,y,z in 1}.description.description"))
+    assertSnapshot(exprParser.parse("( 1 , 2, 3 ).description"))
+    assertSnapshot(exprParser.parse("( 1, 2, 3 ).description"))
+  }
+
+  func testApplication() {
+    assertSnapshot(exprParser.parse("{x,y,z in x}(1,2,3)"))
+    assertSnapshot(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 )"))
+    assertSnapshot(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 ).description"))
+  }
 
   func testStatefulWhitespace() {
     let emptyString = ""

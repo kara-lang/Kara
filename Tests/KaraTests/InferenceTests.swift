@@ -29,106 +29,6 @@ final class InferenceTests: XCTestCase {
     XCTAssertThrowsError(try error.infer())
   }
 
-//  func testLambda() throws {
-//    let closure = Expr.lambda(
-//      Lambda(
-//        identifiers: ["x"],
-//        body: .application(
-//          "decode",
-//          [.application(
-//            "stringify",
-//            [.application("increment", ["x"])]
-//          )]
-//        )
-//      )
-//    )
-//
-//    let error = Expr.lambda(
-//      Lambda(
-//        identifiers: ["x"],
-//        body: .application(
-//          "stringify",
-//          [.application(
-//            "decode",
-//            [.application("increment", ["x"])]
-//          )]
-//        )
-//      )
-//    )
-//
-//    let e: Environment = [
-//      "increment": [.init(.int --> .int)],
-//      "stringify": [.init(.int --> .string)],
-//      "decode": [.init(.string --> .int)],
-//    ]
-//
-//    XCTAssertEqual(try lambda.infer(environment: e), .int --> .int)
-//    XCTAssertThrowsError(try error.infer())
-//  }
-//
-//  func testLambdaWithMultipleArguments() throws {
-//    let lambda = Expr.lambda(
-//      Lambda(
-//        identifiers:
-//        ["x", "y"],
-//        body: .application(
-//          "decode",
-//          [
-//            .application(
-//              "stringify",
-//              [
-//                .application("sum", ["x", "y"]),
-//                .application("sum", ["x", "y"]),
-//              ]
-//            ),
-//            .application(
-//              "stringify",
-//              [
-//                .application("sum", ["x", "y"]),
-//                .application("sum", ["x", "y"]),
-//              ]
-//            ),
-//          ]
-//        )
-//      )
-//    )
-//
-//    let e: Environment = [
-//      "sum": [.init([.int, .int] --> .int)],
-//      "stringify": [.init([.int, .int] --> .string)],
-//      "decode": [.init([.string, .string] --> .int)],
-//    ]
-//
-//    XCTAssertEqual(try lambda.infer(environment: e), [.int, .int] --> .int)
-//  }
-//
-//  func testLambdaWithMultipleArgumentsDiffrentTypes() throws {
-//    let lambda = Expr.lambda(
-//      Lambda(
-//        identifiers:
-//        ["str", "int"],
-//        body: .application(
-//          "decode",
-//          [
-//            .application("concatenate", ["int", "str"]),
-//            .application("sum", ["int", "int"]),
-//          ]
-//        )
-//      )
-//    )
-//
-//    let e: Environment = [
-//      "concatenate": [.init([.int, .string] --> .string)],
-//      "sum": [.init([.int, .int] --> .int)],
-//      "decode": [.init([.string, .int] --> .int)],
-//    ]
-//
-//    XCTAssertEqual(
-//      try lambda.infer(environment: e),
-//      [.string, .int] --> .int
-//    )
-//  }
-//
 //  func testLambdaApplication() throws {
 //    let lambda = Expr.application(
 //      .lambda(
@@ -149,41 +49,6 @@ final class InferenceTests: XCTestCase {
 //    XCTAssertThrowsError(try error.infer())
 //  }
 //
-//  func testMember() throws {
-//    let appending = Expr.application(
-//      .member(.literal("Hello, "), "appending"),
-//      [.literal(" World")]
-//    )
-//    let count = Expr.member(.literal("Test"), "count")
-//
-//    let m: Members = [
-//      "String": [
-//        "appending": [.init(.string --> .string)],
-//        "count": [.init(.int)],
-//      ],
-//    ]
-//
-//    XCTAssertEqual(try appending.infer(members: m), .string)
-//    XCTAssertEqual(try count.infer(members: m), .int)
-//  }
-//
-//  func testMemberOfMember() throws {
-//    let literal = Expr.literal("Test")
-//    let magnitude = Expr.member(.member(literal, "count"), "magnitude")
-//    let error = Expr.member(.member(literal, "magnitude"), "count")
-//
-//    let m: Members = [
-//      "String": [
-//        "count": [.init(.int)],
-//      ],
-//      "Int": [
-//        "magnitude": [.init(.int)],
-//      ],
-//    ]
-//
-//    XCTAssertEqual(try magnitude.infer(members: m), .int)
-//    XCTAssertThrowsError(try error.infer(members: m))
-//  }
 //
 //  func testLambdaMember() throws {
 //    let lambda = Expr.application(
@@ -343,7 +208,7 @@ final class InferenceTests: XCTestCase {
 //  }
 //
 //  func testOverload() throws {
-//    // FIXME: ban overloads
+//    // FIXME: correctly handle overloads for default arguments, other overloads should be banned
 //    let uint = Type.constructor("UInt", [])
 //
 //    let count = Expr.member(.application("f", []), "count")

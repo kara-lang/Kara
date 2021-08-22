@@ -26,3 +26,22 @@ func assertSnapshot<T>(
   }
   assertSnapshot(matching: output, as: .debugDescription, file: file, testName: testName, line: line)
 }
+
+func assertError<T, E: Error & Equatable>(
+  _ expression: @autoclosure () throws -> T,
+  file: StaticString = #filePath,
+  line: UInt = #line,
+  _ expectedError: E
+) {
+  do {
+    _ = try expression()
+    XCTFail("Did not throw an error", file: file, line: line)
+  } catch {
+    guard let error = error as? E else {
+      XCTFail("Error value \(error) is of unexpected type", file: file, line: line)
+      return
+    }
+
+    XCTAssertEqual(error, expectedError, file: file, line: line)
+  }
+}
