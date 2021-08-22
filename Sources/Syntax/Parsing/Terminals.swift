@@ -21,12 +21,6 @@ typealias UTF8Terminal = StartsWith<UTF8SubSequence>
 
 let newlineAndWhitespace = [UInt8(ascii: " "), UInt8(ascii: "\n"), UInt8(ascii: "\r")]
 
-let requiredWhitespaceParser = OneOfMany(
-  newlineAndWhitespace
-    .compactMap { String(bytes: [$0], encoding: .utf8) }
-    .map { StartsWith<UTF8SubSequence>($0.utf8) }
-)
-
 let openBraceParser = Terminal("{")
 let closeBraceParser = Terminal("}")
 

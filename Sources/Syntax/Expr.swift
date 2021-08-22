@@ -13,7 +13,7 @@ public indirect enum Expr {
   case member(Expr, Identifier)
   case tuple(Tuple)
 
-  static var unit: Expr { .tuple(.init()) }
+  static var unit: Expr { .tuple(.init(elements: [])) }
 }
 
 extension Expr: ExpressibleByStringLiteral {
@@ -101,8 +101,8 @@ extension Expr: Equatable {
 
 public let exprParser: AnyParser<ParsingState, SourceRange<Expr>> =
   literalParser.map(Expr.literal).stateful()
-    .orElse(identifierParser.map(Expr.identifier).stateful())
-    .orElse(tupleParser.map { SourceRange(range: $0.range, element: Expr.tuple($0.element)) })
+//    .orElse(identifierParser.map(Expr.identifier).stateful())
+//    .orElse(tupleParser.map { SourceRange(range: $0.range, element: Expr.tuple($0.element)) })
 //    .orElse(lambdaParser.map(Expr.lambda))
 //
 //    // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain

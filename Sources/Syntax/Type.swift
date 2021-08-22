@@ -18,16 +18,6 @@ extension TypeVariable: ExpressibleByStringInterpolation {
   }
 }
 
-public struct TypeIdentifier: Hashable {
-  let value: String
-}
-
-extension TypeIdentifier: ExpressibleByStringLiteral {
-  public init(stringLiteral value: String) {
-    self.value = value
-  }
-}
-
 public enum Type {
   /** A type constructor is an abstraction on which generics system is built.
    It is a "type function", which takes other types as arguments and returns

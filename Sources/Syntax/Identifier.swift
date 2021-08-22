@@ -27,3 +27,4 @@ let identifierSequenceParser =
 
 let identifierParser = identifierSequenceParser
   .map { Identifier(value: $0) }
+  .stateful()

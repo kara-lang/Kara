@@ -27,19 +27,18 @@ let tupleSequenceParser = openParenParser
   .skip(StatefulWhitespace())
   .take(closeParenParser)
   .map { openParen, head, tail, closeParen -> SourceRange<[SourceRange<Expr>]> in
-    let completeRange = openParen.range.lowerBound...closeParen.range.upperBound
-
     guard let tail = tail else {
-      return SourceRange(range: completeRange, element: head)
+      return SourceRange(start: openParen.start, end: closeParen.end, element: head)
     }
 
-    return SourceRange(range: completeRange, element: head + [tail])
+    return SourceRange(start: openParen.start, end: closeParen.end, element: head + [tail])
   }
 
 let tupleParser = tupleSequenceParser
   .map {
     SourceRange(
-      range: $0.range,
+      start: $0.start,
+      end: $0.end,
       element: Tuple(elements: $0.element.map { .init(name: nil, expr: $0) })
     )
   }

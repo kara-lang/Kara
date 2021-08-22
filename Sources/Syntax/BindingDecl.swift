@@ -9,18 +9,18 @@ struct BindingDecl {
   let value: Expr
 }
 
-let bindingParser = UTF8Terminal("let".utf8)
-  .skip(whitespaceParser)
-  .take(Prefix { newlineAndWhitespace.contains($0) })
-  .skip(whitespaceParser)
-  .skip(StartsWith("=".utf8))
-  .skip(whitespaceParser)
-  .take(literalParser)
-  .compactMap { identifierUTF8, literal -> BindingDecl? in
-    guard let identifierString = String(identifierUTF8) else { return nil }
-
-    return BindingDecl(
-      identifier: Identifier(value: identifierString),
-      value: .literal(literal)
+let bindingParser = Terminal("let")
+  .skip(StatefulWhitespace())
+  .take(identifierParser)
+  .skip(StatefulWhitespace())
+  .skip(Terminal("="))
+  .skip(StatefulWhitespace())
+  .take(exprParser)
+  .map { letTerminal, identifier, expr in
+    SourceRange(
+      start: letTerminal.start,
+      end: expr.end,
+      element:
+      BindingDecl(identifier: identifier.element, value: expr.element)
     )
   }

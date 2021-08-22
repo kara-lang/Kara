@@ -28,7 +28,6 @@ struct StatefulParser<P: Parser>: Parser where P.Input == UTF8SubSequence {
   let inner: P
 
   func parse(_ state: inout ParsingState) -> SourceRange<P.Output>? {
-    let startIndex = state.currentIndex
     let startColumn = state.currentColumn
     let startLine = state.currentLine
 
@@ -43,11 +42,10 @@ struct StatefulParser<P: Parser>: Parser where P.Input == UTF8SubSequence {
     state.currentColumn += initialCount - substring.count
 
     return SourceRange(
-      start: .init(column: startColumn, line: startLine, index: startIndex),
+      start: .init(column: startColumn, line: startLine),
       end: .init(
         column: state.currentColumn,
-        line: state.currentLine,
-        index: state.source.index(before: state.currentIndex)
+        line: state.currentLine
       ),
       element: output
     )

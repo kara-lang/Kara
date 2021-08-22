@@ -5,17 +5,17 @@
 import Parsing
 
 struct StructDecl: Equatable {
-  let name: TypeIdentifier
+  let name: SourceRange<TypeIdentifier>
   let genericParameters: [TypeVariable]
 }
 
-let structParser = UTF8Terminal("struct".utf8)
-  .skip(requiredWhitespaceParser)
-  .take(Prefix { $0 != .init(ascii: "{") && !newlineAndWhitespace.contains($0) })
+let structParser = Terminal("struct")
+  .skip(StatefulWhitespace(isRequired: true))
+  .take(typeIdentifierParser)
   .skip(StatefulWhitespace())
   .skip(openBraceParser)
   .skip(StatefulWhitespace())
   .skip(closeBraceParser)
+  .map(\.1)
   // FIXME: generic parameters
-  .compactMap(String.init)
-  .map { StructDecl(name: .init(value: $0), genericParameters: []) }
+  .map { StructDecl(name: $0, genericParameters: []) }
