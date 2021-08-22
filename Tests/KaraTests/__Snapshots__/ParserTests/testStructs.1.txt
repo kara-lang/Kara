@@ -1,1 +1,1 @@
-struct 0:7-0:10 Foo {}
+struct 0:7-0:9 Foo {}

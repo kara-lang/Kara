@@ -8,8 +8,6 @@ import SnapshotTesting
 import XCTest
 
 final class ParserTests: XCTestCase {
-//  let multiParameterLambda = Expr.lambda(.init(identifiers: ["x", "y", "z"], body: .literal(1)))
-
   func testLiterals() throws {
     XCTAssertEqual(literalParser.parse("123"), 123)
     XCTAssertEqual(literalParser.parse("true"), true)
@@ -38,37 +36,33 @@ final class ParserTests: XCTestCase {
     assertSnapshot(identifierParser.parse("_abc123"))
   }
 
-//  func testTuple() {
-//    let intsTuple = Expr.tuple(.init([1, 2, 3].map(Expr.literal)))
-//
-//    XCTAssertNil(exprParser.parse("(,)").output)
-//    XCTAssertEqual(exprParser.parse("()").output?.element, .tuple(.init([])))
-//    XCTAssertEqual(exprParser.parse("(1 ,2 ,3 ,)").output?.element, intsTuple)
-//    XCTAssertEqual(exprParser.parse("(1,2,3,)").output?.element, intsTuple)
-//    XCTAssertEqual(exprParser.parse("(1,2,3)").output?.element, intsTuple)
-//
-//    XCTAssertEqual(exprParser.parse("(1)").output?.element, Expr.tuple(.init([.literal(1)])))
-//    XCTAssertEqual(exprParser.parse(#"("foo")"#).output?.element, Expr.tuple(.init([.literal("foo")])))
-//  }
+  func testTuple() {
+    XCTAssertNil(exprParser.parse("(,)").output)
+    assertSnapshot(exprParser.parse("()"))
+    assertSnapshot(exprParser.parse("(1 ,2 ,3 ,)"))
+    assertSnapshot(exprParser.parse("(1,2,3,)"))
+    assertSnapshot(exprParser.parse("(1,2,3)"))
 
-//  func testLambda() {
-//    let singleParamaterLambda = Expr.lambda(.init(identifiers: ["x"], body: .literal(1)))
-//
-//    XCTAssertEqual(exprParser.parse("{}").output?.element, .lambda(.init(body: .unit)))
-//    XCTAssertEqual(exprParser.parse("{ 1 }").output?.element, .lambda(.init(body: .literal(1))))
-//    XCTAssertEqual(exprParser.parse("{1}").output?.element, .lambda(.init(body: .literal(1))))
-//    XCTAssertEqual(exprParser.parse("{ x in 1 }").output?.element, singleParamaterLambda)
-//    XCTAssertEqual(exprParser.parse("{x in 1}").output?.element, singleParamaterLambda)
-//    XCTAssertEqual(exprParser.parse("{xin1}").output?.element, .lambda(.init(body: "xin1")))
-//
-//    XCTAssertEqual(exprParser.parse("{ x, y, z in 1 }").output?.element, multiParameterLambda)
-//    XCTAssertEqual(exprParser.parse("{ x,y,z in 1 }").output?.element, multiParameterLambda)
-//    XCTAssertEqual(exprParser.parse("{x,y,z in 1}").output?.element, multiParameterLambda)
-//
-//    XCTAssertNil(exprParser.parse("{ x in y in 1 }"))
-//    XCTAssertNil(exprParser.parse("{x in1}"))
-//  }
-//
+    assertSnapshot(exprParser.parse("(1)"))
+    assertSnapshot(exprParser.parse(#"("foo")"#))
+  }
+
+  func testClosure() {
+    assertSnapshot(exprParser.parse("{}"))
+    assertSnapshot(exprParser.parse("{ 1 }"))
+    assertSnapshot(exprParser.parse("{1}"))
+    assertSnapshot(exprParser.parse("{ x in 1 }"))
+    assertSnapshot(exprParser.parse("{x in 1}"))
+    assertSnapshot(exprParser.parse("{xin1}"))
+
+    assertSnapshot(exprParser.parse("{ x, y, z in 1 }"))
+    assertSnapshot(exprParser.parse("{ x,y,z in 1 }"))
+    assertSnapshot(exprParser.parse("{x,y,z in 1}"))
+
+    XCTAssertNil(exprParser.parse("{ x in y in 1 }").output)
+    XCTAssertNil(exprParser.parse("{x in1}").output)
+  }
+
 //  func testMemberAccess() {
 //    XCTAssertEqual(exprParser.parse("5.description").output?.element, .member(5, "description"))
 //    XCTAssertEqual(exprParser.parse("5  .description").output?.element, .member(5, "description"))
@@ -99,7 +93,7 @@ final class ParserTests: XCTestCase {
 
 //  func testApplication() {
 //    let multiParameterApplication =
-//      Expr.application(.lambda(.init(identifiers: ["x", "y", "z"], body: "x")), [1, 2, 3])
+//      Expr.application(.closure(.init(identifiers: ["x", "y", "z"], body: "x")), [1, 2, 3])
 //
 //    XCTAssertEqual(exprParser.parse("{x,y,z in x}(1,2,3)").output?.element, multiParameterApplication)
 //    XCTAssertEqual(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 )").output?.element, multiParameterApplication)
@@ -108,10 +102,6 @@ final class ParserTests: XCTestCase {
 //      .member(multiParameterApplication, "description")
 //    )
 //  }
-
-  func testIdentifierExpr() {
-    XCTAssertEqual(exprParser.parse("abc123").output?.element, "abc123")
-  }
 
   func testStatefulWhitespace() {
     let emptyString = ""

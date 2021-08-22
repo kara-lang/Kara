@@ -44,7 +44,7 @@ struct StatefulParser<P: Parser>: Parser where P.Input == UTF8SubSequence {
     return SourceRange(
       start: .init(column: startColumn, line: startLine),
       end: .init(
-        column: state.currentColumn,
+        column: state.currentColumn - 1,
         line: state.currentLine
       ),
       element: output

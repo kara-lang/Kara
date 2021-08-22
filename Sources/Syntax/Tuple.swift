@@ -4,8 +4,8 @@
 
 import Parsing
 
-public struct Tuple: Equatable {
-  public struct Element: Equatable {
+public struct Tuple {
+  public struct Element {
     public let name: SourceRange<Identifier>?
     public let expr: SourceRange<Expr>
   }

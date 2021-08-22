@@ -1,1 +1,1 @@
-struct 0:8-0:11 Bar {}
+struct 0:8-0:10 Bar {}

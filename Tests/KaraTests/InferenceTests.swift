@@ -29,23 +29,8 @@ final class InferenceTests: XCTestCase {
     XCTAssertThrowsError(try error.infer())
   }
 
-//  func testApplication() throws {
-//    let increment = Expr.application("increment", [.literal(0)])
-//    let stringify = Expr.application("stringify", [.literal(0)])
-//    let error = Expr.application("increment", [.literal(false)])
-//
-//    let e: Environment = [
-//      "increment": [.init(.int --> .int)],
-//      "stringify": [.init(.int --> .string)],
-//    ]
-//
-//    XCTAssertEqual(try increment.infer(environment: e), .int)
-//    XCTAssertEqual(try stringify.infer(environment: e), .string)
-//    XCTAssertThrowsError(try error.infer())
-//  }
-
 //  func testLambda() throws {
-//    let lambda = Expr.lambda(
+//    let closure = Expr.lambda(
 //      Lambda(
 //        identifiers: ["x"],
 //        body: .application(

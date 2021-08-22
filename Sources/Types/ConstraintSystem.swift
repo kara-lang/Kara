@@ -60,7 +60,7 @@ struct ConstraintSystem {
 
   /// Temporarily extends the current `self.environment` with `environment` to
   /// infer the type of `inferred` expression. Is used to infer
-  /// type of an expression evaluated in a lambda.
+  /// type of an expression evaluated in a closure.
   private mutating func infer<T>(
     inExtended environment: T,
     _ inferred: Expr
@@ -138,7 +138,7 @@ struct ConstraintSystem {
     case let .identifier(id):
       return try lookup(id, in: environment, orThrow: .unbound(id))
 
-    case let .lambda(l):
+    case let .closure(l):
       let ids = l.parameters.map(\.identifier.element)
       let parameters = ids.map { _ in fresh() }
       return try .arrow(
@@ -163,23 +163,23 @@ struct ConstraintSystem {
       ])
       return result
 
-    case let .member(expr, id):
-      switch try infer(expr) {
+    case let .member(memberAccess):
+      switch try infer(memberAccess.base) {
       case .arrow:
-        throw TypeError.arrowMember(id)
+        throw TypeError.arrowMember(memberAccess.member)
 
       case let .constructor(typeID, _):
-        return try lookup(id, in: typeID)
+        return try lookup(memberAccess.member, in: typeID)
 
       case let .variable(v):
         let memberType = fresh()
         constraints.append(
-          .member(.variable(v), member: id, memberType: memberType)
+          .member(.variable(v), member: memberAccess.member, memberType: memberType)
         )
         return memberType
 
       case let .namedTuple(elements):
-        if let idx = Int(id.value) {
+        if let idx = Int(memberAccess.member.value) {
           guard (0..<elements.count).contains(idx) else {
             throw TypeError.tupleIndexOutOfRange(
               total: elements.count,
@@ -188,10 +188,10 @@ struct ConstraintSystem {
           }
 
           return elements[idx].1
-        } else if let idx = elements.firstIndex(where: { $0.0 == id }) {
+        } else if let idx = elements.firstIndex(where: { $0.0 == memberAccess.member }) {
           return elements[idx].1
         } else {
-          throw TypeError.unknownTupleMember(id)
+          throw TypeError.unknownTupleMember(memberAccess.member)
         }
       }
 

@@ -4,7 +4,7 @@
 
 import Parsing
 
-struct StructDecl: Equatable {
+struct StructDecl {
   let name: SourceRange<TypeIdentifier>
   let genericParameters: [TypeVariable]
 }

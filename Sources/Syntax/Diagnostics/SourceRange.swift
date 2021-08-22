@@ -4,7 +4,7 @@
 
 import Parsing
 
-public struct SourceLocation: Equatable {
+public struct SourceLocation {
   init(column: Int, line: Int, filePath: String? = nil) {
     self.column = column
     self.line = line
@@ -26,8 +26,6 @@ public struct SourceRange<Element> {
     .init(start: start, end: end, element: transform(element))
   }
 }
-
-extension SourceRange: Equatable where Element: Equatable {}
 
 extension SourceRange: CustomDebugStringConvertible {
   public var debugDescription: String {

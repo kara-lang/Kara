@@ -4,8 +4,8 @@
 
 import Parsing
 
-public struct Lambda: Equatable {
-  public struct Parameter: Equatable {
+public struct Closure {
+  public struct Parameter {
     public let identifier: SourceRange<Identifier>
     let typeAnnotation: SourceRange<Type>?
   }
@@ -14,21 +14,29 @@ public struct Lambda: Equatable {
   public let body: SourceRange<Expr>?
 }
 
-extension Lambda.Parameter {
+extension Closure.Parameter {
   init(identifier: SourceRange<Identifier>) {
     self.init(identifier: identifier, typeAnnotation: nil)
   }
 }
 
-extension Lambda: CustomDebugStringConvertible {
+extension Closure: CustomDebugStringConvertible {
   public var debugDescription: String {
-    """
-    { \(parameters.map(\.identifier.element.value).joined(separator: ", ")) in \(body?.element.debugDescription ?? "") }
-    """
+    let bodyString = body?.element.debugDescription ?? ""
+    if parameters.isEmpty {
+      return "{ \(bodyString) }"
+    } else {
+      return """
+      { \(
+        parameters.map(\.identifier.element.value)
+          .joined(separator: ", ")
+      ) in \(bodyString) }
+      """
+    }
   }
 }
 
-let lambdaParser =
+let closureParser =
   openBraceParser
     .skip(StatefulWhitespace())
     .take(
@@ -45,14 +53,14 @@ let lambdaParser =
         .skip(StatefulWhitespace(isRequired: true))
         .skip(Terminal("in"))
         .skip(StatefulWhitespace(isRequired: true))
-        .map { head, tail -> [Lambda.Parameter] in
+        .map { head, tail -> [Closure.Parameter] in
           guard let tail = tail else {
             return head
-              .map { Lambda.Parameter(identifier: $0) }
+              .map { Closure.Parameter(identifier: $0) }
           }
 
           return (head + [tail])
-            .map { Lambda.Parameter(identifier: $0) }
+            .map { Closure.Parameter(identifier: $0) }
         }
       )
     )
@@ -69,7 +77,7 @@ let lambdaParser =
       SourceRange(
         start: openBrace.start,
         end: closeBrace.end,
-        element: Lambda(
+        element: Closure(
           parameters: params ?? [],
           body: body
         )
