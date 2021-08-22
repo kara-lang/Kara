@@ -12,6 +12,12 @@ extension TypeVariable: ExpressibleByStringLiteral {
   }
 }
 
+extension TypeVariable: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    value
+  }
+}
+
 extension TypeVariable: ExpressibleByStringInterpolation {
   public init(stringInterpolation: DefaultStringInterpolation) {
     value = stringInterpolation.description
@@ -134,6 +140,31 @@ extension Type: Equatable {
       return i1 == i2 && o1 == o2
     default:
       return false
+    }
+  }
+}
+
+extension Type: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    switch self {
+    case let .constructor(id, args) where !args.isEmpty:
+      return "\(id.value)<\(args.map(\.debugDescription).joined(separator: ", "))>"
+    case let .constructor(id, _):
+      return id.value
+    case let .variable(v):
+      return v.value
+    case let .arrow(args, result):
+      return "(\(args.map(\.debugDescription).joined(separator: ", "))) -> \(result)"
+    case let .namedTuple(elements):
+      return """
+      (\(elements.map { identifier, type -> String in
+        if let identifier = identifier {
+          return "\(identifier): \(type.debugDescription)"
+        } else {
+          return type.debugDescription
+        }
+      }.joined(separator: ", ")))
+      """
     }
   }
 }

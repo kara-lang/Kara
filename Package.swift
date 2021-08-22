@@ -60,7 +60,7 @@ let package = Package(
         "Types",
         "SnapshotTesting",
       ],
-      exclude: ["Fixtures"]
+      exclude: ["Fixtures", "__Snapshots__"]
     ),
   ]
 )

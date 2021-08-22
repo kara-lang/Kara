@@ -14,6 +14,12 @@ extension TypeIdentifier: ExpressibleByStringLiteral {
   }
 }
 
+extension TypeIdentifier: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    value
+  }
+}
+
 let typeIdentifierParser = identifierSequenceParser
   .map { TypeIdentifier(value: $0) }
   .stateful()

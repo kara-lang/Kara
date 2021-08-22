@@ -5,59 +5,73 @@
 import Parsing
 
 public struct Lambda: Equatable {
-  init(identifiers: [Identifier] = [], body: Expr) {
-    parameters = identifiers.map { Parameter(identifier: $0, typeAnnotation: nil) }
-    self.body = body
-  }
-
   public struct Parameter: Equatable {
-    public let identifier: Identifier
-    let typeAnnotation: Type?
+    public let identifier: SourceRange<Identifier>
+    let typeAnnotation: SourceRange<Type>?
   }
 
   public let parameters: [Parameter]
-  public let body: Expr
+  public let body: SourceRange<Expr>?
+}
+
+extension Lambda.Parameter {
+  init(identifier: SourceRange<Identifier>) {
+    self.init(identifier: identifier, typeAnnotation: nil)
+  }
 }
 
 extension Lambda: CustomDebugStringConvertible {
   public var debugDescription: String {
-    "{ \(parameters.map(\.identifier.value).joined(separator: ", ")) in \(body.debugDescription) }"
+    """
+    { \(parameters.map(\.identifier.element.value).joined(separator: ", ")) in \(body?.element.debugDescription ?? "") }
+    """
   }
 }
 
-// let lambdaParser =
-//  openBraceParser
-//    .skip(Whitespace())
-//    .take(
-//      Optional.parser(
-//        of: Many(
-//          identifierParser
-//            .skip(Whitespace())
-//            .skip(commaParser)
-//            .skip(Whitespace())
-//        )
-//        .take(
-//          Optional.parser(of: identifierParser)
-//        )
-//        .skip(requiredWhitespaceParser)
-//        .skip(UTF8Terminal("in".utf8))
-//        .skip(requiredWhitespaceParser)
-//        .map { head, tail -> [Identifier] in
-//          guard let tail = tail else {
-//            return head
-//          }
-//
-//          return head + [tail]
-//        }
-//      )
-//    )
-//    .take(
-//      Optional.parser(
-//        of: Lazy {
-//          exprParser
-//        }
-//      )
-//    )
-//    .skip(Whitespace())
-//    .skip(closeBraceParser)
-//    .map { Lambda(identifiers: $0 ?? [], body: $1 ?? .unit) }
+let lambdaParser =
+  openBraceParser
+    .skip(StatefulWhitespace())
+    .take(
+      Optional.parser(
+        of: Many(
+          identifierParser
+            .skip(StatefulWhitespace())
+            .skip(commaParser)
+            .skip(StatefulWhitespace())
+        )
+        .take(
+          Optional.parser(of: identifierParser)
+        )
+        .skip(StatefulWhitespace(isRequired: true))
+        .skip(Terminal("in"))
+        .skip(StatefulWhitespace(isRequired: true))
+        .map { head, tail -> [Lambda.Parameter] in
+          guard let tail = tail else {
+            return head
+              .map { Lambda.Parameter(identifier: $0) }
+          }
+
+          return (head + [tail])
+            .map { Lambda.Parameter(identifier: $0) }
+        }
+      )
+    )
+    .take(
+      Optional.parser(
+        of: Lazy {
+          exprParser
+        }
+      )
+    )
+    .skip(StatefulWhitespace())
+    .take(closeBraceParser)
+    .map { openBrace, params, body, closeBrace in
+      SourceRange(
+        start: openBrace.start,
+        end: closeBrace.end,
+        element: Lambda(
+          parameters: params ?? [],
+          body: body
+        )
+      )
+    }

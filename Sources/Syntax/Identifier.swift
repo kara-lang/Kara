@@ -14,6 +14,10 @@ extension Identifier: ExpressibleByStringLiteral {
   }
 }
 
+extension Identifier: CustomDebugStringConvertible {
+  public var debugDescription: String { value }
+}
+
 let identifierHead = [
   UInt8(ascii: "_"),
 ] + Array(UInt8(ascii: "A")...UInt8(ascii: "z"))

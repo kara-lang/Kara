@@ -13,6 +13,12 @@ public struct Tuple: Equatable {
   public let elements: [Element]
 }
 
+extension Tuple.Element {
+  init(_ expr: SourceRange<Expr>) {
+    self.init(name: nil, expr: expr)
+  }
+}
+
 let tupleSequenceParser = openParenParser
   .skip(StatefulWhitespace())
   .take(

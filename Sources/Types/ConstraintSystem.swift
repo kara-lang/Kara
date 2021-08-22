@@ -139,19 +139,19 @@ struct ConstraintSystem {
       return try lookup(id, in: environment, orThrow: .unbound(id))
 
     case let .lambda(l):
-      let ids = l.parameters.map(\.identifier)
+      let ids = l.parameters.map(\.identifier.element)
       let parameters = ids.map { _ in fresh() }
       return try .arrow(
         parameters,
-        infer(inExtended: zip(ids, parameters.map { Scheme($0) }), l.body)
+        infer(inExtended: zip(ids, parameters.map { Scheme($0) }), l.body?.element ?? .unit)
       )
 
-    case let .application(callable, arguments):
-      let callableType = try infer(callable)
+    case let .application(app):
+      let callableType = try infer(app.function.element)
       let typeVariable = fresh()
       constraints.append(.equal(
         callableType,
-        .arrow(try arguments.map { try infer($0) }, typeVariable)
+        .arrow(try app.arguments.map { try infer($0.element) }, typeVariable)
       ))
       return typeVariable
 

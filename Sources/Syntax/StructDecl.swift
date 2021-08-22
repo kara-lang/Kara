@@ -9,6 +9,16 @@ struct StructDecl: Equatable {
   let genericParameters: [TypeVariable]
 }
 
+extension StructDecl: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    if genericParameters.isEmpty {
+      return "struct \(name) {}"
+    } else {
+      return "struct \(name)<\(genericParameters.map(\.debugDescription).joined(separator: ", "))> {}"
+    }
+  }
+}
+
 let structParser = Terminal("struct")
   .skip(StatefulWhitespace(isRequired: true))
   .take(typeIdentifierParser)
