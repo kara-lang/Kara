@@ -40,9 +40,32 @@ let package = Package(
         "Syntax",
       ]
     ),
+
+    // jsonrpc: LSP connection using jsonrpc over pipes.
+    .target(
+      name: "LanguageServerProtocolJSONRPC",
+      dependencies: [
+        "LanguageServerProtocol",
+        "LSPLogging",
+      ]
+    ),
+
+    // LanguageServerProtocol: The core LSP types, suitable for any LSP implementation.
+    .target(
+      name: "LanguageServerProtocol",
+      dependencies: []
+    ),
+
+    // Logging support used in LSP modules.
+    .target(
+      name: "LSPLogging",
+      dependencies: []
+    ),
+
     .executableTarget(
       name: "kara",
       dependencies: [
+        "LanguageServerProtocol",
         "Types",
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
       ]
