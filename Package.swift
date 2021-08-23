@@ -40,6 +40,12 @@ let package = Package(
         "Syntax",
       ]
     ),
+    .target(
+      name: "DependentTypes",
+      dependencies: [
+        "Syntax",
+      ]
+    ),
 
     // jsonrpc: LSP connection using jsonrpc over pipes.
     .target(
