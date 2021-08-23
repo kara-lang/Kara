@@ -78,5 +78,5 @@ indirect enum Neutral {
 
 typealias Env = [Value]
 typealias Type = Value
-typealias Context = [(Name, Type)]
+typealias Context = [Name: Type]
 typealias NameEnv<V> = [Name: V]
