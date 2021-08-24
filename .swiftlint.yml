@@ -9,8 +9,9 @@ disabled_rules:
   - type_name
   - todo
   - opening_brace
+  - comment_spacing
 
-line_length: 100
+line_length: 120
 
 function_body_length:
   - 50

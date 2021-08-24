@@ -44,13 +44,18 @@ public protocol MessageHandler: AnyObject {
   func handle<Notification>(_: Notification, from: ObjectIdentifier) where Notification: NotificationType
 
   /// Handle a request and (asynchronously) receive a reply.
-  func handle<Request>(_: Request, id: RequestID, from: ObjectIdentifier,
-                       reply: @escaping (LSPResult<Request.Response>) -> ()) where Request: RequestType
+  func handle<Request>(
+    _: Request,
+    id: RequestID,
+    from: ObjectIdentifier,
+    reply: @escaping (LSPResult<Request.Response>) -> ()
+  ) where Request: RequestType
 }
 
 /// A connection between two message handlers in the same process.
 ///
-/// You must call `start(handler:)` before sending any messages, and must call `close()` when finished to avoid a memory leak.
+/// You must call `start(handler:)` before sending any messages, and must call `close()` when finished to avoid a memory
+/// leak.
 ///
 /// ```
 /// let client: MessageHandler = ...

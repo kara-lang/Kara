@@ -5,7 +5,7 @@
 extension Checked {
   func eval(_ names: NameEnv<Value>, _ environment: Env) -> Value {
     switch self {
-    case let .inf(i):
+    case let .inferred(i):
       return i.eval(names, environment)
 
     case let .lambda(l):
@@ -49,7 +49,7 @@ extension Checked {
 extension Inferred {
   func eval(_ names: NameEnv<Value>, _ environment: Env) -> Value {
     switch self {
-    case let .ann(c, _):
+    case let .annotation(c, _):
       return c.eval(names, environment)
 
     case .star:

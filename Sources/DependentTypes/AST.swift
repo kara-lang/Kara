@@ -9,7 +9,7 @@ enum Name: Hashable {
 }
 
 indirect enum Checked {
-  case inf(Inferred)
+  case inferred(Inferred)
   case lambda(Checked)
   case zero
   case succ(Checked)
@@ -21,7 +21,7 @@ indirect enum Checked {
 }
 
 indirect enum Inferred {
-  case ann(Checked, Checked)
+  case annotation(Checked, Checked)
   case star
   case pi(Checked, Checked)
   case bound(Int)

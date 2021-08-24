@@ -42,11 +42,11 @@ let x = blah().flatMap { y in
   }
 }
 
-func square(a: Int) -> Int = mult(a, a)
+func square(a: Int) -> Int = multiply(a, a)
 
 func factorial(Int) -> Int
 factorial(0) = 1
-factorial(n) = mult(n, (n - 1))
+factorial(n) = multiply(n, (n - 1))
 
 func fill<Element>(count: Nat, e: Element) -> Vec<count, Element>
 
