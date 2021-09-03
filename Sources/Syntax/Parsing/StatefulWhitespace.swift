@@ -65,3 +65,30 @@ struct StatefulWhitespace: Parser {
     }
   }
 }
+
+extension Parser where Input == ParsingState {
+  func skipWithWhitespace<P>(
+    _ parser: P
+  ) -> Parsers.SkipSecond<Parsers.SkipSecond<Self, StatefulWhitespace>, P> where P: Parser {
+    skip(StatefulWhitespace())
+      .skip(parser)
+  }
+
+  func takeSkippingWhitespace<P>(
+    _ parser: P
+  ) -> Parsers.Take2<Parsers.SkipSecond<Self, StatefulWhitespace>, P>
+    where P: Parser, Self.Input == P.Input
+  {
+    skip(StatefulWhitespace())
+      .take(parser)
+  }
+
+  func takeSkippingWhitespace<A, B, P>(
+    _ parser: P
+  ) -> Parsers.Take3<Parsers.SkipSecond<Self, StatefulWhitespace>, A, B, P>
+    where P: Parser, Self.Input == P.Input, Self.Output == (A, B)
+  {
+    skip(StatefulWhitespace())
+      .take(parser)
+  }
+}

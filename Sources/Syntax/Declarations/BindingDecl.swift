@@ -10,12 +10,9 @@ struct BindingDecl {
 }
 
 let bindingParser = Terminal("let")
-  .skip(StatefulWhitespace())
-  .take(identifierParser)
-  .skip(StatefulWhitespace())
-  .skip(Terminal("="))
-  .skip(StatefulWhitespace())
-  .take(exprParser)
+  .takeSkippingWhitespace(identifierParser)
+  .skipWithWhitespace(Terminal("="))
+  .takeSkippingWhitespace(exprParser)
   .map { letTerminal, identifier, expr in
     SourceRange(
       start: letTerminal.start,

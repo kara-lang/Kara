@@ -12,13 +12,8 @@ public struct FunctionDecl {
 }
 
 let functionDeclParser = Terminal("func")
-  .skip(StatefulWhitespace())
-  .take(identifierParser)
-  .skip(StatefulWhitespace())
-  .skip(openParenParser)
-  .skip(StatefulWhitespace())
-  .skip(closeParenParser)
-  .skip(StatefulWhitespace())
-  .skip(openBraceParser)
-  .skip(StatefulWhitespace())
-  .skip(closeBraceParser)
+  .takeSkippingWhitespace(identifierParser)
+  .skipWithWhitespace(openParenParser)
+  .skipWithWhitespace(closeParenParser)
+  .skipWithWhitespace(openBraceParser)
+  .skipWithWhitespace(closeBraceParser)
