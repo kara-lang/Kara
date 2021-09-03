@@ -21,11 +21,11 @@
       },
       {
         "package": "swift-parsing",
-        "repositoryURL": "https://github.com/pointfreeco/swift-parsing.git",
+        "repositoryURL": "https://github.com/MaxDesiatov/swift-parsing.git",
         "state": {
-          "branch": null,
-          "revision": "346fbdcb793c4baa845ca44664ed20f719a7d83b",
-          "version": "0.1.2"
+          "branch": "maxd/windows-gha",
+          "revision": "9b96d34c7649568829bcaac1fc149bea5a42f9d6",
+          "version": null
         }
       },
       {
