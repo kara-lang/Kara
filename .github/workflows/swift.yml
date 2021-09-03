@@ -28,7 +28,7 @@ jobs:
         run: swift test
 
   windows_build:
-    runs-on: windows2019
+    runs-on: windows-2019
 
     steps:
       - uses: seanmiddleditch/gha-setup-vsdevenv@master
