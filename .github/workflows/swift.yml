@@ -54,5 +54,7 @@ jobs:
 
       - name: Build
         run: swift build
-      - name: Run tests
-        run: swift test
+
+# FIXME: re-enable tests when SnapshotTesting is available on Windows.
+#       - name: Run tests
+#         run: swift test
