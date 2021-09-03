@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: seanmiddleditch/gha-setup-vsdevenv@v3
 
-      - name: Install swift 5.4
+      - name: Install Swift 5.4
         run: |
           Install-Binary -Url "https://swift.org/builds/swift-5.4.2-release/windows10/swift-5.4.2-RELEASE/swift-5.4.2-RELEASE-windows10.exe" -Name "installer.exe" -ArgumentList ("-q")
       - name: Set Environment Variables
