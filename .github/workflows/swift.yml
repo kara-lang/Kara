@@ -31,7 +31,7 @@ jobs:
     runs-on: windows-2019
 
     steps:
-      - uses: seanmiddleditch/gha-setup-vsdevenv@master
+      - uses: seanmiddleditch/gha-setup-vsdevenv@v3
 
       - name: Install swift 5.4
         run: |
