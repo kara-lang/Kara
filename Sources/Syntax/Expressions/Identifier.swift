@@ -25,7 +25,7 @@ let identifierHead = [
 let identifierTail = identifierHead + Array(UInt8(ascii: "0")...UInt8(ascii: "9"))
 
 let identifierSequenceParser =
-  FirstWhere<UTF8SubSequence> { identifierHead.contains($0) }
+  First<UTF8SubSequence>().filter { identifierHead.contains($0) }
     .take(Prefix { identifierTail.contains($0) })
     .compactMap { String(bytes: [$0] + Array($1), encoding: .utf8) }
 

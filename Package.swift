@@ -19,8 +19,8 @@ let package = Package(
     ),
     .package(
       name: "swift-parsing",
-      url: "https://github.com/pointfreeco/swift-parsing.git",
-      from: "0.1.2"
+      url: "https://github.com/MaxDesiatov/swift-parsing.git",
+      .branch("maxd/windows-gha")
     ),
     .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.9.0"),
   ],
