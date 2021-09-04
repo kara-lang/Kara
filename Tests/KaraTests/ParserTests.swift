@@ -54,6 +54,22 @@ final class ParserTests: XCTestCase {
     XCTAssertNil(exprParser.parse(#"("foo", ("bar")"#).output)
   }
 
+  func testIfThenElse() {
+    assertSnapshot(exprParser.parse(#"if true { "true" } else { "false" } "#))
+    assertSnapshot(exprParser.parse(#"if foo { bar } else { baz } "#))
+    assertSnapshot(
+      exprParser.parse(
+        #"""
+        if 42.isInteger {
+          "is integer"
+        } else {
+          "is not integer"
+        }
+        """#
+      )
+    )
+  }
+
   func testClosure() {
     assertSnapshot(exprParser.parse("{}"))
     assertSnapshot(exprParser.parse("{ 1 }"))

@@ -91,4 +91,32 @@ extension Parser where Input == ParsingState {
     skip(StatefulWhitespace())
       .take(parser)
   }
+
+  // swiftlint:disable large_tuple
+  func takeSkippingWhitespace<A, B, C, P>(
+    _ parser: P
+  ) -> Parsers.Take4<Parsers.SkipSecond<Self, StatefulWhitespace>, A, B, C, P>
+    where P: Parser, Self.Input == P.Input, Self.Output == (A, B, C)
+  {
+    skip(StatefulWhitespace())
+      .take(parser)
+  }
+
+  func takeSkippingWhitespace<A, B, C, D, P>(
+    _ parser: P
+  ) -> Parsers.Take5<Parsers.SkipSecond<Self, StatefulWhitespace>, A, B, C, D, P>
+    where P: Parser, Self.Input == P.Input, Self.Output == (A, B, C, D)
+  {
+    skip(StatefulWhitespace())
+      .take(parser)
+  }
+
+  func takeSkippingWhitespace<A, B, C, D, E, P>(
+    _ parser: P
+  ) -> Parsers.Take6<Parsers.SkipSecond<Self, StatefulWhitespace>, A, B, C, D, E, P>
+    where P: Parser, Self.Input == P.Input, Self.Output == (A, B, C, D, E)
+  {
+    skip(StatefulWhitespace())
+      .take(parser)
+  }
 }

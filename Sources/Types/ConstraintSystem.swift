@@ -157,31 +157,31 @@ struct ConstraintSystem {
       ))
       return typeVariable
 
-    case let .ternary(cond, expr1, expr2):
-      let result = try infer(expr1)
+    case let .ifThenElse(ifThenElse):
+      let result = try infer(ifThenElse.thenBranch.element)
       try constraints.append(contentsOf: [
-        .equal(infer(cond), .bool),
-        .equal(result, infer(expr2)),
+        .equal(infer(ifThenElse.condition.element), .bool),
+        .equal(result, infer(ifThenElse.elseBranch.element)),
       ])
       return result
 
     case let .member(memberAccess):
-      switch try infer(memberAccess.base) {
+      switch try infer(memberAccess.base.element) {
       case .arrow:
-        throw TypeError.arrowMember(memberAccess.member)
+        throw TypeError.arrowMember(memberAccess.member.element)
 
       case let .constructor(typeID, _):
-        return try lookup(memberAccess.member, in: typeID)
+        return try lookup(memberAccess.member.element, in: typeID)
 
       case let .variable(v):
         let memberType = fresh()
         constraints.append(
-          .member(.variable(v), member: memberAccess.member, memberType: memberType)
+          .member(.variable(v), member: memberAccess.member.element, memberType: memberType)
         )
         return memberType
 
       case let .tuple(elements):
-        if let idx = Int(memberAccess.member.value) {
+        if let idx = Int(memberAccess.member.element.value) {
           guard (0..<elements.count).contains(idx) else {
             throw TypeError.tupleIndexOutOfRange(
               total: elements.count,
@@ -191,7 +191,7 @@ struct ConstraintSystem {
 
           return elements[idx]
         } else {
-          throw TypeError.unknownTupleMember(memberAccess.member)
+          throw TypeError.unknownTupleMember(memberAccess.member.element)
         }
       }
 

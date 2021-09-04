@@ -1,0 +1,5 @@
+0:0-0:1 if 42.isInteger {
+  "is integer"
+} else {
+  "is not integer"
+}

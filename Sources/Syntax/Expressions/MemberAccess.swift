@@ -5,8 +5,8 @@
 import Parsing
 
 public struct MemberAccess {
-  public let base: Expr
-  public let member: Identifier
+  public let base: SourceRange<Expr>
+  public let member: SourceRange<Identifier>
 }
 
 let memberAccessParser =

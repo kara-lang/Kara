@@ -9,9 +9,9 @@ public indirect enum Expr {
   case application(FunctionApplication)
   case closure(Closure)
   case literal(Literal)
-  case ternary(Expr, Expr, Expr)
+  case ifThenElse(IfThenElse)
   case member(MemberAccess)
-  case tuple(Tuple)
+  case tuple(Tuple<Expr>)
 
   public static var unit: Expr { .tuple(.init(elements: [])) }
 }
@@ -39,17 +39,17 @@ extension Expr: CustomDebugStringConvertible {
       return l.debugDescription
     case let .literal(l):
       return l.debugDescription
-    case let .ternary(i, t, e):
+    case let .ifThenElse(ifThenElse):
       return
         """
-        if \(i.debugDescription) {
-          \(t.debugDescription)
+        if \(ifThenElse.condition.element.debugDescription) {
+          \(ifThenElse.thenBranch.element.debugDescription)
         } else {
-          \(e.debugDescription)
+          \(ifThenElse.elseBranch.element.debugDescription)
         }
         """
     case let .member(memberAccess):
-      return "\(memberAccess.base.debugDescription).\(memberAccess.member.value)"
+      return "\(memberAccess.base.element.debugDescription).\(memberAccess.member.element.value)"
     case let .tuple(tuple):
       return "(\(tuple.elements.map(\.element.debugDescription).joined(separator: ", ")))"
     }
@@ -63,6 +63,7 @@ enum ExprTail {
 
 public let exprParser: AnyParser<ParsingState, SourceRange<Expr>> =
   literalParser.map(Expr.literal).stateful()
+    .orElse(ifThenElseParser.map { $0.map(Expr.ifThenElse) })
     .orElse(identifierParser.map { $0.map(Expr.identifier) })
     .orElse(tupleParser.map { $0.map(Expr.tuple) })
     .orElse(closureParser.map { $0.map(Expr.closure) })
@@ -78,7 +79,7 @@ public let exprParser: AnyParser<ParsingState, SourceRange<Expr>> =
           return .init(
             start: reducedExpr.start,
             end: identifier.end,
-            element: .member(.init(base: reducedExpr.element, member: identifier.element))
+            element: .member(.init(base: reducedExpr, member: identifier))
           )
         case let .applicationArguments(arguments):
           return .init(

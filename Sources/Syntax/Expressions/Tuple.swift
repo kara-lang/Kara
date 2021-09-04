@@ -4,8 +4,8 @@
 
 import Parsing
 
-public struct Tuple {
-  public let elements: [SourceRange<Expr>]
+public struct Tuple<T> {
+  public let elements: [SourceRange<T>]
 }
 
 let tupleSequenceParser = openParenParser
