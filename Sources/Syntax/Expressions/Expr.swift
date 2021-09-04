@@ -51,7 +51,7 @@ extension Expr: CustomDebugStringConvertible {
     case let .member(memberAccess):
       return "\(memberAccess.base.debugDescription).\(memberAccess.member.value)"
     case let .tuple(tuple):
-      return "(\(tuple.elements.map(\.expr.element.debugDescription).joined(separator: ", ")))"
+      return "(\(tuple.elements.map(\.element.debugDescription).joined(separator: ", ")))"
     }
   }
 }

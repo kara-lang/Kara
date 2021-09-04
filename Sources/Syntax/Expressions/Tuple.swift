@@ -5,18 +5,7 @@
 import Parsing
 
 public struct Tuple {
-  public struct Element {
-    public let name: SourceRange<Identifier>?
-    public let expr: SourceRange<Expr>
-  }
-
-  public let elements: [Element]
-}
-
-extension Tuple.Element {
-  init(_ expr: SourceRange<Expr>) {
-    self.init(name: nil, expr: expr)
-  }
+  public let elements: [SourceRange<Expr>]
 }
 
 let tupleSequenceParser = openParenParser
@@ -45,6 +34,6 @@ let tupleParser = tupleSequenceParser
     SourceRange(
       start: $0.start,
       end: $0.end,
-      element: Tuple(elements: $0.element.map { .init(name: nil, expr: $0) })
+      element: Tuple(elements: $0.element)
     )
   }
