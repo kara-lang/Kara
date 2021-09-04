@@ -8,28 +8,33 @@ public struct Tuple<T> {
   public let elements: [SourceRange<T>]
 }
 
-let tupleSequenceParser = openParenParser
-  .skip(StatefulWhitespace())
-  .take(
-    Many(
-      Lazy { exprParser }
-        .skip(StatefulWhitespace())
-        .skip(commaParser)
-        .skip(StatefulWhitespace())
+func tupleSequenceParser<T>(
+  elementParser: Lazy<AnyParser<ParsingState, SourceRange<T>>>
+) -> AnyParser<ParsingState, SourceRange<[SourceRange<T>]>> {
+  openParenParser
+    .skip(StatefulWhitespace())
+    .take(
+      Many(
+        elementParser
+          .skip(StatefulWhitespace())
+          .skip(commaParser)
+          .skip(StatefulWhitespace())
+      )
     )
-  )
-  .take(Optional.parser(of: Lazy { exprParser }))
-  .skip(StatefulWhitespace())
-  .take(closeParenParser)
-  .map { openParen, head, tail, closeParen -> SourceRange<[SourceRange<Expr>]> in
-    guard let tail = tail else {
-      return SourceRange(start: openParen.start, end: closeParen.end, element: head)
+    .take(Optional.parser(of: elementParser))
+    .skip(StatefulWhitespace())
+    .take(closeParenParser)
+    .map { openParen, head, tail, closeParen -> SourceRange<[SourceRange<T>]> in
+      guard let tail = tail else {
+        return SourceRange(start: openParen.start, end: closeParen.end, element: head)
+      }
+
+      return SourceRange(start: openParen.start, end: closeParen.end, element: head + [tail])
     }
+    .eraseToAnyParser()
+}
 
-    return SourceRange(start: openParen.start, end: closeParen.end, element: head + [tail])
-  }
-
-let tupleParser = tupleSequenceParser
+let tupleExprParser = tupleSequenceParser(elementParser: Lazy { exprParser })
   .map {
     SourceRange(
       start: $0.start,

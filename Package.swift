@@ -35,7 +35,7 @@ let package = Package(
       ]
     ),
     .target(
-      name: "Types",
+      name: "TypeInference",
       dependencies: [
         "Syntax",
       ]
@@ -72,7 +72,7 @@ let package = Package(
       name: "kara",
       dependencies: [
         "LanguageServerProtocol",
-        "Types",
+        "TypeInference",
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
       ]
     ),
@@ -86,7 +86,7 @@ let package = Package(
       name: "KaraTests",
       dependencies: [
         "Syntax",
-        "Types",
+        "TypeInference",
         "SnapshotTesting",
       ],
       exclude: ["Fixtures", "__Snapshots__"]

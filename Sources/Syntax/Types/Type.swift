@@ -2,27 +2,7 @@
 //  Created by Max Desiatov on 27/04/2019.
 //
 
-public struct TypeVariable: Hashable {
-  let value: String
-}
-
-extension TypeVariable: ExpressibleByStringLiteral {
-  public init(stringLiteral value: String) {
-    self.value = value
-  }
-}
-
-extension TypeVariable: CustomDebugStringConvertible {
-  public var debugDescription: String {
-    value
-  }
-}
-
-extension TypeVariable: ExpressibleByStringInterpolation {
-  public init(stringInterpolation: DefaultStringInterpolation) {
-    value = stringInterpolation.description
-  }
-}
+import Parsing
 
 public enum Type {
   /** A type constructor is an abstraction on which generics system is built.
@@ -156,3 +136,16 @@ extension Type: CustomDebugStringConvertible {
     }
   }
 }
+
+let typeConstructorParser = identifierSequenceParser
+  .map(TypeIdentifier.init(value:))
+  .stateful()
+
+let arrowParser = Terminal("->")
+
+let tupleTypeParser = tupleSequenceParser(elementParser: Lazy { typeParser })
+
+// FIXME: break left recursion
+let typeParser = typeConstructorParser
+  .map { SourceRange(start: $0.start, end: $0.end, element: Type.constructor($0.element, [])) }
+  .eraseToAnyParser()

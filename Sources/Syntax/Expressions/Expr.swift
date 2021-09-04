@@ -65,7 +65,7 @@ public let exprParser: AnyParser<ParsingState, SourceRange<Expr>> =
   literalParser.map(Expr.literal).stateful()
     .orElse(ifThenElseParser.map { $0.map(Expr.ifThenElse) })
     .orElse(identifierParser.map { $0.map(Expr.identifier) })
-    .orElse(tupleParser.map { $0.map(Expr.tuple) })
+    .orElse(tupleExprParser.map { $0.map(Expr.tuple) })
     .orElse(closureParser.map { $0.map(Expr.closure) })
 
     // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain

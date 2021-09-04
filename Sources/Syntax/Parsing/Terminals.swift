@@ -27,4 +27,7 @@ let closeBraceParser = Terminal("}")
 let openParenParser = Terminal("(")
 let closeParenParser = Terminal(")")
 
+let openAngleBracketParser = Terminal("<")
+let closeAngleBracketParser = Terminal(">")
+
 let commaParser = Terminal(",")

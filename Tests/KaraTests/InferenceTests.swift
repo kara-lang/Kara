@@ -3,7 +3,7 @@
 //
 
 @testable import Syntax
-@testable import Types
+@testable import TypeInference
 import XCTest
 
 final class InferenceTests: XCTestCase {
