@@ -180,7 +180,7 @@ struct ConstraintSystem {
         )
         return memberType
 
-      case let .namedTuple(elements):
+      case let .tuple(elements):
         if let idx = Int(memberAccess.member.value) {
           guard (0..<elements.count).contains(idx) else {
             throw TypeError.tupleIndexOutOfRange(
@@ -189,16 +189,14 @@ struct ConstraintSystem {
             )
           }
 
-          return elements[idx].1
-        } else if let idx = elements.firstIndex(where: { $0.0 == memberAccess.member }) {
-          return elements[idx].1
+          return elements[idx]
         } else {
           throw TypeError.unknownTupleMember(memberAccess.member)
         }
       }
 
     case let .tuple(tuple):
-      return try .namedTuple(tuple.elements.map { ($0.name?.element, try infer($0.expr.element)) })
+      return try .tuple(tuple.elements.map { try infer($0.expr.element) })
     }
   }
 }

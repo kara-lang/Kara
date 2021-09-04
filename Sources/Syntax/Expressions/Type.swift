@@ -103,13 +103,7 @@ public enum Type {
    Type.tuple([.int, .string, .bool])
    ```
    */
-  case namedTuple([(Identifier?, Type)])
-
-  public static func tuple(_ types: [Type]) -> Type {
-    .namedTuple(types.enumerated().map {
-      (nil, $0.1)
-    })
-  }
+  case tuple([Type])
 
   public static let bool = Type.constructor("Bool", [])
   public static let string = Type.constructor("String", [])
@@ -155,15 +149,9 @@ extension Type: CustomDebugStringConvertible {
       return v.value
     case let .arrow(args, result):
       return "(\(args.map(\.debugDescription).joined(separator: ", "))) -> \(result)"
-    case let .namedTuple(elements):
+    case let .tuple(elements):
       return """
-      (\(elements.map { identifier, type -> String in
-        if let identifier = identifier {
-          return "\(identifier): \(type.debugDescription)"
-        } else {
-          return type.debugDescription
-        }
-      }.joined(separator: ", ")))
+      (\(elements.map(\.debugDescription).joined(separator: ", ")))
       """
     }
   }

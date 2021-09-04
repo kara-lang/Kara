@@ -48,8 +48,8 @@ extension Type: Substitutable {
       return t1.apply(sub) --> t2.apply(sub)
     case .constructor:
       return self
-    case let .namedTuple(elements):
-      return .namedTuple(elements.map { ($0.0, $0.1.apply(sub)) })
+    case let .tuple(elements):
+      return .tuple(elements.map { $0.apply(sub) })
     }
   }
 
@@ -61,8 +61,8 @@ extension Type: Substitutable {
       return [v]
     case let .arrow(t1, t2):
       return t1.freeTypeVariables.union(t2.freeTypeVariables)
-    case let .namedTuple(elements):
-      return elements.map(\.1).freeTypeVariables
+    case let .tuple(elements):
+      return elements.freeTypeVariables
     }
   }
 }
