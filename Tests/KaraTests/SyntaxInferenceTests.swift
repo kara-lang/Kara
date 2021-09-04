@@ -143,4 +143,78 @@ final class SyntaxInferenceTests: XCTestCase {
       TypeError.unknownMember("String", "magnitude")
     )
   }
+
+  func testIfThenElse() throws {
+    let m: Members = [
+      "Int": [
+        "isInteger": [.init(.bool)],
+        "isIntegerFunc": [.init([] --> .bool)],
+        "toDouble": [.init([] --> .double)],
+      ],
+    ]
+
+    let e: Environment = [
+      "foo": [.init(.bool)],
+      "bar": [.init(.double)],
+      "baz": [.init(.double)],
+      "fizz": [.init(.int)],
+    ]
+
+    XCTAssertEqual(
+      try exprParser.parse(#"if true { "true" } else { "false" } "#).output?.element.infer(members: m),
+      .string
+    )
+    XCTAssertEqual(
+      try exprParser.parse(#"if foo { bar } else { baz }  "#).output?.element.infer(environment: e, members: m),
+      .double
+    )
+    XCTAssertEqual(
+      try exprParser.parse(
+        #"""
+        if 42.isInteger {
+          "is integer"
+        } else {
+          "is not integer"
+        }
+        """#
+      ).output?.element.infer(environment: e, members: m),
+      .string
+    )
+    XCTAssertEqual(
+      try exprParser.parse(
+        #"""
+        if 42.isIntegerFunc() {
+          "is integer"
+        } else {
+          "is not integer"
+        }
+        """#
+      ).output?.element.infer(environment: e, members: m),
+      .string
+    )
+    assertError(
+      try exprParser.parse(
+        #"""
+        if 42.toDouble() {
+          "is integer"
+        } else {
+          "is not integer"
+        }
+        """#
+      ).output?.element.infer(members: m),
+      TypeError.unificationFailure(.double, .bool)
+    )
+    assertError(
+      try exprParser.parse(
+        #"""
+        if 42 {
+          "is integer"
+        } else {
+          "is not integer"
+        }
+        """#
+      ).output?.element.infer(members: m),
+      TypeError.unificationFailure(.int, .bool)
+    )
+  }
 }

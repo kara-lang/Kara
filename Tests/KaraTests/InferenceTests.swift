@@ -7,28 +7,6 @@
 import XCTest
 
 final class InferenceTests: XCTestCase {
-//  func testTernary() throws {
-//    let string = Expr.ternary(
-//      .literal(true),
-//      .literal("then"),
-//      .literal("else")
-//    )
-//    let int = Expr.ternary(
-//      .literal(.bool(false)),
-//      .literal(0),
-//      .literal(42)
-//    )
-//    let error = Expr.ternary(
-//      .literal(true),
-//      .literal("then"),
-//      .literal(42)
-//    )
-//
-//    XCTAssertEqual(try string.infer(), .string)
-//    XCTAssertEqual(try int.infer(), .int)
-//    XCTAssertThrowsError(try error.infer())
-//  }
-
 //  func testLambdaApplication() throws {
 //    let lambda = Expr.application(
 //      .lambda(
