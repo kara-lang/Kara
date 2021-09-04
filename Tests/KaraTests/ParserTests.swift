@@ -45,6 +45,13 @@ final class ParserTests: XCTestCase {
 
     assertSnapshot(exprParser.parse("(1)"))
     assertSnapshot(exprParser.parse(#"("foo")"#))
+
+    assertSnapshot(exprParser.parse(#"("foo", ("bar", "baz"))"#))
+    assertSnapshot(exprParser.parse(#"("foo", ("bar", "baz", (1, "fizz")))"#))
+
+    XCTAssertNil(exprParser.parse(#"("foo", ("bar", "baz", (1, "fizz"))"#).output)
+
+    XCTAssertNil(exprParser.parse(#"("foo", ("bar")"#).output)
   }
 
   func testClosure() {
