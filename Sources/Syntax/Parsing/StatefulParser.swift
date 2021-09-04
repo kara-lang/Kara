@@ -24,6 +24,12 @@ extension ParsingState: ExpressibleByStringLiteral {
   }
 }
 
+extension ParsingState: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    String(source[currentIndex...])
+  }
+}
+
 struct StatefulParser<P: Parser>: Parser where P.Input == UTF8SubSequence {
   let inner: P
 

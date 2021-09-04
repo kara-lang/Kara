@@ -60,29 +60,21 @@ extension Literal: CustomDebugStringConvertible {
 }
 
 let intLiteralParser = Int.parser(of: UTF8SubSequence.self)
-  .skip(
-    End()
-      .orElse(StartsWith(" ".utf8))
-      .orElse(Newline())
-  )
-  .orElse(
-    PrefixUpTo(",".utf8)
-      .orElse(PrefixUpTo(")".utf8))
-      .orElse(PrefixUpTo("}".utf8))
-      .orElse(
-        PrefixUpTo(".".utf8)
-          // resolve ambiguity with floats
-          .lookahead(amount: 2) { (lookaheadPrefix: UTF8SubSequence) -> Bool in
-            // if `.` is located at the end of input, this looks like an invalid token.
-            guard lookaheadPrefix.count > 1,
-                  let lastPrefixElement = lookaheadPrefix.last else { return false }
+  // resolve ambiguity with floats
+  .lookahead(amount: 2) { (lookaheadPrefix: UTF8SubSequence) -> Bool in
+    // end of input means that integer is valid
+    guard
+      lookaheadPrefix.count > 0,
+      let firstPrefixElement = lookaheadPrefix.first,
+      firstPrefixElement == UInt8(ascii: ".")
+    else { return true }
 
-            return !(UInt8(ascii: "0")...UInt8(ascii: "9")).contains(lastPrefixElement)
-          }
-      )
-      .compactMap(String.init)
-      .compactMap(Int.init)
-  )
+    // if `.` is located at the end of input, this looks like an invalid token.
+    guard lookaheadPrefix.count > 1,
+          let lastPrefixElement = lookaheadPrefix.last else { return false }
+
+    return !(UInt8(ascii: "0")...UInt8(ascii: "9")).contains(lastPrefixElement)
+  }
   .map(Literal.integer)
 
 let floatLiteralParser = Double.parser(of: UTF8SubSequence.self)

@@ -68,6 +68,17 @@ final class ParserTests: XCTestCase {
         """#
       )
     )
+    assertSnapshot(
+      exprParser.parse(
+        #"""
+        if 42.isInteger() {
+          "is integer"
+        } else {
+          "is not integer"
+        }
+        """#
+      )
+    )
   }
 
   func testClosure() {
