@@ -164,6 +164,10 @@ final class ParserTests: XCTestCase {
     XCTAssertNil(typeParser.parse(" -> String").output)
   }
 
+  func testFunctionDecl() {
+    assertSnapshot(functionDeclParser.parse("func f(x: Int) -> Int { x }"))
+  }
+
   func testStatefulWhitespace() {
     let emptyString = ""
     var state = ParsingState(source: emptyString)

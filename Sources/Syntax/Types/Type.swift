@@ -89,6 +89,8 @@ public enum Type {
   public static let string = Type.constructor("String", [])
   public static let double = Type.constructor("Double", [])
   public static let int = Type.constructor("Int", [])
+
+  public static let unit = Type.tuple([])
 }
 
 infix operator -->
@@ -145,7 +147,7 @@ private let typeConstructorParser = identifierSequenceParser
   .map(TypeIdentifier.init(value:))
   .stateful()
 
-private let arrowParser = Terminal("->")
+let arrowParser = Terminal("->")
   .ignoreOutput()
   .skip(StatefulWhitespace())
   .take(Lazy { typeParser })
@@ -164,8 +166,7 @@ private let genericsParser = delimitedSequenceParser(
   atLeast: 1
 )
 // Fully consume the type tail, don't stop with generic arguments.
-.skip(StatefulWhitespace())
-.take(
+.takeSkippingWhitespace(
   Optional.parser(
     of: arrowParser
   )
@@ -182,8 +183,6 @@ private let genericsParser = delimitedSequenceParser(
     )
   )
 }
-
-// .eraseToAnyParser()
 
 private enum TypeSyntaxHead {
   case tuple([Type])

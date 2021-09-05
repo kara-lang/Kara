@@ -8,12 +8,12 @@ public struct Tuple<T> {
   public let elements: [SourceRange<T>]
 }
 
-func delimitedSequenceParser<T>(
+func delimitedSequenceParser<T, P: Parser>(
   startParser: Terminal,
   endParser: Terminal,
-  elementParser: Lazy<AnyParser<ParsingState, SourceRange<T>>>,
+  elementParser: P,
   atLeast minimum: Int = 0
-) -> AnyParser<ParsingState, SourceRange<[SourceRange<T>]>> {
+) -> AnyParser<ParsingState, SourceRange<[SourceRange<T>]>> where P.Output == SourceRange<T>, P.Input == ParsingState {
   startParser
     .takeSkippingWhitespace(
       Many(
