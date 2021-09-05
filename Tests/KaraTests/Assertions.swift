@@ -3,7 +3,7 @@
 //
 
 import SnapshotTesting
-import Syntax
+@testable import Syntax
 import XCTest
 
 public extension Snapshotting where Format == String {
@@ -44,4 +44,22 @@ func assertError<T, E: Error & Equatable>(
 
     XCTAssertEqual(error, expectedError, file: file, line: line)
   }
+}
+
+func assertFullyConsumed(
+  _ state: ParsingState,
+  file: StaticString = #file,
+  testName: String = #function,
+  line: UInt = #line
+) {
+  XCTAssertEqual(state.currentIndex, state.source.utf8.endIndex, file: file, line: line)
+}
+
+func assertNotFullyConsumed(
+  _ state: ParsingState,
+  file: StaticString = #file,
+  testName: String = #function,
+  line: UInt = #line
+) {
+  XCTAssertNotEqual(state.currentIndex, state.source.utf8.endIndex, file: file, line: line)
 }

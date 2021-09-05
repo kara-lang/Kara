@@ -123,7 +123,7 @@ final class ParserTests: XCTestCase {
 
   func testTypeConstructor() {
     assertSnapshot(typeParser.parse("Array<Int>"))
-    XCTAssertNil(exprParser.parse("Set<Double").output)
+    assertNotFullyConsumed(typeParser.parse("Set<Double").rest)
     assertSnapshot(typeParser.parse("Dictionary <String, Bool>"))
     assertSnapshot(typeParser.parse("Result <String, IOError,>"))
     assertSnapshot(
