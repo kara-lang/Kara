@@ -1,20 +1,20 @@
 protocol Monad {
-  associatedtype Element
+  associatedtype element
 
-  static func new(Element) -> Self<Element>
+  static func new(element) -> Self<element>
 
-  func flatMap<NewElement>(Element -> Self<NewElement>) -> Self<NewElement>
+  func flatMap(_: element -> Self<newElement>) -> Self<newElement>
 }
 
-enum Result<Success, Failure> {
-  case success(Success)
-  case failure(Failure)
+enum Result<value, error> {
+  case success(_: value)
+  case failure(_: error)
 }
 
 extension Result: Monad {
-    typealias Element = Success
+    typealias element = value
 
-    static func new(value) = .success(value)
+    static func new(_ v: value) { .success(v) }
 
     func flatMap(binder) = switch self {
         case .success(value):
@@ -55,9 +55,9 @@ enum Nat {
     case addOne(Nat)
 }
 
-enum Vec<count: Nat, Element> {
-    case empty -> Vec<.zero, Element>
-    case cons(Element, Vec<count, Element>) -> Vec<.addOne(count), Element>
+enum Vec<count: Nat, element> {
+    case empty -> Vec<.zero, element>
+    case cons(element, Vec<count, element>) -> Vec<.addOne(count), element>
 }
 
 func allCounts(Vec<n, String>) -> Vec<n, Nat>
