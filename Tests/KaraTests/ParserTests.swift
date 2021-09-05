@@ -137,6 +137,14 @@ final class ParserTests: XCTestCase {
     )
   }
 
+  func testTupleType() {
+    assertSnapshot(typeParser.parse("(Int, Double, Bool)"))
+    assertSnapshot(typeParser.parse("(Int, Double, Bool, String,)"))
+    assertSnapshot(typeParser.parse("Array<(Int, String)>"))
+    assertSnapshot(typeParser.parse("Array<(Int, String, Bool,)>"))
+    assertSnapshot(typeParser.parse("Array<(Int, String, Bool,Dictionary<Double, Set<(Foo, Bar)>>)>"))
+  }
+
   func testArrow() {
     assertSnapshot(typeParser.parse("Int -> Double"))
     assertSnapshot(typeParser.parse("Int -> Double -> String"))
@@ -149,6 +157,11 @@ final class ParserTests: XCTestCase {
         """
       )
     )
+    assertSnapshot(typeParser.parse("(Int, Double) -> String"))
+    assertSnapshot(typeParser.parse("Dictionary<Bool, (Int, Double, String)> -> Array<Character>"))
+    assertSnapshot(typeParser.parse("Dictionary<Bool, (Int, Double, String)> -> (Array<Character>, Array<Bool>)"))
+    assertNotFullyConsumed(typeParser.parse("Int -> ").rest)
+    XCTAssertNil(typeParser.parse(" -> String").output)
   }
 
   func testStatefulWhitespace() {
