@@ -128,7 +128,11 @@ extension Type: CustomDebugStringConvertible {
     case let .variable(v):
       return v.value
     case let .arrow(args, result):
-      return "(\(args.map(\.debugDescription).joined(separator: ", "))) -> \(result)"
+      guard args.count > 0 else { return "(() -> \(result))" }
+
+      guard args.count > 1 else { return "(\(args[0]) -> \(result))" }
+
+      return "((\(args.map(\.debugDescription).joined(separator: ", "))) -> \(result))"
     case let .tuple(elements):
       return """
       (\(elements.map(\.debugDescription).joined(separator: ", ")))
@@ -142,15 +146,28 @@ let typeConstructorParser = identifierSequenceParser
   .stateful()
 
 let arrowParser = Terminal("->")
+  .ignoreOutput()
+  .skip(StatefulWhitespace())
+  .take(Lazy { typeParser })
 
 let tupleTypeParser = tupleSequenceParser(elementParser: Lazy { typeParser })
 
-enum TypeSyntaxTail {
-  case arrow(SourceRange<Type>)
-  case generics(SourceRange<[SourceRange<Type>]>)
-}
+// FIXME: handle generics
+let typeParser: AnyParser<ParsingState, SourceRange<Type>> = typeConstructorParser
+  .skip(StatefulWhitespace())
+  .take(
+    Optional.parser(
+      of: arrowParser
+    )
+  )
+  .map {
+    let headType = $0.map { Type.constructor($0, []) }
+    guard let arrowTail = $1 else { return headType }
 
-// FIXME: break left recursion
-let typeParser = typeConstructorParser
-  .map { SourceRange(start: $0.start, end: $0.end, element: Type.constructor($0.element, [])) }
+    return SourceRange(
+      start: $0.start,
+      end: arrowTail.end,
+      element: Type.arrow([headType.element], arrowTail.element)
+    )
+  }
   .eraseToAnyParser()

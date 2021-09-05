@@ -121,6 +121,11 @@ final class ParserTests: XCTestCase {
     assertSnapshot(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 ).description"))
   }
 
+  func testArrow() {
+    assertSnapshot(typeParser.parse("Int -> Double"))
+    assertSnapshot(typeParser.parse("Int -> Double -> String"))
+  }
+
   func testStatefulWhitespace() {
     let emptyString = ""
     var state = ParsingState(source: emptyString)

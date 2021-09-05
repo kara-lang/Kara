@@ -70,8 +70,8 @@ public let exprParser: AnyParser<ParsingState, SourceRange<Expr>> =
     .orElse(closureParser.map { $0.map(Expr.closure) })
 
     // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain
-    // derivations. Expressing left recursion with combinators directly without breaking up derivations
-    // leads to infinite loops.
+    // derivations, specifically member access and function application. Expressing left recursion with combinators
+    // directly, without breaking up derivations into head and tail components, leads to infinite loops.
     .take(Many(memberAccessParser.orElse(applicationArgumentsParser)))
     .map { expr, tail -> SourceRange<Expr> in
       tail.reduce(expr) { reducedExpr, tailElement in
