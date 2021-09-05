@@ -1,0 +1,7 @@
+0:0-0:60 func f(x y: Bool) -> String {
+  if y {
+  "x"
+} else {
+  "not x"
+}
+}

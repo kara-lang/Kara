@@ -166,6 +166,7 @@ final class ParserTests: XCTestCase {
 
   func testFunctionDecl() {
     assertSnapshot(functionDeclParser.parse("func f(x: Int) -> Int { x }"))
+    assertSnapshot(functionDeclParser.parse(#"func f(x y: Bool) -> String { if y { "x" } else { "not x" } }"#))
   }
 
   func testStatefulWhitespace() {
