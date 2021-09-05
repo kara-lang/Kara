@@ -141,33 +141,69 @@ extension Type: CustomDebugStringConvertible {
   }
 }
 
-let typeConstructorParser = identifierSequenceParser
+private let typeConstructorParser = identifierSequenceParser
   .map(TypeIdentifier.init(value:))
   .stateful()
 
-let arrowParser = Terminal("->")
+private let arrowParser = Terminal("->")
   .ignoreOutput()
   .skip(StatefulWhitespace())
   .take(Lazy { typeParser })
+  .map { $0.map(TypeSyntaxTail.arrow) }
 
-let tupleTypeParser = tupleSequenceParser(elementParser: Lazy { typeParser })
+let tupleTypeParser = delimitedSequenceParser(
+  startParser: openParenParser,
+  endParser: closeParenParser,
+  elementParser: Lazy { typeParser }
+)
+
+let genericsParser = delimitedSequenceParser(
+  startParser: openAngleBracketParser,
+  endParser: closeAngleBracketParser,
+  elementParser: Lazy { typeParser },
+  // There's always at least one generic argument to a type constructor, otherwise it shouldn't be written as generic.
+  atLeast: 1
+)
+// Transform the parser to return `TypeSyntaxTail`
+.map {
+  // Transform inner source range element
+  $0.map {
+    // Pluck only `element` value from every argument.
+    TypeSyntaxTail.constructor(arguments: $0.map(\.element))
+  }
+}
+
+enum TypeSyntaxTail {
+  case arrow(output: Type)
+  case constructor(arguments: [Type])
+}
 
 // FIXME: handle generics
 let typeParser: AnyParser<ParsingState, SourceRange<Type>> = typeConstructorParser
-  .skip(StatefulWhitespace())
-  .take(
+  .takeSkippingWhitespace(
     Optional.parser(
       of: arrowParser
+        .orElse(genericsParser)
     )
   )
   .map {
     let headType = $0.map { Type.constructor($0, []) }
-    guard let arrowTail = $1 else { return headType }
+    guard let tail = $1 else { return headType }
 
-    return SourceRange(
-      start: $0.start,
-      end: arrowTail.end,
-      element: Type.arrow([headType.element], arrowTail.element)
-    )
+    switch tail.element {
+    case let .arrow(output):
+      return SourceRange(
+        start: $0.start,
+        end: tail.end,
+        element: Type.arrow([headType.element], output)
+      )
+
+    case let .constructor(arguments):
+      return SourceRange(
+        start: headType.start,
+        end: tail.end,
+        element: Type.constructor($0.element, arguments)
+      )
+    }
   }
   .eraseToAnyParser()

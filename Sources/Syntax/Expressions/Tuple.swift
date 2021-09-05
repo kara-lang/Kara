@@ -8,37 +8,47 @@ public struct Tuple<T> {
   public let elements: [SourceRange<T>]
 }
 
-func tupleSequenceParser<T>(
-  elementParser: Lazy<AnyParser<ParsingState, SourceRange<T>>>
+func delimitedSequenceParser<T>(
+  startParser: Terminal,
+  endParser: Terminal,
+  elementParser: Lazy<AnyParser<ParsingState, SourceRange<T>>>,
+  atLeast minimum: Int = 0
 ) -> AnyParser<ParsingState, SourceRange<[SourceRange<T>]>> {
-  openParenParser
-    .skip(StatefulWhitespace())
-    .take(
+  startParser
+    .takeSkippingWhitespace(
       Many(
         elementParser
-          .skip(StatefulWhitespace())
-          .skip(commaParser)
+          .skipWithWhitespace(commaParser)
           .skip(StatefulWhitespace())
       )
     )
     .take(Optional.parser(of: elementParser))
-    .skip(StatefulWhitespace())
-    .take(closeParenParser)
-    .map { openParen, head, tail, closeParen -> SourceRange<[SourceRange<T>]> in
+    .takeSkippingWhitespace(endParser)
+    .compactMap { startToken, head, tail, endToken -> SourceRange<[SourceRange<T>]>? in
       guard let tail = tail else {
-        return SourceRange(start: openParen.start, end: closeParen.end, element: head)
+        guard head.count >= minimum else { return nil }
+
+        return SourceRange(start: startToken.start, end: endToken.end, element: head)
       }
 
-      return SourceRange(start: openParen.start, end: closeParen.end, element: head + [tail])
+      let result = head + [tail]
+
+      guard result.count >= minimum else { return nil }
+
+      return SourceRange(start: startToken.start, end: endToken.end, element: head + [tail])
     }
     .eraseToAnyParser()
 }
 
-let tupleExprParser = tupleSequenceParser(elementParser: Lazy { exprParser })
-  .map {
-    SourceRange(
-      start: $0.start,
-      end: $0.end,
-      element: Tuple(elements: $0.element)
-    )
-  }
+let tupleExprParser = delimitedSequenceParser(
+  startParser: openParenParser,
+  endParser: closeParenParser,
+  elementParser: Lazy { exprParser }
+)
+.map {
+  SourceRange(
+    start: $0.start,
+    end: $0.end,
+    element: Tuple(elements: $0.element)
+  )
+}

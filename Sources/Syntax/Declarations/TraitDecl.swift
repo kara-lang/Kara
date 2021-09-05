@@ -17,10 +17,8 @@ extension TraitDecl: CustomDebugStringConvertible {
 let traitParser = Terminal("trait")
   .skip(StatefulWhitespace(isRequired: true))
   .take(typeIdentifierParser)
-  .skip(StatefulWhitespace())
-  .skip(openBraceParser)
-  .skip(StatefulWhitespace())
-  .skip(closeBraceParser)
+  .skipWithWhitespace(openBraceParser)
+  .skipWithWhitespace(closeBraceParser)
   .map(\.1)
   // FIXME: generic parameters
   .map { TraitDecl(name: $0) }

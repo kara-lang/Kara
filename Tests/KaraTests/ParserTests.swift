@@ -121,9 +121,34 @@ final class ParserTests: XCTestCase {
     assertSnapshot(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 ).description"))
   }
 
+  func testTypeConstructor() {
+    assertSnapshot(typeParser.parse("Array<Int>"))
+    XCTAssertNil(exprParser.parse("Set<Double").output)
+    assertSnapshot(typeParser.parse("Dictionary <String, Bool>"))
+    assertSnapshot(typeParser.parse("Result <String, IOError,>"))
+    assertSnapshot(
+      typeParser.parse(
+        """
+        Dictionary <String,
+        Array<Bool>
+        >
+        """
+      )
+    )
+  }
+
   func testArrow() {
     assertSnapshot(typeParser.parse("Int -> Double"))
     assertSnapshot(typeParser.parse("Int -> Double -> String"))
+    assertSnapshot(
+      typeParser.parse(
+        """
+        Int ->
+        Double ->
+        String
+        """
+      )
+    )
   }
 
   func testStatefulWhitespace() {

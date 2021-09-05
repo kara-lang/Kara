@@ -12,5 +12,11 @@ public struct FunctionApplication {
 let applicationArgumentsParser =
   StatefulWhitespace()
     .ignoreOutput()
-    .take(tupleSequenceParser(elementParser: Lazy { exprParser }))
+    .take(
+      delimitedSequenceParser(
+        startParser: openParenParser,
+        endParser: closeParenParser,
+        elementParser: Lazy { exprParser }
+      )
+    )
     .map(ExprSyntaxTail.applicationArguments)
