@@ -13,4 +13,4 @@ let applicationArgumentsParser =
   StatefulWhitespace()
     .ignoreOutput()
     .take(tupleSequenceParser(elementParser: Lazy { exprParser }))
-    .map(ExprTail.applicationArguments)
+    .map(ExprSyntaxTail.applicationArguments)

@@ -56,11 +56,12 @@ extension Expr: CustomDebugStringConvertible {
   }
 }
 
-enum ExprTail {
+enum ExprSyntaxTail {
   case memberAccess(SourceRange<Identifier>)
   case applicationArguments(SourceRange<[SourceRange<Expr>]>)
 }
 
+// FIXME: make it internal
 public let exprParser: AnyParser<ParsingState, SourceRange<Expr>> =
   literalParser.map(Expr.literal).stateful()
     .orElse(ifThenElseParser.map { $0.map(Expr.ifThenElse) })

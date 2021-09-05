@@ -41,12 +41,14 @@ let closureParser =
     .skip(StatefulWhitespace())
     .take(
       Optional.parser(
+        // Parses applications of form `f(a, b, c,)`, note the trailing comman
         of: Many(
           identifierParser
             .skip(StatefulWhitespace())
             .skip(commaParser)
             .skip(StatefulWhitespace())
         )
+        // Optional tail component without the comma to parse applications of form `f(a, b, c)`
         .take(
           Optional.parser(of: identifierParser)
         )

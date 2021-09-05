@@ -16,4 +16,4 @@ let memberAccessParser =
       Terminal(".")
     )
     .take(identifierParser)
-    .map(ExprTail.memberAccess)
+    .map(ExprSyntaxTail.memberAccess)
