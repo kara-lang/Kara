@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: MaxDesiatov/swift-windows-action@main
+      - uses: MaxDesiatov/swift-windows-action@v1
         with:
           shell-action: swift build
 # FIXME: re-enable tests when SnapshotTesting is available on Windows.
