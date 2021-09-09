@@ -169,6 +169,14 @@ final class ParserTests: XCTestCase {
     assertSnapshot(functionDeclParser.parse(#"func f(x y: Bool) -> String { if y { "x" } else { "not x" } }"#))
   }
 
+  func testComments() {
+    assertSnapshot(commentsParser.parse("// Hello, world!"))
+    assertSnapshot(commentsParser.parse("/// Hello, world!"))
+    assertSnapshot(commentsParser.parse("/* Hello, world!*/"))
+    assertSnapshot(commentsParser.parse("/** Hello, world!*/"))
+    XCTAssertNil(commentsParser.parse("/* Hello, world!").output)
+  }
+
   func testStatefulWhitespace() {
     let emptyString = ""
     var state = ParsingState(source: emptyString)

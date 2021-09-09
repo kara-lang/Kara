@@ -19,7 +19,8 @@ struct Terminal: Parser {
 typealias UTF8SubSequence = String.UTF8View.SubSequence
 typealias UTF8Terminal = StartsWith<UTF8SubSequence>
 
-let newlineAndWhitespace = [UInt8(ascii: " "), UInt8(ascii: "\n"), UInt8(ascii: "\r")]
+let newlineCodeUnits = [UInt8(ascii: "\n"), UInt8(ascii: "\r")]
+let whitespaceCodeUnits = newlineCodeUnits + [UInt8(ascii: " ")]
 
 let openBraceParser = Terminal("{")
 let closeBraceParser = Terminal("}")
