@@ -60,7 +60,7 @@
         "repositoryURL": "https://github.com/apple/swift-tools-support-core.git",
         "state": {
           "branch": "maxd/basic-product",
-          "revision": "0a4dc4dfec8125a8ed90a6e8dec9c1cdc0fb48ea",
+          "revision": "f2efb72e7019e4490b1d32948a3f6ebe236b40d7",
           "version": null
         }
       }
