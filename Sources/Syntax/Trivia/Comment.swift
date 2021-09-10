@@ -18,14 +18,14 @@ struct Comment {
 let singleLineCommentParser = Terminal("//")
   .take(Prefix { !newlineCodeUnits.contains($0) }.stateful())
   .map { delimiter, content -> SourceRange<Comment> in
-    let isDocComment = content.element.first == UInt8(ascii: "/")
+    let isDocComment = content.content.first == UInt8(ascii: "/")
     return SourceRange(
       start: delimiter.start,
       end: content.end,
-      element: Comment(
+      content: Comment(
         kind: .singleLine,
         isDocComment: isDocComment,
-        content: String(Substring(isDocComment ? content.element.dropFirst() : content.element))
+        content: String(Substring(isDocComment ? content.content.dropFirst() : content.content))
       )
     )
   }
@@ -33,21 +33,19 @@ let singleLineCommentParser = Terminal("//")
 let multipleLinesCommentParser = Terminal("/*")
   .take(
     LineCounter(isRequired: true, lookaheadAmount: 2) {
-      print(Array($0))
-      print("expected \([UInt8(ascii: "*"), UInt8(ascii: "/")])")
-      return Array($0) != [UInt8(ascii: "*"), UInt8(ascii: "/")]
+      Array($0) != [UInt8(ascii: "*"), UInt8(ascii: "/")]
     }
   )
   .take(Terminal("*/"))
   .map { commentStart, content, commentEnd -> SourceRange<Comment> in
-    let isDocComment = content.element.first == UInt8(ascii: "*")
+    let isDocComment = content.content.first == UInt8(ascii: "*")
     return SourceRange(
       start: commentStart.start,
       end: commentEnd.end,
-      element: Comment(
+      content: Comment(
         kind: .multipleLines,
         isDocComment: isDocComment,
-        content: String(Substring(isDocComment ? content.element.dropFirst() : content.element))
+        content: String(Substring(isDocComment ? content.content.dropFirst() : content.content))
       )
     )
   }

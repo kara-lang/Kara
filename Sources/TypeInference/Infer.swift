@@ -33,6 +33,6 @@ extension String {
       throw ParsingError.unknown(startIndex..<endIndex)
     }
 
-    return try expr.element.infer(environment: environment, members: members)
+    return try expr.content.infer(environment: environment, members: members)
   }
 }

@@ -67,7 +67,7 @@ struct LineCounter: Parser {
       return SourceRange(
         start: oldState.sourceLocation,
         end: state.sourceLocation,
-        element: state.source.utf8[oldState.index..<nextIndex]
+        content: state.source.utf8[oldState.index..<nextIndex]
       )
     }
   }

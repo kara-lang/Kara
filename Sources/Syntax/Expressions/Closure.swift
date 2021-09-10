@@ -22,13 +22,13 @@ extension Closure.Parameter {
 
 extension Closure: CustomDebugStringConvertible {
   public var debugDescription: String {
-    let bodyString = body?.element.debugDescription ?? ""
+    let bodyString = body?.content.debugDescription ?? ""
     if parameters.isEmpty {
       return "{ \(bodyString) }"
     } else {
       return """
       { \(
-        parameters.map(\.identifier.element.value)
+        parameters.map(\.identifier.content.value)
           .joined(separator: ", ")
       ) in \(bodyString) }
       """
@@ -77,7 +77,7 @@ let closureParser =
       SourceRange(
         start: openBrace.start,
         end: closeBrace.end,
-        element: Closure(
+        content: Closure(
           parameters: params ?? [],
           body: body
         )

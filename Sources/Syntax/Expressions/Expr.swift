@@ -34,7 +34,7 @@ extension Expr: CustomDebugStringConvertible {
     case let .identifier(i):
       return i.value
     case let .application(app):
-      return "\(app.function.element)(\(app.arguments.map(\.element.debugDescription).joined(separator: ", ")))"
+      return "\(app.function.content)(\(app.arguments.map(\.content.debugDescription).joined(separator: ", ")))"
     case let .closure(l):
       return l.debugDescription
     case let .literal(l):
@@ -42,16 +42,16 @@ extension Expr: CustomDebugStringConvertible {
     case let .ifThenElse(ifThenElse):
       return
         """
-        if \(ifThenElse.condition.element.debugDescription) {
-          \(ifThenElse.thenBranch.element.debugDescription)
+        if \(ifThenElse.condition.content.debugDescription) {
+          \(ifThenElse.thenBranch.content.debugDescription)
         } else {
-          \(ifThenElse.elseBranch.element.debugDescription)
+          \(ifThenElse.elseBranch.content.debugDescription)
         }
         """
     case let .member(memberAccess):
-      return "\(memberAccess.base.element.debugDescription).\(memberAccess.member.element.value)"
+      return "\(memberAccess.base.content.debugDescription).\(memberAccess.member.content.value)"
     case let .tuple(tuple):
-      return "(\(tuple.elements.map(\.element.debugDescription).joined(separator: ", ")))"
+      return "(\(tuple.elements.map(\.content.debugDescription).joined(separator: ", ")))"
     }
   }
 }
@@ -80,13 +80,13 @@ public let exprParser: AnyParser<ParsingState, SourceRange<Expr>> =
           return .init(
             start: reducedExpr.start,
             end: identifier.end,
-            element: .member(.init(base: reducedExpr, member: identifier))
+            content: .member(.init(base: reducedExpr, member: identifier))
           )
         case let .applicationArguments(arguments):
           return .init(
             start: reducedExpr.start,
             end: arguments.end,
-            element: .application(.init(function: reducedExpr, arguments: arguments.element))
+            content: .application(.init(function: reducedExpr, arguments: arguments.content))
           )
         }
       }

@@ -1,13 +1,12 @@
 //
-//  Created by Max Desiatov on 19/08/2021.
+//  Created by Max Desiatov on 10/09/2021.
 //
 
 import Parsing
 
-func statefulWhitespace(isRequired: Bool = false) -> LineCounter {
-  LineCounter(isRequired: isRequired, lookaheadAmount: 1) {
-    $0.first == .init(ascii: " ")
-  }
+enum Trivia {
+  case comment(Comment)
+  case whitespace([UInt8])
 }
 
 extension Parser where Input == ParsingState {

@@ -176,10 +176,10 @@ private let genericsParser = delimitedSequenceParser(
   SourceRange(
     start: genericArguments.start,
     end: arrowOutput?.end ?? genericArguments.end,
-    element: TypeSyntaxTail.generic(
+    content: TypeSyntaxTail.generic(
       // Pluck only `element` value from every argument.
-      arguments: genericArguments.element.map(\.element),
-      arrowOutput: arrowOutput?.element
+      arguments: genericArguments.content.map(\.content),
+      arrowOutput: arrowOutput?.content
     )
   )
 }
@@ -196,7 +196,7 @@ private enum TypeSyntaxTail {
 
 let typeParser: AnyParser<ParsingState, SourceRange<Type>> =
   tupleTypeParser
-    .map { $0.map { TypeSyntaxHead.tuple($0.map(\.element)) } }
+    .map { $0.map { TypeSyntaxHead.tuple($0.map(\.content)) } }
     .orElse(
       typeConstructorParser
         .map { $0.map(TypeSyntaxHead.constructor) }
@@ -212,7 +212,7 @@ let typeParser: AnyParser<ParsingState, SourceRange<Type>> =
     )
     .compactMap {
       let headType: SourceRange<Type>
-      switch $0.element {
+      switch $0.content {
       case let .tuple(elements):
         headType = $0.map { _ in Type.tuple(elements) }
 
@@ -222,29 +222,29 @@ let typeParser: AnyParser<ParsingState, SourceRange<Type>> =
 
       guard let tail = $1 else { return headType }
 
-      switch tail.element {
+      switch tail.content {
       case let .arrow(output):
         return SourceRange(
           start: $0.start,
           end: tail.end,
-          element: Type.arrow([headType.element], output)
+          content: Type.arrow([headType.content], output)
         )
 
       case let .generic(arguments, arrowOutput):
         // FIXME: better error message here?
-        guard case let .constructor(head, _) = headType.element else { return nil }
+        guard case let .constructor(head, _) = headType.content else { return nil }
 
         if let arrowOutput = arrowOutput {
           return SourceRange(
             start: headType.start,
             end: tail.end,
-            element: Type.arrow([.constructor(head, arguments)], arrowOutput)
+            content: Type.arrow([.constructor(head, arguments)], arrowOutput)
           )
         } else {
           return SourceRange(
             start: headType.start,
             end: tail.end,
-            element: Type.constructor(head, arguments)
+            content: Type.constructor(head, arguments)
           )
         }
       }

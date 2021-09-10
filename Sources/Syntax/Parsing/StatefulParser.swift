@@ -62,7 +62,7 @@ struct StatefulParser<P: Parser>: Parser where P.Input == UTF8SubSequence {
         column: state.column - 1,
         line: state.line
       ),
-      element: output
+      content: output
     )
   }
 }

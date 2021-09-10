@@ -17,6 +17,6 @@ let bindingParser = Terminal("let")
     SourceRange(
       start: letTerminal.start,
       end: expr.end,
-      element: BindingDecl(identifier: identifier.element, value: expr.element)
+      content: BindingDecl(identifier: identifier.content, value: expr.content)
     )
   }

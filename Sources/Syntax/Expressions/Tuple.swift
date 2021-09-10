@@ -28,14 +28,14 @@ func delimitedSequenceParser<T, P: Parser>(
       guard let tail = tail else {
         guard head.count >= minimum else { return nil }
 
-        return SourceRange(start: startToken.start, end: endToken.end, element: head)
+        return SourceRange(start: startToken.start, end: endToken.end, content: head)
       }
 
       let result = head + [tail]
 
       guard result.count >= minimum else { return nil }
 
-      return SourceRange(start: startToken.start, end: endToken.end, element: head + [tail])
+      return SourceRange(start: startToken.start, end: endToken.end, content: head + [tail])
     }
     .eraseToAnyParser()
 }
@@ -49,6 +49,6 @@ let tupleExprParser = delimitedSequenceParser(
   SourceRange(
     start: $0.start,
     end: $0.end,
-    element: Tuple(elements: $0.element)
+    content: Tuple(elements: $0.content)
   )
 }

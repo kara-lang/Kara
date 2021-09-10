@@ -16,19 +16,19 @@ public struct SourceLocation {
   let filePath: String?
 }
 
-public struct SourceRange<Element> {
+public struct SourceRange<Content> {
   let start: SourceLocation
   let end: SourceLocation
 
-  public let element: Element
+  public let content: Content
 
-  func map<NewElement>(_ transform: (Element) -> NewElement) -> SourceRange<NewElement> {
-    .init(start: start, end: end, element: transform(element))
+  func map<NewContent>(_ transform: (Content) -> NewContent) -> SourceRange<NewContent> {
+    .init(start: start, end: end, content: transform(content))
   }
 }
 
 extension SourceRange: CustomDebugStringConvertible {
   public var debugDescription: String {
-    "\(start.line):\(start.column)-\(end.line):\(end.column) \(String(reflecting: element))"
+    "\(start.line):\(start.column)-\(end.line):\(end.column) \(String(reflecting: content))"
   }
 }

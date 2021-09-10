@@ -141,47 +141,47 @@ struct ConstraintSystem {
       return try lookup(id, in: environment, orThrow: .unbound(id))
 
     case let .closure(l):
-      let ids = l.parameters.map(\.identifier.element)
+      let ids = l.parameters.map(\.identifier.content)
       let parameters = ids.map { _ in fresh() }
       return try .arrow(
         parameters,
-        infer(inExtended: zip(ids, parameters.map { Scheme($0) }), l.body?.element ?? .unit)
+        infer(inExtended: zip(ids, parameters.map { Scheme($0) }), l.body?.content ?? .unit)
       )
 
     case let .application(app):
-      let callableType = try infer(app.function.element)
+      let callableType = try infer(app.function.content)
       let typeVariable = fresh()
       constraints.append(.equal(
         callableType,
-        .arrow(try app.arguments.map { try infer($0.element) }, typeVariable)
+        .arrow(try app.arguments.map { try infer($0.content) }, typeVariable)
       ))
       return typeVariable
 
     case let .ifThenElse(ifThenElse):
-      let result = try infer(ifThenElse.thenBranch.element)
+      let result = try infer(ifThenElse.thenBranch.content)
       try constraints.append(contentsOf: [
-        .equal(infer(ifThenElse.condition.element), .bool),
-        .equal(result, infer(ifThenElse.elseBranch.element)),
+        .equal(infer(ifThenElse.condition.content), .bool),
+        .equal(result, infer(ifThenElse.elseBranch.content)),
       ])
       return result
 
     case let .member(memberAccess):
-      switch try infer(memberAccess.base.element) {
+      switch try infer(memberAccess.base.content) {
       case .arrow:
-        throw TypeError.arrowMember(memberAccess.member.element)
+        throw TypeError.arrowMember(memberAccess.member.content)
 
       case let .constructor(typeID, _):
-        return try lookup(memberAccess.member.element, in: typeID)
+        return try lookup(memberAccess.member.content, in: typeID)
 
       case let .variable(v):
         let memberType = fresh()
         constraints.append(
-          .member(.variable(v), member: memberAccess.member.element, memberType: memberType)
+          .member(.variable(v), member: memberAccess.member.content, memberType: memberType)
         )
         return memberType
 
       case let .tuple(elements):
-        if let idx = Int(memberAccess.member.element.value) {
+        if let idx = Int(memberAccess.member.content.value) {
           guard (0..<elements.count).contains(idx) else {
             throw TypeError.tupleIndexOutOfRange(
               total: elements.count,
@@ -191,12 +191,12 @@ struct ConstraintSystem {
 
           return elements[idx]
         } else {
-          throw TypeError.unknownTupleMember(memberAccess.member.element)
+          throw TypeError.unknownTupleMember(memberAccess.member.content)
         }
       }
 
     case let .tuple(tuple):
-      return try .tuple(tuple.elements.map { try infer($0.element) })
+      return try .tuple(tuple.elements.map { try infer($0.content) })
     }
   }
 }

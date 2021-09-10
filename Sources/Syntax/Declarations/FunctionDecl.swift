@@ -23,16 +23,16 @@ public struct FunctionDecl {
 extension FunctionDecl: CustomDebugStringConvertible {
   public var debugDescription: String {
     """
-    func \(identifier.element.value)(\(
-      parameters.element.map {
+    func \(identifier.content.value)(\(
+      parameters.content.map {
         """
-        \($0.externalName?.element.value ?? "")\(
+        \($0.externalName?.content.value ?? "")\(
           $0.externalName == nil ? "" : " "
-        )\($0.internalName.element.value): \($0.type.element)
+        )\($0.internalName.content.value): \($0.type.content)
         """
       }.joined(separator: ", ")
     )) -> \(returns) {
-      \(body.element)
+      \(body.content)
     }
     """
   }
@@ -46,7 +46,7 @@ let functionParameterParser = identifierParser
     SourceRange(
       start: firstName.start,
       end: type.end,
-      element: FunctionDecl.Parameter(
+      content: FunctionDecl.Parameter(
         externalName: secondName == nil ? nil : firstName,
         internalName: secondName == nil ? firstName : secondName!,
         type: type
@@ -73,13 +73,13 @@ let functionDeclParser = Terminal("func")
     SourceRange(
       start: $0.start,
       end: $5.end,
-      element:
+      content:
       FunctionDecl(
         identifier: $1,
         // FIXME: fix generic parameters parsing
         genericParameters: [],
-        parameters: $2.map { $0.map(\.element) },
-        returns: $3?.element ?? .unit,
+        parameters: $2.map { $0.map(\.content) },
+        returns: $3?.content ?? .unit,
         body: $4
       )
     )

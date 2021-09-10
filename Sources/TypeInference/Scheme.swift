@@ -28,7 +28,7 @@ struct Scheme {
 extension FunctionDecl {
   var scheme: Scheme {
     Scheme(
-      parameters.element.map(\.type.element) --> returns,
+      parameters.content.map(\.type.content) --> returns,
       variables: genericParameters
     )
   }

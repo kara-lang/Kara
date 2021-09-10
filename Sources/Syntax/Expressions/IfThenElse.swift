@@ -32,7 +32,7 @@ let ifThenElseParser = Terminal("if")
     SourceRange(
       start: ifToken.start,
       end: closeBrace.end,
-      element: IfThenElse(
+      content: IfThenElse(
         condition: condition,
         thenBranch: thenBranch,
         elseBranch: elseBranch
