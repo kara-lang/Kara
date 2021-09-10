@@ -31,12 +31,19 @@ let singleLineCommentParser = Terminal("//")
   }
 
 let multipleLinesCommentParser = Terminal("/*")
-  .take(PrefixUpTo("*/".utf8).stateful())
-  .map { delimiter, content -> SourceRange<Comment> in
+  .take(
+    LineCounter(isRequired: true, lookaheadAmount: 2) {
+      print(Array($0))
+      print("expected \([UInt8(ascii: "*"), UInt8(ascii: "/")])")
+      return Array($0) != [UInt8(ascii: "*"), UInt8(ascii: "/")]
+    }
+  )
+  .take(Terminal("*/"))
+  .map { commentStart, content, commentEnd -> SourceRange<Comment> in
     let isDocComment = content.element.first == UInt8(ascii: "*")
     return SourceRange(
-      start: delimiter.start,
-      end: content.end,
+      start: commentStart.start,
+      end: commentEnd.end,
       element: Comment(
         kind: .multipleLines,
         isDocComment: isDocComment,

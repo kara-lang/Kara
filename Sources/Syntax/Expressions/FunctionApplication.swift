@@ -10,7 +10,7 @@ public struct FunctionApplication {
 }
 
 let applicationArgumentsParser =
-  StatefulWhitespace()
+  statefulWhitespace()
     .ignoreOutput()
     .take(
       delimitedSequenceParser(

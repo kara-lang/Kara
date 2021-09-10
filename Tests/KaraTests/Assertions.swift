@@ -52,7 +52,7 @@ func assertFullyConsumed(
   testName: String = #function,
   line: UInt = #line
 ) {
-  XCTAssertEqual(state.currentIndex, state.source.utf8.endIndex, file: file, line: line)
+  XCTAssertEqual(state.index, state.source.utf8.endIndex, file: file, line: line)
 }
 
 func assertNotFullyConsumed(
@@ -61,5 +61,5 @@ func assertNotFullyConsumed(
   testName: String = #function,
   line: UInt = #line
 ) {
-  XCTAssertNotEqual(state.currentIndex, state.source.utf8.endIndex, file: file, line: line)
+  XCTAssertNotEqual(state.index, state.source.utf8.endIndex, file: file, line: line)
 }

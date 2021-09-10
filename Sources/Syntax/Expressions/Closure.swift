@@ -44,15 +44,15 @@ let closureParser =
         of: Many(
           identifierParser
             .skipWithWhitespace(commaParser)
-            .skip(StatefulWhitespace())
+            .skip(statefulWhitespace())
         )
         // Optional tail component without the comma to parse applications of form `f(a, b, c)`
         .take(
           Optional.parser(of: identifierParser)
         )
-        .skip(StatefulWhitespace(isRequired: true))
+        .skip(statefulWhitespace(isRequired: true))
         .skip(Terminal("in"))
-        .skip(StatefulWhitespace(isRequired: true))
+        .skip(statefulWhitespace(isRequired: true))
         .map { head, tail -> [Closure.Parameter] in
           guard let tail = tail else {
             return head
@@ -71,7 +71,7 @@ let closureParser =
         }
       )
     )
-    .skip(StatefulWhitespace())
+    .skip(statefulWhitespace())
     .take(closeBraceParser)
     .map { openBrace, params, body, closeBrace in
       SourceRange(

@@ -6,15 +6,24 @@ import Parsing
 
 public struct ParsingState: Equatable {
   let source: String
-  var currentIndex: String.UTF8View.Index
-  var currentColumn = 0
-  var currentLine = 0
+  var index: String.UTF8View.Index
+  var column = 0
+  var line = 0
+
+  mutating func nextLine() {
+    column = 0
+    line += 1
+  }
+
+  var sourceLocation: SourceLocation {
+    .init(column: column, line: line, filePath: nil)
+  }
 }
 
 public extension ParsingState {
   init(source: String) {
     self.source = source
-    currentIndex = source.startIndex
+    index = source.startIndex
   }
 }
 
@@ -26,7 +35,7 @@ extension ParsingState: ExpressibleByStringLiteral {
 
 extension ParsingState: CustomDebugStringConvertible {
   public var debugDescription: String {
-    String(source[currentIndex...])
+    String(source[index...])
   }
 }
 
@@ -34,24 +43,24 @@ struct StatefulParser<P: Parser>: Parser where P.Input == UTF8SubSequence {
   let inner: P
 
   func parse(_ state: inout ParsingState) -> SourceRange<P.Output>? {
-    let startColumn = state.currentColumn
-    let startLine = state.currentLine
+    let startColumn = state.column
+    let startLine = state.line
 
-    var substring = state.source.utf8[state.currentIndex...]
+    var substring = state.source.utf8[state.index...]
     let initialCount = substring.count
 
     guard let output = inner.parse(&substring) else {
       return nil
     }
 
-    state.currentIndex = substring.startIndex
-    state.currentColumn += initialCount - substring.count
+    state.index = substring.startIndex
+    state.column += initialCount - substring.count
 
     return SourceRange(
       start: .init(column: startColumn, line: startLine),
       end: .init(
-        column: state.currentColumn - 1,
-        line: state.currentLine
+        column: state.column - 1,
+        line: state.line
       ),
       element: output
     )

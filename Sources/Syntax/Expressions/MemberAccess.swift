@@ -10,7 +10,7 @@ public struct MemberAccess {
 }
 
 let memberAccessParser =
-  StatefulWhitespace()
+  statefulWhitespace()
     .ignoreOutput()
     .skip(
       Terminal(".")

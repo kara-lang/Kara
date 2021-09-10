@@ -15,7 +15,7 @@ extension TraitDecl: CustomDebugStringConvertible {
 }
 
 let traitParser = Terminal("trait")
-  .skip(StatefulWhitespace(isRequired: true))
+  .skip(statefulWhitespace(isRequired: true))
   .take(typeIdentifierParser)
   .skipWithWhitespace(openBraceParser)
   .skipWithWhitespace(closeBraceParser)

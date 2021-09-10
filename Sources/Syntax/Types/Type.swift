@@ -149,7 +149,7 @@ private let typeConstructorParser = identifierSequenceParser
 
 let arrowParser = Terminal("->")
   .ignoreOutput()
-  .skip(StatefulWhitespace())
+  .skip(statefulWhitespace())
   .take(Lazy { typeParser })
 
 let tupleTypeParser = delimitedSequenceParser(

@@ -20,7 +20,7 @@ extension StructDecl: CustomDebugStringConvertible {
 }
 
 let structParser = Terminal("struct")
-  .skip(StatefulWhitespace(isRequired: true))
+  .skip(statefulWhitespace(isRequired: true))
   .take(typeIdentifierParser)
   .skipWithWhitespace(openBraceParser)
   .skipWithWhitespace(closeBraceParser)

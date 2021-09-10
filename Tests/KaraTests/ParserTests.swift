@@ -174,19 +174,48 @@ final class ParserTests: XCTestCase {
     assertSnapshot(commentsParser.parse("/// Hello, world!"))
     assertSnapshot(commentsParser.parse("/* Hello, world!*/"))
     assertSnapshot(commentsParser.parse("/** Hello, world!*/"))
+    assertSnapshot(
+      commentsParser.parse(
+        """
+        /* Hello, world!
+        World, hello!
+        */
+        """
+      )
+    )
+    assertSnapshot(
+      commentsParser.parse(
+        """
+        /** Hello, world!
+        World, hello!
+        More content here. */
+        """
+      )
+    )
+    assertSnapshot(
+      commentsParser.parse(
+        """
+        /** Hello, world!
+        // Inner comment
+
+
+                    More content here. */
+        """
+      )
+    )
     XCTAssertNil(commentsParser.parse("/* Hello, world!").output)
   }
 
   func testStatefulWhitespace() {
     let emptyString = ""
     var state = ParsingState(source: emptyString)
-    let parser = StatefulWhitespace()
+    let parser = statefulWhitespace()
 
     XCTAssertNotNil(parser.parse(&state))
 
     XCTAssertEqual(
       state,
-      ParsingState(source: emptyString, currentIndex: emptyString.startIndex, currentColumn: 0, currentLine: 0)
+      ParsingState(source: emptyString, index: emptyString.startIndex, column: 0, line: 0)
     )
 
     let unixNewline = "\n"
@@ -196,7 +225,7 @@ final class ParserTests: XCTestCase {
 
     XCTAssertEqual(
       state,
-      ParsingState(source: unixNewline, currentIndex: unixNewline.endIndex, currentColumn: 0, currentLine: 1)
+      ParsingState(source: unixNewline, index: unixNewline.endIndex, column: 0, line: 1)
     )
 
     let classicMacNewline = "\r"
@@ -208,9 +237,9 @@ final class ParserTests: XCTestCase {
       state,
       ParsingState(
         source: classicMacNewline,
-        currentIndex: classicMacNewline.endIndex,
-        currentColumn: 0,
-        currentLine: 1
+        index: classicMacNewline.endIndex,
+        column: 0,
+        line: 1
       )
     )
 
@@ -223,9 +252,9 @@ final class ParserTests: XCTestCase {
       state,
       ParsingState(
         source: windowsNewline,
-        currentIndex: windowsNewline.endIndex,
-        currentColumn: 0,
-        currentLine: 1
+        index: windowsNewline.endIndex,
+        column: 0,
+        line: 1
       )
     )
 
@@ -238,9 +267,9 @@ final class ParserTests: XCTestCase {
       state,
       ParsingState(
         source: trailingCharacters,
-        currentIndex: trailingCharacters.firstIndex(of: "f")!,
-        currentColumn: 2,
-        currentLine: 1
+        index: trailingCharacters.firstIndex(of: "f")!,
+        column: 2,
+        line: 1
       )
     )
 
@@ -253,9 +282,9 @@ final class ParserTests: XCTestCase {
       state,
       ParsingState(
         source: noWhitespaces,
-        currentIndex: noWhitespaces.startIndex,
-        currentColumn: 0,
-        currentLine: 0
+        index: noWhitespaces.startIndex,
+        column: 0,
+        line: 0
       )
     )
   }
@@ -263,13 +292,13 @@ final class ParserTests: XCTestCase {
   func testRequiredWhitespace() {
     let emptyString = ""
     var state = ParsingState(source: emptyString)
-    let parser = StatefulWhitespace(isRequired: true)
+    let parser = statefulWhitespace(isRequired: true)
 
     XCTAssertNil(parser.parse(&state))
 
     XCTAssertEqual(
       state,
-      ParsingState(source: emptyString, currentIndex: emptyString.startIndex, currentColumn: 0, currentLine: 0)
+      ParsingState(source: emptyString, index: emptyString.startIndex, column: 0, line: 0)
     )
 
     let unixNewline = "\n"
@@ -279,7 +308,7 @@ final class ParserTests: XCTestCase {
 
     XCTAssertEqual(
       state,
-      ParsingState(source: unixNewline, currentIndex: unixNewline.endIndex, currentColumn: 0, currentLine: 1)
+      ParsingState(source: unixNewline, index: unixNewline.endIndex, column: 0, line: 1)
     )
 
     let classicMacNewline = "\r"
@@ -291,9 +320,9 @@ final class ParserTests: XCTestCase {
       state,
       ParsingState(
         source: classicMacNewline,
-        currentIndex: classicMacNewline.endIndex,
-        currentColumn: 0,
-        currentLine: 1
+        index: classicMacNewline.endIndex,
+        column: 0,
+        line: 1
       )
     )
 
@@ -306,9 +335,9 @@ final class ParserTests: XCTestCase {
       state,
       ParsingState(
         source: windowsNewline,
-        currentIndex: windowsNewline.endIndex,
-        currentColumn: 0,
-        currentLine: 1
+        index: windowsNewline.endIndex,
+        column: 0,
+        line: 1
       )
     )
 
@@ -321,9 +350,9 @@ final class ParserTests: XCTestCase {
       state,
       ParsingState(
         source: trailingCharacters,
-        currentIndex: trailingCharacters.firstIndex(of: "f")!,
-        currentColumn: 2,
-        currentLine: 1
+        index: trailingCharacters.firstIndex(of: "f")!,
+        column: 2,
+        line: 1
       )
     )
 
@@ -336,9 +365,9 @@ final class ParserTests: XCTestCase {
       state,
       ParsingState(
         source: noWhitespaces,
-        currentIndex: noWhitespaces.startIndex,
-        currentColumn: 0,
-        currentLine: 0
+        index: noWhitespaces.startIndex,
+        column: 0,
+        line: 0
       )
     )
   }

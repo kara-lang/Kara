@@ -19,7 +19,7 @@ func delimitedSequenceParser<T, P: Parser>(
       Many(
         elementParser
           .skipWithWhitespace(commaParser)
-          .skip(StatefulWhitespace())
+          .skip(statefulWhitespace())
       )
     )
     .take(Optional.parser(of: elementParser))
