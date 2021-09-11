@@ -1,1 +1,1 @@
-0:0-0:16 Syntax.Comment(kind: Syntax.Comment.Kind.singleLine, isDocComment: true, content: " Hello, world!")
+0:0-0:16 Comment { kind: .singleLine; isDocComment: true; content: " Hello, world!"; }

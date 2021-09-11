@@ -15,6 +15,23 @@ struct Comment {
   let content: String
 }
 
+extension Comment: CustomStringConvertible {
+  var description: String {
+    switch kind {
+    case .singleLine:
+      return "//\(isDocComment ? "/" : "")\(content)"
+    case .multipleLines:
+      return "/*\(isDocComment ? "*" : "")\(content)*/"
+    }
+  }
+}
+
+extension Comment: CustomDebugStringConvertible {
+  var debugDescription: String {
+    #"Comment { kind: .\#(kind); isDocComment: \#(isDocComment); content: "\#(content)"; }"#
+  }
+}
+
 let singleLineCommentParser = Terminal("//")
   .take(Prefix { !newlineCodeUnits.contains($0) }.stateful())
   .map { delimiter, content -> SourceRange<Comment> in
