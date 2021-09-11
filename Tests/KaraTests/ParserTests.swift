@@ -170,12 +170,12 @@ final class ParserTests: XCTestCase {
   }
 
   func testComments() {
-    assertSnapshot(commentsParser.parse("// Hello, world!"))
-    assertSnapshot(commentsParser.parse("/// Hello, world!"))
-    assertSnapshot(commentsParser.parse("/* Hello, world!*/"))
-    assertSnapshot(commentsParser.parse("/** Hello, world!*/"))
+    assertSnapshot(commentParser.parse("// Hello, world!"))
+    assertSnapshot(commentParser.parse("/// Hello, world!"))
+    assertSnapshot(commentParser.parse("/* Hello, world!*/"))
+    assertSnapshot(commentParser.parse("/** Hello, world!*/"))
     assertSnapshot(
-      commentsParser.parse(
+      commentParser.parse(
         """
         /* Hello, world!
         World, hello!
@@ -184,7 +184,7 @@ final class ParserTests: XCTestCase {
       )
     )
     assertSnapshot(
-      commentsParser.parse(
+      commentParser.parse(
         """
         /** Hello, world!
         World, hello!
@@ -193,7 +193,7 @@ final class ParserTests: XCTestCase {
       )
     )
     assertSnapshot(
-      commentsParser.parse(
+      commentParser.parse(
         """
         /** Hello, world!
         // Inner comment
@@ -203,7 +203,7 @@ final class ParserTests: XCTestCase {
         """
       )
     )
-    XCTAssertNil(commentsParser.parse("/* Hello, world!").output)
+    XCTAssertNil(commentParser.parse("/* Hello, world!").output)
   }
 
   func testStatefulWhitespace() {

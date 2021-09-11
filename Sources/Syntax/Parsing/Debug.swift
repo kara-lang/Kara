@@ -4,15 +4,15 @@
 
 import Parsing
 
-struct Debug<Upstream: Parser>: Parser {
-  let upstream: Upstream
+struct Debug<Inner: Parser>: Parser {
+  let inner: Inner
   let file: StaticString
   let line: Int
 
-  func parse(_ input: inout Upstream.Input) -> Upstream.Output? {
+  func parse(_ input: inout Inner.Input) -> Inner.Output? {
     let oldInput = input
 
-    let output = upstream.parse(&input)
+    let output = inner.parse(&input)
 
     print("Debug formed at \(file):\(line)")
     if output != nil {
@@ -27,7 +27,7 @@ struct Debug<Upstream: Parser>: Parser {
 
 extension Parser {
   func debug(file: StaticString = #file, line: Int = #line) -> Debug<Self> {
-    Debug(upstream: self, file: file, line: line)
+    Debug(inner: self, file: file, line: line)
   }
 }
 

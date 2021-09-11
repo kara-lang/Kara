@@ -5,18 +5,24 @@
 import Parsing
 
 struct BindingDecl {
-  let identifier: Identifier
-  let value: Expr
+  let identifier: SyntaxNode<Identifier>
+  let value: SyntaxNode<Expr>
 }
 
-let bindingParser = Terminal("let")
-  .takeSkippingWhitespace(identifierParser)
+let bindingParser = SyntaxNodeParser(Terminal("let"))
+  .take(SyntaxNodeParser(identifierParser))
   .skipWithWhitespace(Terminal("="))
-  .takeSkippingWhitespace(exprParser)
-  .map { letTerminal, identifier, expr in
-    SourceRange(
-      start: letTerminal.start,
-      end: expr.end,
-      content: BindingDecl(identifier: identifier.content, value: expr.content)
+  .take(SyntaxNodeParser(exprParser))
+  .map { letNode, identifierNode, exprNode in
+    SyntaxNode(
+      leadingTrivia: letNode.leadingTrivia,
+      content: SourceRange(
+        start: letNode.content.start,
+        end: exprNode.content.end,
+        content: BindingDecl(
+          identifier: identifierNode,
+          value: exprNode
+        )
+      )
     )
   }

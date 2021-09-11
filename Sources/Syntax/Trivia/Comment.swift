@@ -50,4 +50,4 @@ let multipleLinesCommentParser = Terminal("/*")
     )
   }
 
-let commentsParser = singleLineCommentParser.orElse(multipleLinesCommentParser)
+let commentParser = singleLineCommentParser.orElse(multipleLinesCommentParser)

@@ -4,16 +4,16 @@
 
 import Parsing
 
-struct Lookahead<Upstream: Parser>: Parser where Upstream.Input: Collection {
-  let upstream: Upstream
+struct Lookahead<Inner: Parser>: Parser where Inner.Input: Collection {
+  let inner: Inner
   let amount: Int
-  let validator: (Input.SubSequence) -> Bool
+  let isValid: (Input.SubSequence) -> Bool
 
-  func parse(_ input: inout Upstream.Input) -> Upstream.Output? {
+  func parse(_ input: inout Inner.Input) -> Inner.Output? {
     let oldInput = input
-    let output = upstream.parse(&input)
+    let output = inner.parse(&input)
 
-    guard let output = output, validator(input.prefix(amount)) else {
+    guard let output = output, isValid(input.prefix(amount)) else {
       input = oldInput
       return nil
     }
@@ -25,8 +25,8 @@ struct Lookahead<Upstream: Parser>: Parser where Upstream.Input: Collection {
 extension Parser where Input: Collection {
   func lookahead(
     amount: Int,
-    _ validator: @escaping (Input.SubSequence) -> Bool
+    _ isValid: @escaping (Input.SubSequence) -> Bool
   ) -> Lookahead<Self> {
-    Lookahead(upstream: self, amount: amount, validator: validator)
+    Lookahead(inner: self, amount: amount, isValid: isValid)
   }
 }

@@ -6,8 +6,26 @@ import Parsing
 
 enum Trivia {
   case comment(Comment)
-  case whitespace([UInt8])
+  case whitespace(UTF8SubSequence)
 }
+
+extension Trivia: CustomStringConvertible {
+  var description: String {
+    switch self {
+    case let .comment(content):
+      return String(describing: content)
+    case let .whitespace(content):
+      return String(Substring(content))
+    }
+  }
+}
+
+let triviaParser = commentParser
+  .map { $0.map(Trivia.comment) }
+  .orElse(
+    statefulWhitespace()
+      .map { $0.map(Trivia.whitespace) }
+  )
 
 extension Parser where Input == ParsingState {
   func skipWithWhitespace<P>(
