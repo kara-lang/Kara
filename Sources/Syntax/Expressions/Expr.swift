@@ -62,7 +62,7 @@ enum ExprSyntaxTail {
 }
 
 // FIXME: make it internal
-public let exprParser: AnyParser<ParsingState, SourceRange<Expr>> =
+public let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
   literalParser.map(Expr.literal).stateful()
     .orElse(ifThenElseParser.map { $0.map(Expr.ifThenElse) })
     .orElse(identifierParser.map { $0.map(Expr.identifier) })
@@ -73,20 +73,26 @@ public let exprParser: AnyParser<ParsingState, SourceRange<Expr>> =
     // derivations, specifically member access and function application. Expressing left recursion with combinators
     // directly, without breaking up derivations into head and tail components, leads to infinite loops.
     .take(Many(memberAccessParser.orElse(applicationArgumentsParser)))
-    .map { expr, tail -> SourceRange<Expr> in
+    .map { expr, tail -> SyntaxNode<Expr> in
       tail.reduce(expr) { reducedExpr, tailElement in
         switch tailElement {
         case let .memberAccess(identifier):
-          return .init(
-            start: reducedExpr.start,
-            end: identifier.end,
-            content: .member(.init(base: reducedExpr, member: identifier))
+          return SyntaxNode(
+            leadingTrivia: [],
+            content: .init(
+              start: reducedExpr.start,
+              end: identifier.end,
+              content: .member(.init(base: reducedExpr, member: identifier))
+            )
           )
         case let .applicationArguments(arguments):
-          return .init(
-            start: reducedExpr.start,
-            end: arguments.end,
-            content: .application(.init(function: reducedExpr, arguments: arguments.content))
+          return SyntaxNode(
+            leadingTrivia: [],
+            content: .init(
+              start: reducedExpr.start,
+              end: arguments.end,
+              content: .application(.init(function: reducedExpr, arguments: arguments.content))
+            )
           )
         }
       }

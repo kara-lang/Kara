@@ -4,7 +4,7 @@
 
 import Parsing
 
-struct SyntaxNode<Content> {
+public struct SyntaxNode<Content> {
   let leadingTrivia: [Trivia]
   let content: SourceRange<Content>
 
@@ -14,7 +14,7 @@ struct SyntaxNode<Content> {
 }
 
 extension SyntaxNode: CustomStringConvertible {
-  var description: String {
+  public var description: String {
     "\(leadingTrivia.map(\.description).joined())\(String(describing: content.content))"
   }
 }

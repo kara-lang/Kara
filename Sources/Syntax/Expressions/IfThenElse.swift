@@ -5,28 +5,19 @@
 import Parsing
 
 public struct IfThenElse {
-  public let condition: SourceRange<Expr>
-  public let thenBranch: SourceRange<Expr>
-  public let elseBranch: SourceRange<Expr>
+  public let condition: SyntaxNode<Expr>
+  public let thenBranch: SyntaxNode<Expr>
+  public let elseBranch: SyntaxNode<Expr>
 }
 
 let ifThenElseParser = Terminal("if")
-  .takeSkippingWhitespace(Lazy {
-    exprParser
-
-  })
+  .takeSkippingWhitespace(Lazy { exprParser })
   .skipWithWhitespace(openBraceParser)
-  .takeSkippingWhitespace(Lazy {
-    exprParser
-
-  })
+  .takeSkippingWhitespace(Lazy { exprParser })
   .skipWithWhitespace(closeBraceParser)
   .skipWithWhitespace(Terminal("else"))
   .skipWithWhitespace(openBraceParser)
-  .takeSkippingWhitespace(Lazy {
-    exprParser
-
-  })
+  .takeSkippingWhitespace(Lazy { exprParser })
   .takeSkippingWhitespace(closeBraceParser)
   .map { ifToken, condition, thenBranch, elseBranch, closeBrace in
     SourceRange(
