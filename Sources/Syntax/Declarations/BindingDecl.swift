@@ -11,7 +11,7 @@ struct BindingDecl {
 }
 
 let bindingParser = SyntaxNodeParser(Terminal("let"))
-  .take(SyntaxNodeParser(identifierParser))
+  .take(identifierParser)
   .take(SyntaxNodeParser(Terminal("=")))
   .take(exprParser)
   .map { letNode, identifierNode, equalsSignNode, exprNode in

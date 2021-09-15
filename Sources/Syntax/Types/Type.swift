@@ -172,80 +172,90 @@ private let genericsParser = delimitedSequenceParser(
   )
 )
 .map { genericArguments, arrowOutput in
-  // Transform inner source range element.
-  SourceRange(
-    start: genericArguments.start,
-    end: arrowOutput?.end ?? genericArguments.end,
-    content: TypeSyntaxTail.generic(
-      // Pluck only `element` value from every argument.
-      arguments: genericArguments.content.map(\.content),
-      arrowOutput: arrowOutput?.content
-    )
+  TypeSyntaxTail.generic(
+    arguments: genericArguments,
+    arrowOutput: arrowOutput
   )
 }
+.eraseToAnyParser()
 
 private enum TypeSyntaxHead {
-  case tuple([Type])
-  case constructor(head: TypeIdentifier)
+  case tuple(DelimitedSequence<Type>)
+  case constructor(head: SyntaxNode<TypeIdentifier>)
 }
 
 private enum TypeSyntaxTail {
-  case arrow(output: Type)
-  case generic(arguments: [Type], arrowOutput: Type?)
+  case arrow(output: SyntaxNode<Type>)
+  case generic(arguments: DelimitedSequence<Type>, arrowOutput: SyntaxNode<Type>?)
 }
 
-let typeParser: AnyParser<ParsingState, SourceRange<Type>> =
+let typeParser: AnyParser<ParsingState, SyntaxNode<Type>> =
   tupleTypeParser
-    .map { $0.map { TypeSyntaxHead.tuple($0.map(\.content)) } }
+    .map { TypeSyntaxHead.tuple($0) }
     .orElse(
-      typeConstructorParser
-        .map { $0.map(TypeSyntaxHead.constructor) }
+      SyntaxNodeParser(typeConstructorParser)
+        .map(TypeSyntaxHead.constructor)
     )
     .takeSkippingWhitespace(
       Optional.parser(
         of: arrowParser
-          .map { $0.map(TypeSyntaxTail.arrow) }
+          .map(TypeSyntaxTail.arrow)
           .orElse(
             genericsParser
           )
       )
     )
-    .compactMap {
-      let headType: SourceRange<Type>
-      switch $0.content {
-      case let .tuple(elements):
-        headType = $0.map { _ in Type.tuple(elements) }
+    .compactMap { (head: TypeSyntaxHead, tail: TypeSyntaxTail?) -> SyntaxNode<Type>? in
+      let headType: SyntaxNode<Type>
+      let leadingTrivia: [Trivia]
+      switch head {
+      case let .tuple(sequence):
+        // FIXME: sequence.end is lost here
+        headType = sequence.start.map { Type.tuple(sequence.elementsContent) }
+        leadingTrivia = sequence.start.leadingTrivia
 
       case let .constructor(typeIdentifier):
-        headType = $0.map { _ in Type.constructor(typeIdentifier, []) }
+        headType = typeIdentifier.map { Type.constructor($0, []) }
+        leadingTrivia = typeIdentifier.leadingTrivia
       }
 
-      guard let tail = $1 else { return headType }
+      guard let tail = tail else { return headType }
 
-      switch tail.content {
+      switch tail {
       case let .arrow(output):
-        return SourceRange(
-          start: $0.start,
-          end: tail.end,
-          content: Type.arrow([headType.content], output)
+        return SyntaxNode(
+          leadingTrivia: leadingTrivia,
+          content: SourceRange(
+            start: headType.content.start,
+            end: output.content.end,
+            content: Type.arrow([headType.content.content], output.content.content)
+          )
         )
 
       case let .generic(arguments, arrowOutput):
         // FIXME: better error message here?
-        guard case let .constructor(head, _) = headType.content else { return nil }
+        guard case let .constructor(head, _) = headType.content.content else { return nil }
 
         if let arrowOutput = arrowOutput {
-          return SourceRange(
-            start: headType.start,
-            end: tail.end,
-            content: Type.arrow([.constructor(head, arguments)], arrowOutput)
-          )
+          return
+            SyntaxNode(
+              leadingTrivia: leadingTrivia,
+              content: SourceRange(
+                start: headType.content.start,
+                end: arrowOutput.content.end,
+                content: Type.arrow([.constructor(head, arguments.elementsContent)], arrowOutput.content.content)
+              )
+            )
         } else {
-          return SourceRange(
-            start: headType.start,
-            end: tail.end,
-            content: Type.constructor(head, arguments)
-          )
+          return
+            SyntaxNode(
+              leadingTrivia: leadingTrivia,
+              content: SourceRange(
+                start: headType.content.start,
+                end: headType.content.end,
+                content: Type.constructor(head, arguments.elementsContent)
+              )
+            )
         }
       }
     }

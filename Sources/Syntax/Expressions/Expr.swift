@@ -11,9 +11,8 @@ public indirect enum Expr {
   case literal(Literal)
   case ifThenElse(IfThenElse)
   case member(MemberAccess)
-  case tuple(Tuple<Expr>)
-
-  public static var unit: Expr { .tuple(.init(elements: [])) }
+  case tuple(DelimitedSequence<Expr>)
+  case unit
 }
 
 extension Expr: ExpressibleByStringLiteral {
@@ -34,7 +33,7 @@ extension Expr: CustomDebugStringConvertible {
     case let .identifier(i):
       return i.value
     case let .application(app):
-      return "\(app.function.content)(\(app.arguments.map(\.content.debugDescription).joined(separator: ", ")))"
+      return "\(app.function.content)(\(app.arguments.elementsContent.map(\.debugDescription).joined(separator: ", ")))"
     case let .closure(l):
       return l.debugDescription
     case let .literal(l):
@@ -49,54 +48,57 @@ extension Expr: CustomDebugStringConvertible {
         }
         """
     case let .member(memberAccess):
-      return "\(memberAccess.base.content.debugDescription).\(memberAccess.member.content.value)"
+      return "\(memberAccess.base.content.content.debugDescription).\(memberAccess.member.content.content.value)"
     case let .tuple(tuple):
-      return "(\(tuple.elements.map(\.content.debugDescription).joined(separator: ", ")))"
+      return "(\(tuple.elementsContent.map(\.debugDescription).joined(separator: ", ")))"
+    case .unit:
+      return "()"
     }
   }
 }
 
 enum ExprSyntaxTail {
-  case memberAccess(SourceRange<Identifier>)
-  case applicationArguments(SourceRange<[SourceRange<Expr>]>)
+  case memberAccess(dot: SyntaxNode<()>, SyntaxNode<Identifier>)
+  case applicationArguments(DelimitedSequence<Expr>)
 }
 
 // FIXME: make it internal
 public let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
-  literalParser.map(Expr.literal).stateful()
-    .orElse(ifThenElseParser.map { $0.map(Expr.ifThenElse) })
-    .orElse(identifierParser.map { $0.map(Expr.identifier) })
-    .orElse(tupleExprParser.map { $0.map(Expr.tuple) })
-    .orElse(closureParser.map { $0.map(Expr.closure) })
+  SyntaxNodeParser(literalParser.map(Expr.literal).stateful())
+//    .orElse(ifThenElseParser.map { $0.map(Expr.ifThenElse) })
+//    .orElse(identifierParser.map { $0.map(Expr.identifier) })
+//    .orElse(tupleExprParser.map(Expr.tuple))
+//    .orElse(closureParser.map { $0.map(Expr.closure) })
 
     // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain
     // derivations, specifically member access and function application. Expressing left recursion with combinators
     // directly, without breaking up derivations into head and tail components, leads to infinite loops.
-    .take(Many(memberAccessParser.orElse(applicationArgumentsParser)))
-    .map { expr, tail -> SyntaxNode<Expr> in
-      tail.reduce(expr) { reducedExpr, tailElement in
-        switch tailElement {
-        case let .memberAccess(identifier):
-          return SyntaxNode(
-            leadingTrivia: [],
-            content: .init(
-              start: reducedExpr.start,
-              end: identifier.end,
-              content: .member(.init(base: reducedExpr, member: identifier))
-            )
-          )
-        case let .applicationArguments(arguments):
-          return SyntaxNode(
-            leadingTrivia: [],
-            content: .init(
-              start: reducedExpr.start,
-              end: arguments.end,
-              content: .application(.init(function: reducedExpr, arguments: arguments.content))
-            )
-          )
-        }
-      }
-    }
+//    .take(Many(memberAccessParser.orElse(applicationArgumentsParser)))
+//    .map { (expr: SyntaxNode<Expr>, tail: [ExprSyntaxTail]) -> SyntaxNode<Expr> in
+//        expr
+//      tail.reduce(expr) { reducedExpr, tailElement in
+//        switch tailElement {
+//        case let .memberAccess(identifier):
+//          return SyntaxNode(
+//            leadingTrivia: [],
+//            content: .init(
+//              start: reducedExpr.start,
+//              end: identifier.content.end,
+//              content: .member(.init(base: reducedExpr, member: identifier))
+//            )
+//          )
+//        case let .applicationArguments(arguments):
+//          return SyntaxNode(
+//            leadingTrivia: arguments.start.leadingTrivia,
+//            content: .init(
+//                start: reducedExpr.content.start,
+//                end: arguments.end.content.end,
+//              content: .application(.init(function: reducedExpr, arguments: arguments))
+//            )
+//          )
+//        }
+//      }
+//    }
     // Required to give `exprParser` an explicit type signature, otherwise this won't compile due to mutual
     // recursion with subexpression parsers.
     .eraseToAnyParser()

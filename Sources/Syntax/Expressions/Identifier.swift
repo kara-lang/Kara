@@ -29,6 +29,8 @@ let identifierSequenceParser =
     .take(Prefix { identifierTail.contains($0) })
     .compactMap { String(bytes: [$0] + Array($1), encoding: .utf8) }
 
-let identifierParser = identifierSequenceParser
-  .map { Identifier(value: $0) }
-  .stateful()
+let identifierParser = SyntaxNodeParser(
+  identifierSequenceParser
+    .map { Identifier(value: $0) }
+    .stateful()
+)

@@ -6,16 +6,16 @@ import Parsing
 
 public struct Closure {
   public struct Parameter {
-    public let identifier: SourceRange<Identifier>
-    let typeAnnotation: SourceRange<Type>?
+    public let identifier: SyntaxNode<Identifier>
+    let typeAnnotation: SyntaxNode<Type>?
   }
 
   public let parameters: [Parameter]
-  public let body: SourceRange<Expr>?
+  public let body: SyntaxNode<Expr>?
 }
 
 extension Closure.Parameter {
-  init(identifier: SourceRange<Identifier>) {
+  init(identifier: SyntaxNode<Identifier>) {
     self.init(identifier: identifier, typeAnnotation: nil)
   }
 }
@@ -28,7 +28,7 @@ extension Closure: CustomDebugStringConvertible {
     } else {
       return """
       { \(
-        parameters.map(\.identifier.content.value)
+        parameters.map(\.identifier.content.content.value)
           .joined(separator: ", ")
       ) in \(bodyString) }
       """

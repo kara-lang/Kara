@@ -6,81 +6,88 @@ import Parsing
 
 public struct FunctionDecl {
   public struct Parameter {
-    public let externalName: SourceRange<Identifier>?
-    public let internalName: SourceRange<Identifier>
-    public let type: SourceRange<Type>
+    public let externalName: SyntaxNode<Identifier>?
+    public let internalName: SyntaxNode<Identifier>
+    public let colon: SyntaxNode<()>
+    public let type: SyntaxNode<Type>
   }
 
-  public let identifier: SourceRange<Identifier>
+  public let funcKeyword: SyntaxNode<()>
+  public let identifier: SyntaxNode<Identifier>
   public let genericParameters: [TypeVariable]
-  public let parameters: SourceRange<[Parameter]>
+  public let parameters: DelimitedSequence<Parameter>
 
-  // FIXME: Store `SourceRange` for the type
-  public let returns: Type
-  public let body: SourceRange<Expr>
+  public let returns: SyntaxNode<Type>?
+  public let openBrace: SyntaxNode<()>
+  public let body: SyntaxNode<Expr>?
+  public let closeBrace: SyntaxNode<()>
 }
 
-extension FunctionDecl: CustomDebugStringConvertible {
-  public var debugDescription: String {
+extension FunctionDecl: CustomStringConvertible {
+  public var description: String {
     """
-    func \(identifier.content.value)(\(
-      parameters.content.map {
+    func \(identifier.content.content.value)(\(
+      parameters.elementsContent.map {
         """
-        \($0.externalName?.content.value ?? "")\(
+        \($0.externalName?.content.content.value ?? "")\(
           $0.externalName == nil ? "" : " "
-        )\($0.internalName.content.value): \($0.type.content)
+        )\($0.internalName.content.content.value): \($0.type.content)
         """
       }.joined(separator: ", ")
-    )) -> \(returns) {
-      \(body.content)
+    )) -> \(returns?.description ?? "()") {
+      \(body?.content.content ?? "")
     }
     """
   }
 }
 
 let functionParameterParser = identifierParser
-  .takeSkippingWhitespace(Optional.parser(of: identifierParser))
-  .skipWithWhitespace(Terminal(":"))
-  .takeSkippingWhitespace(typeParser)
-  .map { firstName, secondName, type in
-    SourceRange(
-      start: firstName.start,
-      end: type.end,
-      content: FunctionDecl.Parameter(
-        externalName: secondName == nil ? nil : firstName,
-        internalName: secondName == nil ? firstName : secondName!,
-        type: type
+  .take(Optional.parser(of: identifierParser))
+  .take(SyntaxNodeParser(Terminal(":")))
+  .take(typeParser)
+  .map { firstName, secondName, colon, type in
+    SyntaxNode(
+      leadingTrivia: firstName.leadingTrivia,
+      content:
+      SourceRange(
+        start: firstName.content.start,
+        end: type.content.end,
+        content: FunctionDecl.Parameter(
+          externalName: secondName == nil ? nil : firstName,
+          internalName: secondName == nil ? firstName : secondName!,
+          colon: colon,
+          type: type
+        )
       )
     )
   }
+  .eraseToAnyParser()
 
-let functionDeclParser = Terminal("func")
-  .takeSkippingWhitespace(identifierParser)
-  .takeSkippingWhitespace(
+let functionDeclParser = SyntaxNodeParser(Terminal("func"))
+  .take(identifierParser)
+  .take(
     delimitedSequenceParser(
       startParser: openParenParser,
       endParser: closeParenParser,
       elementParser: functionParameterParser
     )
   )
-  .takeSkippingWhitespace(
+  .take(
     Optional.parser(of: arrowParser)
   )
-  .skipWithWhitespace(openBraceParser)
-  .takeSkippingWhitespace(exprParser)
-  .takeSkippingWhitespace(closeBraceParser)
-  .map {
-    SourceRange(
-      start: $0.start,
-      end: $5.end,
-      content:
-      FunctionDecl(
-        identifier: $1,
-        // FIXME: fix generic parameters parsing
-        genericParameters: [],
-        parameters: $2.map { $0.map(\.content) },
-        returns: $3?.content ?? .unit,
-        body: $4
-      )
+  .take(SyntaxNodeParser(openBraceParser))
+  .take(exprParser)
+  .take(SyntaxNodeParser(closeBraceParser))
+  .map { funcKeyword, identifier, parameters, returns, openBrace, body, closeBrace in
+    FunctionDecl(
+      funcKeyword: funcKeyword,
+      identifier: identifier,
+      // FIXME: fix generic parameters parsing
+      genericParameters: [],
+      parameters: parameters,
+      returns: returns,
+      openBrace: openBrace,
+      body: body,
+      closeBrace: closeBrace
     )
   }

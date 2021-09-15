@@ -4,10 +4,14 @@
 
 import Parsing
 
-struct DelimitedSequence<T> {
-  let start: SyntaxNode<UTF8SubSequence>
-  let elements: [(SyntaxNode<T>, SyntaxNode<UTF8SubSequence>?)]
-  let end: SyntaxNode<UTF8SubSequence>
+public struct DelimitedSequence<T> {
+  let start: SyntaxNode<()>
+  let elements: [(SyntaxNode<T>, SyntaxNode<()>?)]
+  let end: SyntaxNode<()>
+
+  public var elementsContent: [T] {
+    elements.map(\.0.content.content)
+  }
 }
 
 func delimitedSequenceParser<T, P: Parser>(
@@ -15,32 +19,28 @@ func delimitedSequenceParser<T, P: Parser>(
   endParser: Terminal,
   elementParser: P,
   atLeast minimum: Int = 0
-) -> AnyParser<ParsingState, SyntaxNode<[SyntaxNode<T>]>> where P.Output == SyntaxNode<T>, P.Input == ParsingState {
-  startParser
+) -> AnyParser<ParsingState, DelimitedSequence<T>> where P.Output == SyntaxNode<T>, P.Input == ParsingState {
+  SyntaxNodeParser(startParser)
     .take(
       Many(
-        SyntaxNodeParser(elementParser)
+        elementParser
           .take(SyntaxNodeParser(commaParser))
       )
     )
-    .take(Optional.parser(of: SyntaxNodeParser(elementParser)))
+    .take(Optional.parser(of: elementParser))
     .take(SyntaxNodeParser(endParser))
-    .compactMap { startToken, head, tail, endToken -> SyntaxNode<[SyntaxNode<T>]>? in
+    .compactMap { startNode, head, tail, endNode -> DelimitedSequence<T>? in
       guard let tail = tail else {
         guard head.count >= minimum else { return nil }
 
-        return SyntaxNode(
-          start: startToken.start,
-          end: endToken.end,
-          content: head
-        )
+        return DelimitedSequence(start: startNode, elements: head, end: endNode)
       }
 
       let result = head + [tail]
 
       guard result.count >= minimum else { return nil }
 
-      return SourceRange(start: startToken.start, end: endToken.end, content: head + [tail])
+      return DelimitedSequence(start: startNode, elements: head + [(tail, nil)], end: endNode)
     }
     .eraseToAnyParser()
 }
