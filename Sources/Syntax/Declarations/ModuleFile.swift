@@ -4,5 +4,5 @@
 
 public struct ModuleFile {
   public let declarations: [SyntaxNode<Declaration>]
-  let trailingTrivia: [Trivia]
+  public let trailingTrivia: [Trivia]
 }

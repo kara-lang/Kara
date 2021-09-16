@@ -7,7 +7,7 @@ import Parsing
 public enum Literal: Equatable {
   case int32(Int32)
   case int64(Int64)
-  case float(Double)
+  case double(Double)
   case bool(Bool)
   case string(String)
 
@@ -17,7 +17,7 @@ public enum Literal: Equatable {
       return .int32
     case .int64:
       return .int64
-    case .float:
+    case .double:
       return .double
     case .bool:
       return .bool
@@ -40,8 +40,8 @@ extension Literal: ExpressibleByIntegerLiteral {
 }
 
 extension Literal: ExpressibleByFloatLiteral {
-  public init(floatLiteral value: FloatLiteralType) {
-    self = .float(value)
+  public init(floatLiteral value: Double) {
+    self = .double(value)
   }
 }
 
@@ -55,7 +55,7 @@ extension Literal: CustomDebugStringConvertible {
   public var debugDescription: String {
     switch self {
     case let .bool(b): return b.description
-    case let .float(f): return f.description
+    case let .double(f): return f.description
     case let .int32(i32): return i32.description
     case let .int64(i64): return i64.description
     case let .string(s): return #""\#(s)""#
@@ -84,7 +84,7 @@ let intLiteralParser = Int64.parser(of: UTF8SubSequence.self)
   }
 
 let floatLiteralParser = Double.parser(of: UTF8SubSequence.self)
-  .map(Literal.float)
+  .map(Literal.double)
 
 let stringLiteralParser = UTF8Terminal("\"".utf8)
   .take(Prefix { $0 != UInt8(ascii: "\"") })

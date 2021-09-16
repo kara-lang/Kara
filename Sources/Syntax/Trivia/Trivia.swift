@@ -4,13 +4,13 @@
 
 import Parsing
 
-enum Trivia {
+public enum Trivia {
   case comment(Comment)
   case whitespace(UTF8SubSequence)
 }
 
 extension Trivia: CustomStringConvertible {
-  var description: String {
+  public var description: String {
     switch self {
     case let .comment(content):
       return String(describing: content)

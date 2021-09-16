@@ -16,7 +16,7 @@ struct Terminal: Parser {
   }
 }
 
-typealias UTF8SubSequence = String.UTF8View.SubSequence
+public typealias UTF8SubSequence = String.UTF8View.SubSequence
 typealias UTF8Terminal = StartsWith<UTF8SubSequence>
 
 let newlineCodeUnits = [UInt8(ascii: "\n"), UInt8(ascii: "\r")]
