@@ -69,24 +69,31 @@ let functionDeclParser = SyntaxNodeParser(Terminal("func"))
       startParser: openParenParser,
       endParser: closeParenParser,
       elementParser: functionParameterParser
-    )
+    ).debug()
   )
   .take(
     Optional.parser(of: arrowParser)
   )
-  .take(SyntaxNodeParser(openBraceParser))
-  .take(exprParser)
+  .take(SyntaxNodeParser(openBraceParser.debug()))
+  .take(exprParser.debug())
   .take(SyntaxNodeParser(closeBraceParser))
   .map { funcKeyword, identifier, parameters, returns, openBrace, body, closeBrace in
-    FunctionDecl(
-      funcKeyword: funcKeyword,
-      identifier: identifier,
-      // FIXME: fix generic parameters parsing
-      genericParameters: [],
-      parameters: parameters,
-      returns: returns,
-      openBrace: openBrace,
-      body: body,
-      closeBrace: closeBrace
+    SyntaxNode(
+      leadingTrivia: funcKeyword.leadingTrivia,
+      content: SourceRange(
+        start: funcKeyword.content.start,
+        end: closeBrace.content.end,
+        content: FunctionDecl(
+          funcKeyword: funcKeyword,
+          identifier: identifier,
+          // FIXME: fix generic parameters parsing
+          genericParameters: [],
+          parameters: parameters,
+          returns: returns,
+          openBrace: openBrace,
+          body: body,
+          closeBrace: closeBrace
+        )
+      )
     )
   }

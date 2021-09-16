@@ -1,4 +1,4 @@
-0:0-0:60 func f(x y: Bool) -> String {
+0:0-0:60 func f(x y: 0:12-0:15 Bool) ->  String {
   if y {
   "x"
 } else {

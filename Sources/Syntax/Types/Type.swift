@@ -147,9 +147,8 @@ private let typeConstructorParser = identifierSequenceParser
   .map(TypeIdentifier.init(value:))
   .stateful()
 
-let arrowParser = Terminal("->")
+let arrowParser = SyntaxNodeParser(Terminal("->"))
   .ignoreOutput()
-  .skip(statefulWhitespace())
   .take(Lazy { typeParser })
 
 let tupleTypeParser = delimitedSequenceParser(
@@ -210,8 +209,7 @@ let typeParser: AnyParser<ParsingState, SyntaxNode<Type>> =
       let leadingTrivia: [Trivia]
       switch head {
       case let .tuple(sequence):
-        // FIXME: sequence.end is lost here
-        headType = sequence.start.map { Type.tuple(sequence.elementsContent) }
+        headType = sequence.syntaxNode.map { _ in Type.tuple(sequence.elementsContent) }
         leadingTrivia = sequence.start.leadingTrivia
 
       case let .constructor(typeIdentifier):
@@ -252,7 +250,7 @@ let typeParser: AnyParser<ParsingState, SyntaxNode<Type>> =
               leadingTrivia: leadingTrivia,
               content: SourceRange(
                 start: headType.content.start,
-                end: headType.content.end,
+                end: arguments.end.content.end,
                 content: Type.constructor(head, arguments.elementsContent)
               )
             )
