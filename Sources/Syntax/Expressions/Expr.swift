@@ -88,7 +88,7 @@ public let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
           )
         case let .applicationArguments(arguments):
           return SyntaxNode(
-            leadingTrivia: arguments.start.leadingTrivia,
+            leadingTrivia: expr.leadingTrivia,
             content: .init(
               start: reducedExpr.content.start,
               end: arguments.end.content.end,

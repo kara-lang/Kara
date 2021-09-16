@@ -1,1 +1,1 @@
-0:0-0:36 { x, y, z in x }(1, 2, 3).description
+0:0-0:36 0:0-0:11 { x, y, z in 0:10-0:10 x }(1, 2, 3).description
