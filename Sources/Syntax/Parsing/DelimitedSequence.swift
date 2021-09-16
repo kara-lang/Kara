@@ -4,15 +4,28 @@
 
 import Parsing
 
+/** Generic type for syntax nodes that have delimiter tokens in the beginning and the end, and an array of elements
+ with optional separators between them. Delimiters and separators are expressed as syntax nodes to allow for leading
+ trivia between any of the elements and their separators and delimiters in the sequence.
+ Examples of such sequences are tuples (delimited by parens), arrays (square brackets), function application arguments
+ (parens), generic parameters and arguments (angle brackets), etc.
+ */
 public struct DelimitedSequence<T> {
+  /// Syntax node for the starting delimiting token of the sequence.
   let start: SyntaxNode<()>
+
+  /// An array of syntax nodes for every element of their sequence and its corresponding separator.
   let elements: [(SyntaxNode<T>, SyntaxNode<()>?)]
+
+  /// Syntax node for the ending delimiting token of the ssquences.
   let end: SyntaxNode<()>
 
+  /// Helper for retrieving an array of elements in the sequence without their syntax node information.
   public var elementsContent: [T] {
     elements.map(\.0.content.content)
   }
 
+  /// Helper for wrapping this sequence in its own syntax node.
   var syntaxNode: SyntaxNode<DelimitedSequence<T>> {
     .init(
       leadingTrivia: start.leadingTrivia,
