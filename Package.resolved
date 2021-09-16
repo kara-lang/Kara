@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/MaxDesiatov/Lite.git",
         "state": {
           "branch": "basic-tsc",
-          "revision": "ec5339b700fb00cb67256374ca7151a3ef654115",
+          "revision": "6468e62bd7f109ba7318389534287d88dd7322a3",
           "version": null
         }
       },
@@ -42,7 +42,7 @@
         "repositoryURL": "https://github.com/MaxDesiatov/swift-parsing.git",
         "state": {
           "branch": "maxd/windows-gha",
-          "revision": "9b96d34c7649568829bcaac1fc149bea5a42f9d6",
+          "revision": "766fa061dc451a5a99de7716e5dd077be7156c0e",
           "version": null
         }
       },
@@ -59,8 +59,8 @@
         "package": "swift-tools-support-core",
         "repositoryURL": "https://github.com/apple/swift-tools-support-core.git",
         "state": {
-          "branch": "maxd/basic-product",
-          "revision": "f2efb72e7019e4490b1d32948a3f6ebe236b40d7",
+          "branch": "main",
+          "revision": "492fe8dbf50c6f906444dbc227d3edb35ab0f4a7",
           "version": null
         }
       }

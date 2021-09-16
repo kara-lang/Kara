@@ -47,6 +47,14 @@ let package = Package(
         "Syntax",
       ]
     ),
+    .target(
+      name: "Codegen",
+      dependencies: []
+    ),
+    .target(
+      name: "JSCodegen",
+      dependencies: ["Codegen", "Syntax"]
+    ),
 
     // jsonrpc: LSP connection using jsonrpc over pipes.
     .target(
@@ -87,6 +95,7 @@ let package = Package(
       name: "KaraTests",
       dependencies: [
         "Syntax",
+        "JSCodegen",
         "TypeInference",
         "SnapshotTesting",
       ],

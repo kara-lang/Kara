@@ -4,12 +4,17 @@
 
 import Parsing
 
+@dynamicMemberLookup
 public struct SyntaxNode<Content> {
   let leadingTrivia: [Trivia]
   public let content: SourceRange<Content>
 
   func map<NewContent>(_ transform: (Content) -> NewContent) -> SyntaxNode<NewContent> {
     .init(leadingTrivia: leadingTrivia, content: content.map(transform))
+  }
+
+  public subscript<T>(dynamicMember keyPath: KeyPath<Content, T>) -> T {
+    content.content[keyPath: keyPath]
   }
 }
 

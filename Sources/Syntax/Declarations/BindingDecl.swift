@@ -4,7 +4,7 @@
 
 import Parsing
 
-struct BindingDecl {
+public struct BindingDecl {
   let identifier: SyntaxNode<Identifier>
   let equalsSign: SyntaxNode<()>
   let value: SyntaxNode<Expr>

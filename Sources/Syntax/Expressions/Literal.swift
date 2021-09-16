@@ -5,15 +5,18 @@
 import Parsing
 
 public enum Literal: Equatable {
-  case integer(Int)
+  case int32(Int32)
+  case int64(Int64)
   case float(Double)
   case bool(Bool)
   case string(String)
 
   public var defaultType: Type {
     switch self {
-    case .integer:
-      return .int
+    case .int32:
+      return .int32
+    case .int64:
+      return .int64
     case .float:
       return .double
     case .bool:
@@ -32,7 +35,7 @@ extension Literal: ExpressibleByStringLiteral {
 
 extension Literal: ExpressibleByIntegerLiteral {
   public init(integerLiteral value: IntegerLiteralType) {
-    self = .integer(value)
+    self = value > Int32.max ? .int64(Int64(value)) : .int32(Int32(truncatingIfNeeded: value))
   }
 }
 
@@ -53,13 +56,14 @@ extension Literal: CustomDebugStringConvertible {
     switch self {
     case let .bool(b): return b.description
     case let .float(f): return f.description
-    case let .integer(i): return i.description
+    case let .int32(i32): return i32.description
+    case let .int64(i64): return i64.description
     case let .string(s): return #""\#(s)""#
     }
   }
 }
 
-let intLiteralParser = Int.parser(of: UTF8SubSequence.self)
+let intLiteralParser = Int64.parser(of: UTF8SubSequence.self)
   // resolve ambiguity with floats
   .lookahead(amount: 2) { (lookaheadPrefix: UTF8SubSequence) -> Bool in
     // end of input means that integer is valid
@@ -75,7 +79,9 @@ let intLiteralParser = Int.parser(of: UTF8SubSequence.self)
 
     return !(UInt8(ascii: "0")...UInt8(ascii: "9")).contains(lastPrefixElement)
   }
-  .map(Literal.integer)
+  .map {
+    $0 > Int32.max ? Literal.int64($0) : Literal.int32(Int32(truncatingIfNeeded: $0))
+  }
 
 let floatLiteralParser = Double.parser(of: UTF8SubSequence.self)
   .map(Literal.float)
