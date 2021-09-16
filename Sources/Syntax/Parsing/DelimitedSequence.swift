@@ -12,6 +12,17 @@ public struct DelimitedSequence<T> {
   public var elementsContent: [T] {
     elements.map(\.0.content.content)
   }
+
+  var syntaxNode: SyntaxNode<DelimitedSequence<T>> {
+    .init(
+      leadingTrivia: start.leadingTrivia,
+      content: .init(
+        start: start.content.start,
+        end: end.content.end,
+        content: self
+      )
+    )
+  }
 }
 
 func delimitedSequenceParser<T, P: Parser>(

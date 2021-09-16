@@ -158,10 +158,10 @@ struct ConstraintSystem {
       return typeVariable
 
     case let .ifThenElse(ifThenElse):
-      let result = try infer(ifThenElse.thenBranch.content.content)
+      let result = try infer(ifThenElse.thenBody.content.content)
       try constraints.append(contentsOf: [
         .equal(infer(ifThenElse.condition.content.content), .bool),
-        .equal(result, infer(ifThenElse.elseBranch.content.content)),
+        .equal(result, infer(ifThenElse.elseBranch.elseBody.content.content)),
       ])
       return result
 

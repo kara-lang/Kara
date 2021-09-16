@@ -61,7 +61,6 @@ let functionParameterParser = identifierParser
       )
     )
   }
-  .eraseToAnyParser()
 
 let functionDeclParser = SyntaxNodeParser(Terminal("func"))
   .take(identifierParser)

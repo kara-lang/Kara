@@ -11,6 +11,7 @@ public struct Closure {
   }
 
   public let parameters: [Parameter]
+  public let inKeyword: SyntaxNode<()>?
   public let body: SyntaxNode<Expr>?
 }
 
@@ -37,10 +38,10 @@ extension Closure: CustomDebugStringConvertible {
 }
 
 let closureParser =
-  openBraceParser
+  SyntaxNodeParser(openBraceParser)
     .takeSkippingWhitespace(
       Optional.parser(
-        // Parses applications of form `f(a, b, c,)`, note the trailing comman
+        // Parses applications of form `f(a, b, c,)`, note the trailing comma
         of: Many(
           identifierParser
             .skipWithWhitespace(commaParser)
@@ -51,16 +52,22 @@ let closureParser =
           Optional.parser(of: identifierParser)
         )
         .skip(statefulWhitespace(isRequired: true))
-        .skip(Terminal("in"))
+        .take(SyntaxNodeParser(Terminal("in")))
         .skip(statefulWhitespace(isRequired: true))
-        .map { head, tail -> [Closure.Parameter] in
+        .map { head, tail, inKeyword -> ([Closure.Parameter], SyntaxNode<()>) in
           guard let tail = tail else {
-            return head
-              .map { Closure.Parameter(identifier: $0) }
+            return (
+              head
+                .map { Closure.Parameter(identifier: $0) },
+              inKeyword
+            )
           }
 
-          return (head + [tail])
-            .map { Closure.Parameter(identifier: $0) }
+          return (
+            (head + [tail])
+              .map { Closure.Parameter(identifier: $0) },
+            inKeyword
+          )
         }
       )
     )
@@ -72,14 +79,18 @@ let closureParser =
       )
     )
     .skip(statefulWhitespace())
-    .take(closeBraceParser)
+    .take(SyntaxNodeParser(closeBraceParser))
     .map { openBrace, params, body, closeBrace in
-      SourceRange(
-        start: openBrace.start,
-        end: closeBrace.end,
-        content: Closure(
-          parameters: params ?? [],
-          body: body
+      SyntaxNode(
+        leadingTrivia: openBrace.leadingTrivia,
+        content: SourceRange(
+          start: openBrace.content.start,
+          end: closeBrace.content.end,
+          content: Closure(
+            parameters: params?.0 ?? [],
+            inKeyword: params?.1,
+            body: body
+          )
         )
       )
     }
