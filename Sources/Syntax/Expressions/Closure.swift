@@ -7,7 +7,7 @@ import Parsing
 public struct Closure {
   public struct Parameter {
     public let identifier: SyntaxNode<Identifier>
-    let typeAnnotation: SyntaxNode<Type>?
+    public let typeAnnotation: SyntaxNode<Type>?
   }
 
   public let parameters: [Parameter]

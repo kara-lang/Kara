@@ -9,11 +9,11 @@ import XCTest
 final class SyntaxInferenceTests: XCTestCase {
   func testApplication() throws {
     let e: Environment = [
-      "increment": [.init(.int --> .int)],
-      "stringify": [.init(.int --> .string)],
+      "increment": [.init(.int32 --> .int32)],
+      "stringify": [.init(.int32 --> .string)],
     ]
 
-    try XCTAssertEqual("increment(0)".inferParsedExpr(environment: e), .int)
+    try XCTAssertEqual("increment(0)".inferParsedExpr(environment: e), .int32)
     try XCTAssertEqual("stringify(0)".inferParsedExpr(environment: e), .string)
     XCTAssertThrowsError(try "increment(false)".inferParsedExpr())
     XCTAssertThrowsError(try "increment(false)".inferParsedExpr(environment: e))
@@ -21,9 +21,9 @@ final class SyntaxInferenceTests: XCTestCase {
 
   func testClosure() throws {
     let e: Environment = [
-      "increment": [.init(.int --> .int)],
-      "stringify": [.init(.int --> .string)],
-      "decode": [.init(.string --> .int)],
+      "increment": [.init(.int32 --> .int32)],
+      "stringify": [.init(.int32 --> .string)],
+      "decode": [.init(.string --> .int32)],
     ]
 
     XCTAssertEqual(
@@ -31,7 +31,7 @@ final class SyntaxInferenceTests: XCTestCase {
         """
         { x in decode(stringify(increment(x))) }
         """
-      ).output?.content.content.infer(environment: e), .int --> .int
+      ).output?.content.content.infer(environment: e), .int32 --> .int32
     )
 
     assertError(
@@ -40,7 +40,7 @@ final class SyntaxInferenceTests: XCTestCase {
         { x in stringify(decode(increment(x))) }
         """
       ).output?.content.content.infer(environment: e),
-      TypeError.unificationFailure(.string, .int)
+      TypeError.unificationFailure(.string, .int32)
     )
 
     assertError(
@@ -55,9 +55,9 @@ final class SyntaxInferenceTests: XCTestCase {
 
   func testClosureWithMultipleArguments() throws {
     let e: Environment = [
-      "sum": [.init([.int, .int] --> .int)],
-      "stringify": [.init([.int, .int] --> .string)],
-      "decode": [.init([.string, .string] --> .int)],
+      "sum": [.init([.int32, .int32] --> .int32)],
+      "stringify": [.init([.int32, .int32] --> .string)],
+      "decode": [.init([.string, .string] --> .int32)],
     ]
 
     XCTAssertEqual(
@@ -76,15 +76,15 @@ final class SyntaxInferenceTests: XCTestCase {
           )
         }
         """
-      ).output?.content.content.infer(environment: e), [.int, .int] --> .int
+      ).output?.content.content.infer(environment: e), [.int32, .int32] --> .int32
     )
   }
 
   func testClosureWithMultipleArgumentsDifferentTypes() throws {
     let e: Environment = [
-      "concatenate": [.init([.int, .string] --> .string)],
-      "sum": [.init([.int, .int] --> .int)],
-      "decode": [.init([.string, .int] --> .int)],
+      "concatenate": [.init([.int32, .string] --> .string)],
+      "sum": [.init([.int32, .int32] --> .int32)],
+      "decode": [.init([.string, .int32] --> .int32)],
     ]
 
     XCTAssertEqual(
@@ -98,7 +98,7 @@ final class SyntaxInferenceTests: XCTestCase {
         }
         """
       ).output?.content.content.infer(environment: e),
-      [.string, .int] --> .int
+      [.string, .int32] --> .int32
     )
   }
 
@@ -106,7 +106,7 @@ final class SyntaxInferenceTests: XCTestCase {
     let m: Members = [
       "String": [
         "appending": [.init(.string --> .string)],
-        "count": [.init(.int)],
+        "count": [.init(.int32)],
       ],
     ]
 
@@ -116,7 +116,7 @@ final class SyntaxInferenceTests: XCTestCase {
     )
     XCTAssertEqual(
       try exprParser.parse(#""Test".count"#).output?.content.content.infer(members: m),
-      .int
+      .int32
     )
     assertError(
       try exprParser.parse(#""Test".description"#).output?.content.content.infer(members: m),
@@ -127,16 +127,16 @@ final class SyntaxInferenceTests: XCTestCase {
   func testMemberOfMember() throws {
     let m: Members = [
       "String": [
-        "count": [.init(.int)],
+        "count": [.init(.int32)],
       ],
-      "Int": [
-        "magnitude": [.init(.int)],
+      "Int32": [
+        "magnitude": [.init(.int32)],
       ],
     ]
 
     XCTAssertEqual(
       try exprParser.parse(#""Test".count.magnitude"#).output?.content.content.infer(members: m),
-      .int
+      .int32
     )
     assertError(
       try exprParser.parse(#""Test".magnitude.count"#).output?.content.content.infer(members: m),
@@ -146,7 +146,7 @@ final class SyntaxInferenceTests: XCTestCase {
 
   func testIfThenElse() throws {
     let m: Members = [
-      "Int": [
+      "Int32": [
         "isInteger": [.init(.bool)],
         "isIntegerFunc": [.init([] --> .bool)],
         "toDouble": [.init([] --> .double)],
@@ -157,7 +157,7 @@ final class SyntaxInferenceTests: XCTestCase {
       "foo": [.init(.bool)],
       "bar": [.init(.double)],
       "baz": [.init(.double)],
-      "fizz": [.init(.int)],
+      "fizz": [.init(.int32)],
     ]
 
     XCTAssertEqual(
@@ -214,7 +214,7 @@ final class SyntaxInferenceTests: XCTestCase {
         }
         """#
       ).output?.content.content.infer(members: m),
-      TypeError.unificationFailure(.int, .bool)
+      TypeError.unificationFailure(.int32, .bool)
     )
   }
 }

@@ -4,7 +4,7 @@
 
 import Parsing
 
-struct Comment {
+public struct Comment {
   enum Kind {
     case singleLine
     case multipleLines
@@ -16,7 +16,7 @@ struct Comment {
 }
 
 extension Comment: CustomStringConvertible {
-  var description: String {
+  public var description: String {
     switch kind {
     case .singleLine:
       return "//\(isDocComment ? "/" : "")\(content)"
@@ -27,7 +27,7 @@ extension Comment: CustomStringConvertible {
 }
 
 extension Comment: CustomDebugStringConvertible {
-  var debugDescription: String {
+  public var debugDescription: String {
     #"Comment { kind: .\#(kind); isDocComment: \#(isDocComment); content: "\#(content)"; }"#
   }
 }

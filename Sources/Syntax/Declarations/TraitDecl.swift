@@ -4,7 +4,7 @@
 
 import Parsing
 
-struct TraitDecl {
+public struct TraitDecl {
   let name: SourceRange<TypeIdentifier>
 }
 

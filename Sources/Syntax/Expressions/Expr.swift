@@ -23,7 +23,7 @@ extension Expr: ExpressibleByStringLiteral {
 
 extension Expr: ExpressibleByIntegerLiteral {
   public init(integerLiteral value: Int) {
-    self = .literal(.integer(value))
+    self = .literal(Literal(integerLiteral: value))
   }
 }
 

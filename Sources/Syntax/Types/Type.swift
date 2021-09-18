@@ -88,7 +88,8 @@ public enum Type {
   public static let bool = Type.constructor("Bool", [])
   public static let string = Type.constructor("String", [])
   public static let double = Type.constructor("Double", [])
-  public static let int = Type.constructor("Int", [])
+  public static let int32 = Type.constructor("Int32", [])
+  public static let int64 = Type.constructor("Int64", [])
 
   public static let unit = Type.tuple([])
 }
