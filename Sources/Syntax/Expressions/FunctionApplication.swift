@@ -5,18 +5,14 @@
 import Parsing
 
 public struct FunctionApplication {
-  public let function: SourceRange<Expr>
-  public let arguments: [SourceRange<Expr>]
+  public let function: SyntaxNode<Expr>
+  public let arguments: DelimitedSequence<Expr>
 }
 
 let applicationArgumentsParser =
-  statefulWhitespace()
-    .ignoreOutput()
-    .take(
-      delimitedSequenceParser(
-        startParser: openParenParser,
-        endParser: closeParenParser,
-        elementParser: Lazy { exprParser }
-      )
-    )
-    .map(ExprSyntaxTail.applicationArguments)
+  delimitedSequenceParser(
+    startParser: openParenParser,
+    endParser: closeParenParser,
+    elementParser: Lazy { exprParser }
+  )
+  .map(ExprSyntaxTail.applicationArguments)

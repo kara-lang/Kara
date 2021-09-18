@@ -24,6 +24,7 @@ func assertSnapshot<T>(
     XCTFail("No output from parser", file: file, line: line)
     return
   }
+  assertFullyConsumed(parsingResult.rest, file: file, line: line)
   assertSnapshot(matching: output, as: .debugDescription, file: file, testName: testName, line: line)
 }
 
@@ -49,17 +50,23 @@ func assertError<T, E: Error & Equatable>(
 func assertFullyConsumed(
   _ state: ParsingState,
   file: StaticString = #file,
-  testName: String = #function,
   line: UInt = #line
 ) {
-  XCTAssertEqual(state.index, state.source.utf8.endIndex, file: file, line: line)
+  guard state.index == state.source.utf8.endIndex else {
+    return XCTFail(
+      "Parser input unexpectedly not fully consumed, remaining: \(state.source[state.index...])",
+      file: file,
+      line: line
+    )
+  }
 }
 
 func assertNotFullyConsumed(
   _ state: ParsingState,
   file: StaticString = #file,
-  testName: String = #function,
   line: UInt = #line
 ) {
-  XCTAssertNotEqual(state.index, state.source.utf8.endIndex, file: file, line: line)
+  guard state.index != state.source.utf8.endIndex else {
+    return XCTFail("Parser input unexpectedly fully consumed", file: file, line: line)
+  }
 }

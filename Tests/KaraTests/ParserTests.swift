@@ -55,8 +55,8 @@ final class ParserTests: XCTestCase {
   }
 
   func testIfThenElse() {
-    assertSnapshot(exprParser.parse(#"if true { "true" } else { "false" } "#))
-    assertSnapshot(exprParser.parse(#"if foo { bar } else { baz } "#))
+    assertSnapshot(exprParser.parse(#"if true { "true" } else { "false" }"#))
+    assertSnapshot(exprParser.parse(#"if foo { bar } else { baz }"#))
     assertSnapshot(
       exprParser.parse(
         #"""
@@ -204,6 +204,12 @@ final class ParserTests: XCTestCase {
       )
     )
     XCTAssertNil(commentParser.parse("/* Hello, world!").output)
+  }
+
+  func testTrivia() {
+    assertSnapshot(triviaParser.parse("// Hello, world!"))
+
+    assertSnapshot(triviaParser.parse("   // Hello, world!"))
   }
 
   func testStatefulWhitespace() {

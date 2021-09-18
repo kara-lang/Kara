@@ -31,7 +31,7 @@ final class SyntaxInferenceTests: XCTestCase {
         """
         { x in decode(stringify(increment(x))) }
         """
-      ).output?.content.infer(environment: e), .int --> .int
+      ).output?.content.content.infer(environment: e), .int --> .int
     )
 
     assertError(
@@ -39,7 +39,7 @@ final class SyntaxInferenceTests: XCTestCase {
         """
         { x in stringify(decode(increment(x))) }
         """
-      ).output?.content.infer(environment: e),
+      ).output?.content.content.infer(environment: e),
       TypeError.unificationFailure(.string, .int)
     )
 
@@ -48,7 +48,7 @@ final class SyntaxInferenceTests: XCTestCase {
         """
         { x in stringify(decode(increment(x))) }
         """
-      ).output?.content.infer(),
+      ).output?.content.content.infer(),
       TypeError.unbound("stringify")
     )
   }
@@ -76,7 +76,7 @@ final class SyntaxInferenceTests: XCTestCase {
           )
         }
         """
-      ).output?.content.infer(environment: e), [.int, .int] --> .int
+      ).output?.content.content.infer(environment: e), [.int, .int] --> .int
     )
   }
 
@@ -97,7 +97,7 @@ final class SyntaxInferenceTests: XCTestCase {
           )
         }
         """
-      ).output?.content.infer(environment: e),
+      ).output?.content.content.infer(environment: e),
       [.string, .int] --> .int
     )
   }
@@ -111,15 +111,15 @@ final class SyntaxInferenceTests: XCTestCase {
     ]
 
     XCTAssertEqual(
-      try exprParser.parse(#""Hello, ".appending("World!")"#).output?.content.infer(members: m),
+      try exprParser.parse(#""Hello, ".appending("World!")"#).output?.content.content.infer(members: m),
       .string
     )
     XCTAssertEqual(
-      try exprParser.parse(#""Test".count"#).output?.content.infer(members: m),
+      try exprParser.parse(#""Test".count"#).output?.content.content.infer(members: m),
       .int
     )
     assertError(
-      try exprParser.parse(#""Test".description"#).output?.content.infer(members: m),
+      try exprParser.parse(#""Test".description"#).output?.content.content.infer(members: m),
       TypeError.unknownMember("String", "description")
     )
   }
@@ -135,11 +135,11 @@ final class SyntaxInferenceTests: XCTestCase {
     ]
 
     XCTAssertEqual(
-      try exprParser.parse(#""Test".count.magnitude"#).output?.content.infer(members: m),
+      try exprParser.parse(#""Test".count.magnitude"#).output?.content.content.infer(members: m),
       .int
     )
     assertError(
-      try exprParser.parse(#""Test".magnitude.count"#).output?.content.infer(members: m),
+      try exprParser.parse(#""Test".magnitude.count"#).output?.content.content.infer(members: m),
       TypeError.unknownMember("String", "magnitude")
     )
   }
@@ -161,11 +161,11 @@ final class SyntaxInferenceTests: XCTestCase {
     ]
 
     XCTAssertEqual(
-      try exprParser.parse(#"if true { "true" } else { "false" } "#).output?.content.infer(members: m),
+      try exprParser.parse(#"if true { "true" } else { "false" } "#).output?.content.content.infer(members: m),
       .string
     )
     XCTAssertEqual(
-      try exprParser.parse(#"if foo { bar } else { baz }  "#).output?.content.infer(environment: e, members: m),
+      try exprParser.parse(#"if foo { bar } else { baz }  "#).output?.content.content.infer(environment: e, members: m),
       .double
     )
     XCTAssertEqual(
@@ -177,7 +177,7 @@ final class SyntaxInferenceTests: XCTestCase {
           "is not integer"
         }
         """#
-      ).output?.content.infer(environment: e, members: m),
+      ).output?.content.content.infer(environment: e, members: m),
       .string
     )
     XCTAssertEqual(
@@ -189,7 +189,7 @@ final class SyntaxInferenceTests: XCTestCase {
           "is not integer"
         }
         """#
-      ).output?.content.infer(environment: e, members: m),
+      ).output?.content.content.infer(environment: e, members: m),
       .string
     )
     assertError(
@@ -201,7 +201,7 @@ final class SyntaxInferenceTests: XCTestCase {
           "is not integer"
         }
         """#
-      ).output?.content.infer(members: m),
+      ).output?.content.content.infer(members: m),
       TypeError.unificationFailure(.double, .bool)
     )
     assertError(
@@ -213,7 +213,7 @@ final class SyntaxInferenceTests: XCTestCase {
           "is not integer"
         }
         """#
-      ).output?.content.infer(members: m),
+      ).output?.content.content.infer(members: m),
       TypeError.unificationFailure(.int, .bool)
     )
   }

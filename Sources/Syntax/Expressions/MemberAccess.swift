@@ -5,15 +5,14 @@
 import Parsing
 
 public struct MemberAccess {
-  public let base: SourceRange<Expr>
-  public let member: SourceRange<Identifier>
+  public let base: SyntaxNode<Expr>
+  public let dot: SyntaxNode<()>
+  public let member: SyntaxNode<Identifier>
 }
 
 let memberAccessParser =
-  statefulWhitespace()
-    .ignoreOutput()
-    .skip(
-      Terminal(".")
-    )
-    .take(identifierParser)
-    .map(ExprSyntaxTail.memberAccess)
+  SyntaxNodeParser(
+    Terminal(".")
+  )
+  .take(identifierParser)
+  .map(ExprSyntaxTail.memberAccess)

@@ -20,12 +20,14 @@ extension Trivia: CustomStringConvertible {
   }
 }
 
-let triviaParser = commentParser
-  .map { $0.map(Trivia.comment) }
-  .orElse(
-    statefulWhitespace()
-      .map { $0.map(Trivia.whitespace) }
-  )
+let triviaParser = Many(
+  commentParser
+    .map { $0.map(Trivia.comment) }
+    .orElse(
+      statefulWhitespace(isRequired: true)
+        .map { $0.map(Trivia.whitespace) }
+    )
+)
 
 extension Parser where Input == ParsingState {
   func skipWithWhitespace<P>(
