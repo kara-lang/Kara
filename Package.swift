@@ -20,7 +20,7 @@ let package = Package(
     .package(
       name: "swift-parsing",
       url: "https://github.com/pointfreeco/swift-parsing.git",
-      .branch("main")
+      .upToNextMinor(from: "0.2.0")
     ),
     .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.9.0"),
     .package(name: "LiteSupport", url: "https://github.com/MaxDesiatov/Lite.git", .branch("basic-tsc")),
