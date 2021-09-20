@@ -39,10 +39,10 @@
       },
       {
         "package": "swift-parsing",
-        "repositoryURL": "https://github.com/MaxDesiatov/swift-parsing.git",
+        "repositoryURL": "https://github.com/pointfreeco/swift-parsing.git",
         "state": {
-          "branch": "maxd/windows-gha",
-          "revision": "766fa061dc451a5a99de7716e5dd077be7156c0e",
+          "branch": "main",
+          "revision": "28433d9282bc8e9c8ca37875084e54bab2c07778",
           "version": null
         }
       },
