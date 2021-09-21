@@ -4,7 +4,7 @@
 
 import Parsing
 
-public struct FunctionDecl {
+public struct FuncDecl {
   public struct Parameter {
     public let externalName: SyntaxNode<Identifier>?
     public let internalName: SyntaxNode<Identifier>
@@ -18,12 +18,10 @@ public struct FunctionDecl {
   public let parameters: DelimitedSequence<Parameter>
 
   public let returns: SyntaxNode<Type>?
-  public let openBrace: SyntaxNode<()>
-  public let body: SyntaxNode<Expr>?
-  public let closeBrace: SyntaxNode<()>
+  public let body: ExprBlock
 }
 
-extension FunctionDecl: CustomStringConvertible {
+extension FuncDecl: CustomStringConvertible {
   public var description: String {
     """
     func \(identifier.content.content.value)(\(
@@ -35,7 +33,7 @@ extension FunctionDecl: CustomStringConvertible {
         """
       }.joined(separator: ", ")
     )) -> \(returns?.description ?? "()") {
-      \(body?.content.content ?? "")
+      \(body.elements.map(\.content.content.description).joined(separator: "\n"))
     }
     """
   }
@@ -52,7 +50,7 @@ let functionParameterParser = identifierParser
       SourceRange(
         start: firstName.content.start,
         end: type.content.end,
-        content: FunctionDecl.Parameter(
+        content: FuncDecl.Parameter(
           externalName: secondName == nil ? nil : firstName,
           internalName: secondName == nil ? firstName : secondName!,
           colon: colon,
@@ -74,25 +72,21 @@ let functionDeclParser = SyntaxNodeParser(Terminal("func"))
   .take(
     Optional.parser(of: arrowParser)
   )
-  .take(SyntaxNodeParser(openBraceParser.debug()))
-  .take(exprParser.debug())
-  .take(SyntaxNodeParser(closeBraceParser))
-  .map { funcKeyword, identifier, parameters, returns, openBrace, body, closeBrace in
+  .take(exprBlockParser)
+  .map { funcKeyword, identifier, parameters, returns, exprBlock in
     SyntaxNode(
       leadingTrivia: funcKeyword.leadingTrivia,
       content: SourceRange(
         start: funcKeyword.content.start,
-        end: closeBrace.content.end,
-        content: FunctionDecl(
+        end: exprBlock.closeBrace.content.end,
+        content: FuncDecl(
           funcKeyword: funcKeyword,
           identifier: identifier,
           // FIXME: fix generic parameters parsing
           genericParameters: [],
           parameters: parameters,
           returns: returns,
-          openBrace: openBrace,
-          body: body,
-          closeBrace: closeBrace
+          body: exprBlock
         )
       )
     )

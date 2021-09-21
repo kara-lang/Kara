@@ -3,10 +3,10 @@
 //
 
 struct InteropModifier {
-  enum Language {
-    case js
-    case c
-    case swift
+  enum Language: String {
+    case js = "JS"
+    case c = "C"
+    case swift = "Swift"
   }
 
   let language: Language

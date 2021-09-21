@@ -4,7 +4,7 @@
 
 public enum Declaration {
   case binding(BindingDecl)
-  case function(FunctionDecl)
+  case function(FuncDecl)
   case `struct`(StructDecl)
   case trait(TraitDecl)
 }

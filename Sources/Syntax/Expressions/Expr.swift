@@ -6,7 +6,7 @@ import Parsing
 
 public indirect enum Expr {
   case identifier(Identifier)
-  case application(FunctionApplication)
+  case application(FuncApplication)
   case closure(Closure)
   case literal(Literal)
   case ifThenElse(IfThenElse)
@@ -27,13 +27,13 @@ extension Expr: ExpressibleByIntegerLiteral {
   }
 }
 
-extension Expr: CustomDebugStringConvertible {
-  public var debugDescription: String {
+extension Expr: CustomStringConvertible {
+  public var description: String {
     switch self {
     case let .identifier(i):
       return i.value
     case let .application(app):
-      return "\(app.function.content)(\(app.arguments.elementsContent.map(\.debugDescription).joined(separator: ", ")))"
+      return "\(app.function.content)(\(app.arguments.elementsContent.map(\.description).joined(separator: ", ")))"
     case let .closure(l):
       return l.debugDescription
     case let .literal(l):
@@ -41,16 +41,16 @@ extension Expr: CustomDebugStringConvertible {
     case let .ifThenElse(ifThenElse):
       return
         """
-        if \(ifThenElse.condition.content.content.debugDescription) {
-          \(ifThenElse.thenBody.content.content.debugDescription)
+        if \(ifThenElse.condition.content.content.description) {
+          \(ifThenElse.thenBody.content.content.description)
         } else {
-          \(ifThenElse.elseBranch.elseBody.content.content.debugDescription)
+          \(ifThenElse.elseBranch.elseBody.content.content.description)
         }
         """
     case let .member(memberAccess):
-      return "\(memberAccess.base.content.content.debugDescription).\(memberAccess.member.content.content.value)"
+      return "\(memberAccess.base.content.content.description).\(memberAccess.member.content.content.value)"
     case let .tuple(tuple):
-      return "(\(tuple.elementsContent.map(\.debugDescription).joined(separator: ", ")))"
+      return "(\(tuple.elementsContent.map(\.description).joined(separator: ", ")))"
     case .unit:
       return "()"
     }

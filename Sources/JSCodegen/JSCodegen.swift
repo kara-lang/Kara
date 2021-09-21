@@ -20,11 +20,28 @@ let jsDeclarationCodegen = JSCodegen<Declaration> {
   }
 }
 
-let jsFunctionCodegen = JSCodegen<FunctionDecl> {
+let jsFunctionCodegen = JSCodegen<FuncDecl> {
   """
   const \($0.identifier.value) =\
-   (\($0.parameters.elementsContent.map(\.internalName))) => \(jsExprCodegen($0.body?.content.content ?? .unit));
+   (\($0.parameters.elementsContent.map(\.internalName))) => \(jsExprBlockCodegen($0.body));
   """
+}
+
+let jsExprBlockCodegen = JSCodegen<ExprBlock> {
+  """
+  {
+      \($0.elements.map(\.content.content).map(jsExprBlockElementCodegen.transform).joined(separator: ";\n"))
+  }
+  """
+}
+
+let jsExprBlockElementCodegen = JSCodegen<ExprBlock.Element> {
+  switch $0 {
+  case let .expr(e):
+    return jsExprCodegenTransform(e)
+  case let .binding(b):
+    return jsBindingCodegen(b)
+  }
 }
 
 func jsExprCodegenTransform(_ input: Expr) -> String {
@@ -70,3 +87,8 @@ func jsExprCodegenTransform(_ input: Expr) -> String {
 }
 
 let jsExprCodegen = JSCodegen(transform: jsExprCodegenTransform)
+
+let jsBindingCodegen = JSCodegen<BindingDecl> {
+  // FIXME: separate identifier codegen
+  "const \($0.identifier.value) = \(jsExprCodegenTransform($0.value.content.content))"
+}

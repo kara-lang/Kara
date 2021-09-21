@@ -25,7 +25,7 @@ struct Scheme {
   }
 }
 
-extension FunctionDecl {
+extension FuncDecl {
   var scheme: Scheme {
     Scheme(
       parameters.elementsContent.map(\.type.content.content) --> (returns?.content.content ?? .unit),

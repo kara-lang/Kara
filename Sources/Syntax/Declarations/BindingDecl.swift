@@ -5,9 +5,16 @@
 import Parsing
 
 public struct BindingDecl {
-  let identifier: SyntaxNode<Identifier>
-  let equalsSign: SyntaxNode<()>
-  let value: SyntaxNode<Expr>
+  public let bindingKeyword: SyntaxNode<()>
+  public let identifier: SyntaxNode<Identifier>
+  public let equalsSign: SyntaxNode<()>
+  public let value: SyntaxNode<Expr>
+}
+
+extension BindingDecl: CustomStringConvertible {
+  public var description: String {
+    "let \(identifier.description) = \(value.description)"
+  }
 }
 
 let bindingParser = SyntaxNodeParser(Terminal("let"))
@@ -21,6 +28,7 @@ let bindingParser = SyntaxNodeParser(Terminal("let"))
         start: letNode.content.start,
         end: exprNode.content.end,
         content: BindingDecl(
+          bindingKeyword: letNode,
           identifier: identifierNode,
           equalsSign: equalsSignNode,
           value: exprNode
