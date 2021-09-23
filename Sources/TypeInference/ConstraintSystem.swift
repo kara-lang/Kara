@@ -158,11 +158,18 @@ struct ConstraintSystem {
       return typeVariable
 
     case let .ifThenElse(ifThenElse):
-      let result = try infer(ifThenElse.thenBody.content.content)
-      try constraints.append(contentsOf: [
-        .equal(infer(ifThenElse.condition.content.content), .bool),
-        .equal(result, infer(ifThenElse.elseBranch.elseBody.content.content)),
-      ])
+      let result = try infer(.block(ifThenElse.thenBlock))
+
+      try constraints.append(.equal(infer(ifThenElse.condition.content.content), .bool))
+
+      if let elseBlock = ifThenElse.elseBranch?.elseBlock {
+        try constraints.append(.equal(result, infer(.block(elseBlock))))
+      } else {
+        // A sole `if` branch should have a `.unit` type, to unify with the missing `else` branch, which implicitly
+        // evaluates to `.unit`.
+        constraints.append(.equal(result, .unit))
+      }
+
       return result
 
     case let .member(memberAccess):
@@ -197,6 +204,15 @@ struct ConstraintSystem {
 
     case let .tuple(tuple):
       return try .tuple(tuple.elementsContent.map { try infer($0) })
+
+    case let .block(block):
+      // Expression blocks should always contain at least one expression and end with an expression.
+      guard case let .expr(last) = block.elements.last?.content.content else {
+        throw TypeError.noExpressions(block.sourceRange.map { _ in })
+      }
+
+      return try infer(last)
+
     case .unit:
       return .unit
     }

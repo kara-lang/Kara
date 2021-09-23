@@ -13,6 +13,10 @@ public struct ExprBlock {
   public let openBrace: SyntaxNode<()>
   public let elements: [SyntaxNode<Element>]
   public let closeBrace: SyntaxNode<()>
+
+  public var sourceRange: SourceRange<()> {
+    .init(start: openBrace.content.start, end: closeBrace.content.end, content: ())
+  }
 }
 
 extension ExprBlock.Element: CustomStringConvertible {
@@ -26,9 +30,20 @@ extension ExprBlock.Element: CustomStringConvertible {
   }
 }
 
+extension ExprBlock: CustomStringConvertible {
+  public var description: String {
+    """
+    {
+      \(elements.map(\.content.content.description).joined(separator: "\n"))
+    }
+    """
+  }
+}
+
 let exprBlockParser = SyntaxNodeParser(openBraceParser)
   .take(
     Many(
+      // FIXME: separated by a newline
       exprParser.map { $0.map(ExprBlock.Element.expr) }
         .orElse(bindingParser.map { $0.map(ExprBlock.Element.binding) })
     )

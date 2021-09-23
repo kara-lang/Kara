@@ -12,6 +12,7 @@ public indirect enum Expr {
   case ifThenElse(IfThenElse)
   case member(MemberAccess)
   case tuple(DelimitedSequence<Expr>)
+  case block(ExprBlock)
   case unit
 }
 
@@ -39,18 +40,13 @@ extension Expr: CustomStringConvertible {
     case let .literal(l):
       return l.debugDescription
     case let .ifThenElse(ifThenElse):
-      return
-        """
-        if \(ifThenElse.condition.content.content.description) {
-          \(ifThenElse.thenBody.content.content.description)
-        } else {
-          \(ifThenElse.elseBranch.elseBody.content.content.description)
-        }
-        """
+      return ifThenElse.description
     case let .member(memberAccess):
       return "\(memberAccess.base.content.content.description).\(memberAccess.member.content.content.value)"
     case let .tuple(tuple):
       return "(\(tuple.elementsContent.map(\.description).joined(separator: ", ")))"
+    case let .block(block):
+      return block.description
     case .unit:
       return "()"
     }

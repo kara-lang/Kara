@@ -16,4 +16,5 @@ enum TypeError: Error, Equatable {
   case unknownTupleMember(Identifier)
   case unbound(Identifier)
   case tupleUnificationFailure(Identifier, Identifier)
+  case noExpressions(SourceRange<()>)
 }

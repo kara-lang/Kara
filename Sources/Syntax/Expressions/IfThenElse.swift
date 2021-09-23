@@ -7,53 +7,58 @@ import Parsing
 public struct IfThenElse {
   public let ifKeyword: SyntaxNode<()>
   public let condition: SyntaxNode<Expr>
-  public let thenOpenBrace: SyntaxNode<()>
-  public let thenBody: SyntaxNode<Expr>
-  public let thenCloseBrace: SyntaxNode<()>
+  public let thenBlock: ExprBlock
 
-  // FIXME: make optional, also handle multiple `else if` branches
-  public let elseBranch: ElseBranch
+  // FIXME: handle multiple `else if` branches
+  public let elseBranch: ElseBranch?
+}
+
+extension IfThenElse: CustomStringConvertible {
+  public var description: String {
+    let tail: String
+    if let elseBranch = elseBranch {
+      tail = " else \(elseBranch.elseBlock.description)"
+    } else {
+      tail = ""
+    }
+
+    return """
+    if \(condition.content.content.description) \
+    \(thenBlock.description)\
+    \(tail)
+    """
+  }
 }
 
 public struct ElseBranch {
   public let elseKeyword: SyntaxNode<()>
-  public let elseOpenBrace: SyntaxNode<()>
-  public let elseBody: SyntaxNode<Expr>
-  public let elseCloseBrace: SyntaxNode<()>
+  public let elseBlock: ExprBlock
 }
 
 private let elseBranchParser = SyntaxNodeParser(Terminal("else"))
-  .take(SyntaxNodeParser(openBraceParser))
-  .take(Lazy { exprParser })
-  .take(SyntaxNodeParser(closeBraceParser))
+  .take(Lazy { exprBlockParser })
   .map {
     ElseBranch(
       elseKeyword: $0,
-      elseOpenBrace: $1,
-      elseBody: $2,
-      elseCloseBrace: $3
+      elseBlock: $1
     )
   }
 
 let ifThenElseParser = SyntaxNodeParser(Terminal("if"))
   .take(Lazy { exprParser })
-  .take(SyntaxNodeParser(openBraceParser))
-  .take(Lazy { exprParser })
-  .take(SyntaxNodeParser(closeBraceParser))
-  .take(elseBranchParser)
+  .take(Lazy { exprBlockParser })
+  .take(Optional.parser(of: elseBranchParser))
   .map { tuple -> SyntaxNode<IfThenElse> in
-    let (ifKeyword, condition, thenOpenBrace, thenBody, thenCloseBrace, elseBranch) = tuple
+    let (ifKeyword, condition, thenBlock, elseBranch) = tuple
     return SyntaxNode(
       leadingTrivia: ifKeyword.leadingTrivia,
       content: SourceRange(
         start: ifKeyword.content.start,
-        end: elseBranch.elseCloseBrace.content.end,
+        end: elseBranch?.elseBlock.closeBrace.content.end ?? thenBlock.closeBrace.content.end,
         content: IfThenElse(
           ifKeyword: ifKeyword,
           condition: condition,
-          thenOpenBrace: thenOpenBrace,
-          thenBody: thenBody,
-          thenCloseBrace: thenCloseBrace,
+          thenBlock: thenBlock,
           elseBranch: elseBranch
         )
       )

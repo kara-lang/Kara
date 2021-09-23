@@ -4,7 +4,7 @@
 
 import Parsing
 
-public struct SourceLocation {
+public struct SourceLocation: Equatable {
   init(column: Int, line: Int, filePath: String? = nil) {
     self.column = column
     self.line = line
@@ -22,8 +22,14 @@ public struct SourceRange<Content> {
 
   public let content: Content
 
-  func map<NewContent>(_ transform: (Content) -> NewContent) -> SourceRange<NewContent> {
+  public func map<NewContent>(_ transform: (Content) -> NewContent) -> SourceRange<NewContent> {
     .init(start: start, end: end, content: transform(content))
+  }
+}
+
+extension SourceRange: Equatable where Content == () {
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.start == rhs.start && lhs.end == rhs.end
   }
 }
 

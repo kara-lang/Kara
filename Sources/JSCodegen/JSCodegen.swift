@@ -30,7 +30,7 @@ let jsFunctionCodegen = JSCodegen<FuncDecl> {
 let jsExprBlockCodegen = JSCodegen<ExprBlock> {
   """
   {
-      \($0.elements.map(\.content.content).map(jsExprBlockElementCodegen.transform).joined(separator: ";\n"))
+    \($0.elements.map(\.content.content).map(jsExprBlockElementCodegen.transform).joined(separator: ";\n"))
   }
   """
 }
@@ -70,17 +70,28 @@ func jsExprCodegenTransform(_ input: Expr) -> String {
       (\(c.parameters.map(\.identifier.content.content.value).joined(separator: ","))) =>
       \(jsExprCodegenTransform(c.body?.content.content ?? .unit));
       """
-  case let .ifThenElse(ternary):
+  case let .ifThenElse(ifThenElse):
+    guard let elseBlock = ifThenElse.elseBranch?.elseBlock else {
+      return
+        """
+        if (\(jsExprCodegenTransform(ifThenElse.condition.content.content))) \
+        \(jsExprBlockCodegen(ifThenElse.thenBlock))
+        """
+    }
+
+    // FIXME: this is unlikely to work in blocks with multiple expressions
     return
       """
-      (\(jsExprCodegenTransform(ternary.condition.content.content)) ?\
-       \(jsExprCodegenTransform(ternary.thenBody.content.content)) :\
-       \(jsExprCodegenTransform(ternary.elseBranch.elseBody.content.content)))
+      (\(jsExprCodegenTransform(ifThenElse.condition.content.content)) ?\
+       \(jsExprBlockCodegen(ifThenElse.thenBlock)) :\
+       \(jsExprBlockCodegen(elseBlock)))
       """
   case let .member(m):
     return "\(jsExprCodegenTransform(m.base.content.content)).\(m.member.value)"
   case let .tuple(t):
     return "[\(t.elementsContent.map(jsExprCodegenTransform).joined(separator: ","))]"
+  case let .block(block):
+    return jsExprBlockCodegen(block)
   case .unit:
     return "undefined"
   }
