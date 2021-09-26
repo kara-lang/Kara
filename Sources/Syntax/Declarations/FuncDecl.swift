@@ -18,12 +18,19 @@ public struct FuncDecl {
   public let parameters: DelimitedSequence<Parameter>
 
   public let returns: SyntaxNode<Type>?
-  public let body: ExprBlock
+  public let body: ExprBlock?
 }
 
 extension FuncDecl: CustomStringConvertible {
   public var description: String {
-    """
+    let bodyTail: String
+    if let body = body {
+      bodyTail = " \(body.description)"
+    } else {
+      bodyTail = ""
+    }
+
+    return """
     func \(identifier.content.content.value)(\(
       parameters.elementsContent.map {
         """
@@ -32,9 +39,7 @@ extension FuncDecl: CustomStringConvertible {
         )\($0.internalName.content.content.value): \($0.type.content)
         """
       }.joined(separator: ", ")
-    )) -> \(returns?.description ?? "()") {
-      \(body.elements.map(\.content.content.description).joined(separator: "\n"))
-    }
+    )) -> \(returns?.description ?? "()")\(bodyTail)
     """
   }
 }
@@ -69,16 +74,14 @@ let functionDeclParser = SyntaxNodeParser(Terminal("func"))
       elementParser: functionParameterParser
     ).debug()
   )
-  .take(
-    Optional.parser(of: arrowParser)
-  )
-  .take(exprBlockParser)
+  .take(Optional.parser(of: arrowParser))
+  .take(Optional.parser(of: exprBlockParser))
   .map { funcKeyword, identifier, parameters, returns, exprBlock in
     SyntaxNode(
       leadingTrivia: funcKeyword.leadingTrivia,
       content: SourceRange(
         start: funcKeyword.content.start,
-        end: exprBlock.closeBrace.content.end,
+        end: exprBlock?.closeBrace.content.end ?? returns?.content.end ?? parameters.end.content.end,
         content: FuncDecl(
           funcKeyword: funcKeyword,
           identifier: identifier,

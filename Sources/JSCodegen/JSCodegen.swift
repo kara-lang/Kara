@@ -21,9 +21,15 @@ let jsDeclarationCodegen = JSCodegen<Declaration> {
 }
 
 let jsFunctionCodegen = JSCodegen<FuncDecl> {
-  """
+  guard let body = $0.body else {
+    // FIXME: Assert that interop modifier is present. Maybe we shouldn't reach this by checking for interop
+    // modifier presence earlier?
+    return ""
+  }
+
+  return """
   const \($0.identifier.value) =\
-   (\($0.parameters.elementsContent.map(\.internalName))) => \(jsExprBlockCodegen($0.body));
+   (\($0.parameters.elementsContent.map(\.internalName))) => \(jsExprBlockCodegen(body));
   """
 }
 
