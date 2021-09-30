@@ -2,12 +2,10 @@
 //  Created by Max Desiatov on 21/09/2021.
 //
 
-enum AccessControl {
-  case `public`
-  case `private`
-}
-
-enum DeclModifier {
+public enum DeclModifier {
   case access(AccessControl)
   case interop(InteropModifier)
 }
+
+let declModifierParser = interopModifierParser
+  .orElse(accessControlParser)

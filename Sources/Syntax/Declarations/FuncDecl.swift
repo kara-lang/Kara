@@ -12,6 +12,7 @@ public struct FuncDecl {
     public let type: SyntaxNode<Type>
   }
 
+  public let modifers: [SyntaxNode<DeclModifier>]
   public let funcKeyword: SyntaxNode<()>
   public let identifier: SyntaxNode<Identifier>
   public let genericParameters: [TypeVariable]
@@ -65,32 +66,35 @@ let functionParameterParser = identifierParser
     )
   }
 
-let functionDeclParser = SyntaxNodeParser(Terminal("func"))
-  .take(identifierParser)
-  .take(
-    delimitedSequenceParser(
-      startParser: openParenParser,
-      endParser: closeParenParser,
-      elementParser: functionParameterParser
-    ).debug()
-  )
-  .take(Optional.parser(of: arrowParser))
-  .take(Optional.parser(of: exprBlockParser))
-  .map { funcKeyword, identifier, parameters, returns, exprBlock in
-    SyntaxNode(
-      leadingTrivia: funcKeyword.leadingTrivia,
-      content: SourceRange(
-        start: funcKeyword.content.start,
-        end: exprBlock?.closeBrace.content.end ?? returns?.content.end ?? parameters.end.content.end,
-        content: FuncDecl(
-          funcKeyword: funcKeyword,
-          identifier: identifier,
-          // FIXME: fix generic parameters parsing
-          genericParameters: [],
-          parameters: parameters,
-          returns: returns,
-          body: exprBlock
+let functionDeclParser =
+  Many(declModifierParser)
+    .take(SyntaxNodeParser(Terminal("func")))
+    .take(identifierParser)
+    .take(
+      delimitedSequenceParser(
+        startParser: openParenParser,
+        endParser: closeParenParser,
+        elementParser: functionParameterParser
+      ).debug()
+    )
+    .take(Optional.parser(of: arrowParser))
+    .take(Optional.parser(of: exprBlockParser))
+    .map { modifiers, funcKeyword, identifier, parameters, returns, exprBlock in
+      SyntaxNode(
+        leadingTrivia: funcKeyword.leadingTrivia,
+        content: SourceRange(
+          start: funcKeyword.content.start,
+          end: exprBlock?.closeBrace.content.end ?? returns?.content.end ?? parameters.end.content.end,
+          content: FuncDecl(
+            modifers: modifiers,
+            funcKeyword: funcKeyword,
+            identifier: identifier,
+            // FIXME: fix generic parameters parsing
+            genericParameters: [],
+            parameters: parameters,
+            returns: returns,
+            body: exprBlock
+          )
         )
       )
-    )
-  }
+    }

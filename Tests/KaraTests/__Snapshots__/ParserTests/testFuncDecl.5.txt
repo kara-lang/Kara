@@ -1,42 +1,57 @@
 SyntaxNode(
-  leadingTrivia: [],
-  content: 0:0-0:26 FuncDecl(
-    modifers: [],
+  leadingTrivia: [
+    [0]: Whitespace(" ")
+  ],
+  content: 0:15-0:41 FuncDecl(
+    modifers: [
+      [0]: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:6 DeclModifier.access(AccessControl.private)
+      ),
+      [1]: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
+        content: 0:8-0:13 DeclModifier.access(AccessControl.public)
+      )
+    ],
     funcKeyword: SyntaxNode(
-      leadingTrivia: [],
-      content: 0:0-0:3 ()
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
+      content: 0:15-0:18 ()
     ),
     identifier: SyntaxNode(
       leadingTrivia: [
         [0]: Whitespace(" ")
       ],
-      content: 0:5-0:5 Identifier(value: "f")
+      content: 0:20-0:20 Identifier(value: "f")
     ),
     genericParameters: [],
     parameters: DelimitedSequence(
       start: SyntaxNode(
         leadingTrivia: [],
-        content: 0:6-0:6 ()
+        content: 0:21-0:21 ()
       ),
       elements: [
         [0]: DelimitedSequence.Element(
           content: SyntaxNode(
             leadingTrivia: [],
-            content: 0:7-0:12 FuncDecl.Parameter(
+            content: 0:22-0:27 FuncDecl.Parameter(
               externalName: nil,
               internalName: SyntaxNode(
                 leadingTrivia: [],
-                content: 0:7-0:7 Identifier(value: "x")
+                content: 0:22-0:22 Identifier(value: "x")
               ),
               colon: SyntaxNode(
                 leadingTrivia: [],
-                content: 0:8-0:8 ()
+                content: 0:23-0:23 ()
               ),
               type: SyntaxNode(
                 leadingTrivia: [
                   [0]: Whitespace(" ")
                 ],
-                content: 0:10-0:12 Type.constructor(
+                content: 0:25-0:27 Type.constructor(
                   TypeIdentifier(value: "Int"),
                   []
                 )
@@ -48,14 +63,14 @@ SyntaxNode(
       ],
       end: SyntaxNode(
         leadingTrivia: [],
-        content: 0:13-0:13 ()
+        content: 0:28-0:28 ()
       )
     ),
     returns: SyntaxNode(
       leadingTrivia: [
         [0]: Whitespace(" ")
       ],
-      content: 0:18-0:20 Type.constructor(
+      content: 0:33-0:35 Type.constructor(
         TypeIdentifier(value: "Int"),
         []
       )
@@ -63,14 +78,14 @@ SyntaxNode(
     body: ExprBlock(
       openBrace: SyntaxNode(
         leadingTrivia: [],
-        content: 0:22-0:22 ()
+        content: 0:37-0:37 ()
       ),
       elements: [
         [0]: SyntaxNode(
           leadingTrivia: [
             [0]: Whitespace(" ")
           ],
-          content: 0:24-0:24 ExprBlock.Element.expr(
+          content: 0:39-0:39 ExprBlock.Element.expr(
             Expr.identifier(
               Identifier(value: "x")
             )
@@ -81,7 +96,7 @@ SyntaxNode(
         leadingTrivia: [
           [0]: Whitespace(" ")
         ],
-        content: 0:26-0:26 ()
+        content: 0:41-0:41 ()
       )
     )
   )

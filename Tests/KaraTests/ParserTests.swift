@@ -176,6 +176,17 @@ final class ParserTests: XCTestCase {
   func testFuncDecl() {
     assertSnapshot(functionDeclParser.parse("func f(x: Int) -> Int { x }"))
     assertSnapshot(functionDeclParser.parse(#"func f(x y: Bool) -> String { if y { "x" } else { "not x" } }"#))
+    assertSnapshot(functionDeclParser.parse("private func f(x: Int) -> Int { x }"))
+    assertSnapshot(functionDeclParser.parse(#"public func f(x y: Bool) -> String { if y { "x" } else { "not x" } }"#))
+    assertSnapshot(functionDeclParser.parse("private public func f(x: Int) -> Int { x }"))
+    assertSnapshot(
+      functionDeclParser.parse(#"interop(JS, "fff") func f(x y: Bool) -> String"#)
+    )
+    assertSnapshot(
+      functionDeclParser.parse(
+        #"public interop(JS, "fff") func f(x y: Bool) -> String"#
+      )
+    )
   }
 
   func testComments() {
