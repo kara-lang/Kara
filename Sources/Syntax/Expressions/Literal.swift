@@ -86,9 +86,11 @@ let intLiteralParser = Int64.parser(of: UTF8SubSequence.self)
 let floatLiteralParser = Double.parser(of: UTF8SubSequence.self)
   .map(Literal.double)
 
-let stringLiteralParser = UTF8Terminal("\"".utf8)
+let singleQuotedStringParser = UTF8Terminal("\"".utf8)
   .take(Prefix { $0 != UInt8(ascii: "\"") })
   .skip(StartsWith("\"".utf8))
+
+let stringLiteralParser = singleQuotedStringParser
   .compactMap(String.init)
   .map(Literal.string)
 
