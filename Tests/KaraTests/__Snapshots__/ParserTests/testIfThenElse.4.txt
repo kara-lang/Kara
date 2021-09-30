@@ -1,5 +1,116 @@
-0:0-4:0 if 0:3-0:14 42.isInteger() {
-  "is integer"
-} else {
-  "is not integer"
-}
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-4:0 Expr.ifThenElse(
+    IfThenElse(
+      ifKeyword: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:1 ()
+      ),
+      condition: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
+        content: 0:3-0:16 Expr.application(
+          FuncApplication(
+            function: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 0:3-0:14 Expr.member(
+                MemberAccess(
+                  base: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 0:3-0:4 Expr.literal(
+                      Literal.int32(42)
+                    )
+                  ),
+                  dot: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 0:5-0:5 ()
+                  ),
+                  member: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 0:6-0:14 Identifier(value: "isInteger")
+                  )
+                )
+              )
+            ),
+            arguments: DelimitedSequence(
+              start: SyntaxNode(
+                leadingTrivia: [],
+                content: 0:15-0:15 ()
+              ),
+              elements: [],
+              end: SyntaxNode(
+                leadingTrivia: [],
+                content: 0:16-0:16 ()
+              )
+            )
+          )
+        )
+      ),
+      thenBlock: ExprBlock(
+        openBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:18-0:18 ()
+        ),
+        elements: [
+          [0]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n  ")
+            ],
+            content: 1:2-1:13 ExprBlock.Element.expr(
+              Expr.literal(
+                Literal.string("is integer")
+              )
+            )
+          )
+        ],
+        closeBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("\n")
+          ],
+          content: 2:0-2:0 ()
+        )
+      ),
+      elseBranch: ElseBranch(
+        elseKeyword: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 2:2-2:5 ()
+        ),
+        elseBlock: ExprBlock(
+          openBrace: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
+            content: 2:7-2:7 ()
+          ),
+          elements: [
+            [0]: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace("\n  ")
+              ],
+              content: 3:2-3:17 ExprBlock.Element.expr(
+                Expr.literal(
+                  Literal.string("is not integer")
+                )
+              )
+            )
+          ],
+          closeBrace: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n")
+            ],
+            content: 4:0-4:0 ()
+          )
+        )
+      )
+    )
+  )
+)

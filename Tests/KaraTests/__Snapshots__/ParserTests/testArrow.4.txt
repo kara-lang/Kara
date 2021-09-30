@@ -1,1 +1,23 @@
-0:0-0:22 ((Int, Double) -> String)
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:22 Type.arrow(
+    [
+      [0]: Type.tuple(
+        [
+          [0]: Type.constructor(
+            TypeIdentifier(value: "Int"),
+            []
+          ),
+          [1]: Type.constructor(
+            TypeIdentifier(value: "Double"),
+            []
+          )
+        ]
+      )
+    ],
+    Type.constructor(
+      TypeIdentifier(value: "String"),
+      []
+    )
+  )
+)

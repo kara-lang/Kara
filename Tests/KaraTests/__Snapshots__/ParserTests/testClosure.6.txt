@@ -1,1 +1,15 @@
-0:0-0:5 { 0:1-0:4 xin1 }
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:5 Expr.closure(
+    Closure(
+      parameters: [],
+      inKeyword: nil,
+      body: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:1-0:4 Expr.identifier(
+          Identifier(value: "xin1")
+        )
+      )
+    )
+  )
+)

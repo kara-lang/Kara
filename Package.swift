@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
   name: "Kara",
-  platforms: [.macOS(.v10_14)],
+  platforms: [.macOS(.v10_15)],
   dependencies: [
     // Dependencies declare other packages that this package depends on.
     .package(
@@ -23,6 +23,7 @@ let package = Package(
       .upToNextMinor(from: "0.2.0")
     ),
     .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.9.0"),
+    .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "0.2.0"),
     .package(name: "LiteSupport", url: "https://github.com/MaxDesiatov/Lite.git", .branch("basic-tsc")),
   ],
   targets: [
@@ -32,6 +33,7 @@ let package = Package(
     .target(
       name: "Syntax",
       dependencies: [
+        .product(name: "CustomDump", package: "swift-custom-dump"),
         .product(name: "Parsing", package: "swift-parsing"),
       ]
     ),
@@ -94,10 +96,11 @@ let package = Package(
     .testTarget(
       name: "KaraTests",
       dependencies: [
-        "Syntax",
         "JSCodegen",
-        "TypeInference",
         "SnapshotTesting",
+        "Syntax",
+        "TypeInference",
+        .product(name: "CustomDump", package: "swift-custom-dump"),
       ],
       exclude: ["Fixtures", "__Snapshots__"]
     ),

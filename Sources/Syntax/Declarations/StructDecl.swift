@@ -9,8 +9,8 @@ public struct StructDecl {
   let genericParameters: [TypeVariable]
 }
 
-extension StructDecl: CustomDebugStringConvertible {
-  public var debugDescription: String {
+extension StructDecl: CustomStringConvertible {
+  public var description: String {
     if genericParameters.isEmpty {
       return "struct \(name) {}"
     } else {

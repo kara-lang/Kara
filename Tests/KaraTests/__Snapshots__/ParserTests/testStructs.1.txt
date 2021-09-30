@@ -1,1 +1,4 @@
-struct 0:7-0:9 Foo {}
+StructDecl(
+  name: 0:7-0:9 TypeIdentifier(value: "Foo"),
+  genericParameters: []
+)

@@ -1,1 +1,126 @@
-0:0-0:35 ("foo", ("bar", "baz", (1, "fizz")))
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:35 Expr.tuple(
+    DelimitedSequence(
+      start: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 ()
+      ),
+      elements: [
+        [0]: DelimitedSequence.Element(
+          content: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:1-0:5 Expr.literal(
+              Literal.string("foo")
+            )
+          ),
+          separator: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:6-0:6 ()
+          )
+        ),
+        [1]: DelimitedSequence.Element(
+          content: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
+            content: 0:8-0:34 Expr.tuple(
+              DelimitedSequence(
+                start: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 0:8-0:8 ()
+                ),
+                elements: [
+                  [0]: DelimitedSequence.Element(
+                    content: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 0:9-0:13 Expr.literal(
+                        Literal.string("bar")
+                      )
+                    ),
+                    separator: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 0:14-0:14 ()
+                    )
+                  ),
+                  [1]: DelimitedSequence.Element(
+                    content: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 0:16-0:20 Expr.literal(
+                        Literal.string("baz")
+                      )
+                    ),
+                    separator: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 0:21-0:21 ()
+                    )
+                  ),
+                  [2]: DelimitedSequence.Element(
+                    content: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 0:23-0:33 Expr.tuple(
+                        DelimitedSequence(
+                          start: SyntaxNode(
+                            leadingTrivia: [
+                              [0]: Whitespace(" ")
+                            ],
+                            content: 0:23-0:23 ()
+                          ),
+                          elements: [
+                            [0]: DelimitedSequence.Element(
+                              content: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 0:24-0:24 Expr.literal(
+                                  Literal.int32(1)
+                                )
+                              ),
+                              separator: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 0:25-0:25 ()
+                              )
+                            ),
+                            [1]: DelimitedSequence.Element(
+                              content: SyntaxNode(
+                                leadingTrivia: [
+                                  [0]: Whitespace(" ")
+                                ],
+                                content: 0:27-0:32 Expr.literal(
+                                  Literal.string("fizz")
+                                )
+                              ),
+                              separator: nil
+                            )
+                          ],
+                          end: SyntaxNode(
+                            leadingTrivia: [],
+                            content: 0:33-0:33 ()
+                          )
+                        )
+                      )
+                    ),
+                    separator: nil
+                  )
+                ],
+                end: SyntaxNode(
+                  leadingTrivia: [],
+                  content: 0:34-0:34 ()
+                )
+              )
+            )
+          ),
+          separator: nil
+        )
+      ],
+      end: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:35-0:35 ()
+      )
+    )
+  )
+)

@@ -1,1 +1,20 @@
-0:0-0:19 Array<(Int, String)>
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:19 Type.constructor(
+    TypeIdentifier(value: "Array"),
+    [
+      [0]: Type.tuple(
+        [
+          [0]: Type.constructor(
+            TypeIdentifier(value: "Int"),
+            []
+          ),
+          [1]: Type.constructor(
+            TypeIdentifier(value: "String"),
+            []
+          )
+        ]
+      )
+    ]
+  )
+)

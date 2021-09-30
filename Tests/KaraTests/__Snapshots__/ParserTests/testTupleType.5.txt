@@ -1,1 +1,50 @@
-0:0-0:61 Array<(Int, String, Bool, Dictionary<Double, Set<(Foo, Bar)>>)>
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:61 Type.constructor(
+    TypeIdentifier(value: "Array"),
+    [
+      [0]: Type.tuple(
+        [
+          [0]: Type.constructor(
+            TypeIdentifier(value: "Int"),
+            []
+          ),
+          [1]: Type.constructor(
+            TypeIdentifier(value: "String"),
+            []
+          ),
+          [2]: Type.constructor(
+            TypeIdentifier(value: "Bool"),
+            []
+          ),
+          [3]: Type.constructor(
+            TypeIdentifier(value: "Dictionary"),
+            [
+              [0]: Type.constructor(
+                TypeIdentifier(value: "Double"),
+                []
+              ),
+              [1]: Type.constructor(
+                TypeIdentifier(value: "Set"),
+                [
+                  [0]: Type.tuple(
+                    [
+                      [0]: Type.constructor(
+                        TypeIdentifier(value: "Foo"),
+                        []
+                      ),
+                      [1]: Type.constructor(
+                        TypeIdentifier(value: "Bar"),
+                        []
+                      )
+                    ]
+                  )
+                ]
+              )
+            ]
+          )
+        ]
+      )
+    ]
+  )
+)

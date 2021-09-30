@@ -21,9 +21,15 @@ extension Closure.Parameter {
   }
 }
 
-extension Closure: CustomDebugStringConvertible {
-  public var debugDescription: String {
-    let bodyString = body?.content.debugDescription ?? ""
+extension Closure: CustomStringConvertible {
+  public var description: String {
+    let bodyString: String
+    if let body = body?.content.content {
+      bodyString = String(describing: body)
+    } else {
+      bodyString = ""
+    }
+
     if parameters.isEmpty {
       return "{ \(bodyString) }"
     } else {

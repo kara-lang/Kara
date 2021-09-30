@@ -34,11 +34,15 @@ extension Expr: CustomStringConvertible {
     case let .identifier(i):
       return i.value
     case let .application(app):
-      return "\(app.function.content)(\(app.arguments.elementsContent.map(\.description).joined(separator: ", ")))"
+      return """
+      \(
+        app.function.content.content
+      )(\(app.arguments.elementsContent.map(\.description).joined(separator: ", ")))
+      """
     case let .closure(l):
-      return l.debugDescription
+      return l.description
     case let .literal(l):
-      return l.debugDescription
+      return l.description
     case let .ifThenElse(ifThenElse):
       return ifThenElse.description
     case let .member(memberAccess):

@@ -1,1 +1,40 @@
-0:0-0:13 { x, y, z in 0:11-0:11 1 }
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:13 Expr.closure(
+    Closure(
+      parameters: [
+        [0]: Closure.Parameter(
+          identifier: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:2-0:2 Identifier(value: "x")
+          ),
+          typeAnnotation: nil
+        ),
+        [1]: Closure.Parameter(
+          identifier: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:4-0:4 Identifier(value: "y")
+          ),
+          typeAnnotation: nil
+        ),
+        [2]: Closure.Parameter(
+          identifier: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:6-0:6 Identifier(value: "z")
+          ),
+          typeAnnotation: nil
+        )
+      ],
+      inKeyword: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:8-0:9 ()
+      ),
+      body: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:11-0:11 Expr.literal(
+          Literal.int32(1)
+        )
+      )
+    )
+  )
+)

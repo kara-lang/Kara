@@ -1,1 +1,15 @@
-0:0-0:12 (Int -> Double)
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:12 Type.arrow(
+    [
+      [0]: Type.constructor(
+        TypeIdentifier(value: "Int"),
+        []
+      )
+    ],
+    Type.constructor(
+      TypeIdentifier(value: "Double"),
+      []
+    )
+  )
+)

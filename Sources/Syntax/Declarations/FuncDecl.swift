@@ -36,7 +36,7 @@ extension FuncDecl: CustomStringConvertible {
         """
         \($0.externalName?.content.content.value ?? "")\(
           $0.externalName == nil ? "" : " "
-        )\($0.internalName.content.content.value): \($0.type.content)
+        )\($0.internalName.content.content.value): \($0.type.content.content)
         """
       }.joined(separator: ", ")
     )) -> \(returns?.description ?? "()")\(bodyTail)

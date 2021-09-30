@@ -2,6 +2,7 @@
 //  Created by Max Desiatov on 09/09/2021.
 //
 
+import CustomDump
 import Parsing
 
 public struct Comment {
@@ -23,12 +24,6 @@ extension Comment: CustomStringConvertible {
     case .multipleLines:
       return "/*\(isDocComment ? "*" : "")\(content)*/"
     }
-  }
-}
-
-extension Comment: CustomDebugStringConvertible {
-  public var debugDescription: String {
-    #"Comment { kind: .\#(kind); isDocComment: \#(isDocComment); content: "\#(content)"; }"#
   }
 }
 

@@ -51,8 +51,8 @@ extension Literal: ExpressibleByBooleanLiteral {
   }
 }
 
-extension Literal: CustomDebugStringConvertible {
-  public var debugDescription: String {
+extension Literal: CustomStringConvertible {
+  public var description: String {
     switch self {
     case let .bool(b): return b.description
     case let .double(f): return f.description

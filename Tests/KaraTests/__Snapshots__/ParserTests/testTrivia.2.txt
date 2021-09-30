@@ -1,1 +1,8 @@
-[0:0-0:3    , 0:3-0:18 // Hello, world!]
+[
+  [0]: 0:0-0:3 Whitespace("   "),
+  [1]: 0:3-0:18 Comment(
+    kind: Comment.Kind.singleLine,
+    isDocComment: false,
+    content: " Hello, world!"
+  )
+]

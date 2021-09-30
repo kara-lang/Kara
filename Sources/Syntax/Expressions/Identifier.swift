@@ -14,8 +14,8 @@ extension Identifier: ExpressibleByStringLiteral {
   }
 }
 
-extension Identifier: CustomDebugStringConvertible {
-  public var debugDescription: String { value }
+extension Identifier: CustomStringConvertible {
+  public var description: String { value }
 }
 
 let identifierHead = [

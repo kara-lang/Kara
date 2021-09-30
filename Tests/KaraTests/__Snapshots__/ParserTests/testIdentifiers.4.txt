@@ -1,0 +1,11 @@
+SyntaxNode(
+  leadingTrivia: [
+    [0]: Comment(
+      kind: Comment.Kind.singleLine,
+      isDocComment: false,
+      content: " test"
+    ),
+    [1]: Whitespace("\n")
+  ],
+  content: 1:0-1:6 Identifier(value: "_abc123")
+)

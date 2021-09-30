@@ -1,1 +1,119 @@
-0:0-0:36 0:0-0:11 { x, y, z in 0:10-0:10 x }(1, 2, 3).description
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:36 Expr.member(
+    MemberAccess(
+      base: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:24 Expr.application(
+          FuncApplication(
+            function: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:0-0:11 Expr.closure(
+                Closure(
+                  parameters: [
+                    [0]: Closure.Parameter(
+                      identifier: SyntaxNode(
+                        leadingTrivia: [],
+                        content: 0:1-0:1 Identifier(value: "x")
+                      ),
+                      typeAnnotation: nil
+                    ),
+                    [1]: Closure.Parameter(
+                      identifier: SyntaxNode(
+                        leadingTrivia: [],
+                        content: 0:3-0:3 Identifier(value: "y")
+                      ),
+                      typeAnnotation: nil
+                    ),
+                    [2]: Closure.Parameter(
+                      identifier: SyntaxNode(
+                        leadingTrivia: [],
+                        content: 0:5-0:5 Identifier(value: "z")
+                      ),
+                      typeAnnotation: nil
+                    )
+                  ],
+                  inKeyword: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 0:7-0:8 ()
+                  ),
+                  body: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 0:10-0:10 Expr.identifier(
+                      Identifier(value: "x")
+                    )
+                  )
+                )
+              )
+            ),
+            arguments: DelimitedSequence(
+              start: SyntaxNode(
+                leadingTrivia: [
+                  [0]: Whitespace(" ")
+                ],
+                content: 0:13-0:13 ()
+              ),
+              elements: [
+                [0]: DelimitedSequence.Element(
+                  content: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 0:15-0:15 Expr.literal(
+                      Literal.int32(1)
+                    )
+                  ),
+                  separator: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 0:17-0:17 ()
+                  )
+                ),
+                [1]: DelimitedSequence.Element(
+                  content: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 0:19-0:19 Expr.literal(
+                      Literal.int32(2)
+                    )
+                  ),
+                  separator: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 0:20-0:20 ()
+                  )
+                ),
+                [2]: DelimitedSequence.Element(
+                  content: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 0:22-0:22 Expr.literal(
+                      Literal.int32(3)
+                    )
+                  ),
+                  separator: nil
+                )
+              ],
+              end: SyntaxNode(
+                leadingTrivia: [
+                  [0]: Whitespace(" ")
+                ],
+                content: 0:24-0:24 ()
+              )
+            )
+          )
+        )
+      ),
+      dot: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:25-0:25 ()
+      ),
+      member: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:26-0:36 Identifier(value: "description")
+      )
+    )
+  )
+)

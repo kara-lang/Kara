@@ -1,5 +1,11 @@
-0:0-4:32 Comment { kind: .multipleLines; isDocComment: true; content: " Hello, world!
-// Inner comment
-
-
-            More content here. "; }
+0:0-4:32 Comment(
+  kind: Comment.Kind.multipleLines,
+  isDocComment: true,
+  content: """
+     Hello, world!
+    // Inner comment
+    
+    
+                More content here. 
+    """
+)

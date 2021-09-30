@@ -1,1 +1,7 @@
-[0:0-0:15 // Hello, world!]
+[
+  [0]: 0:0-0:15 Comment(
+    kind: Comment.Kind.singleLine,
+    isDocComment: false,
+    content: " Hello, world!"
+  )
+]

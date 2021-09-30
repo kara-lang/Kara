@@ -1,1 +1,73 @@
-0:0-0:22 (1, 2, 3).description
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:22 Expr.member(
+    MemberAccess(
+      base: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:10 Expr.tuple(
+          DelimitedSequence(
+            start: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:0-0:0 ()
+            ),
+            elements: [
+              [0]: DelimitedSequence.Element(
+                content: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 0:2-0:2 Expr.literal(
+                    Literal.int32(1)
+                  )
+                ),
+                separator: SyntaxNode(
+                  leadingTrivia: [],
+                  content: 0:3-0:3 ()
+                )
+              ),
+              [1]: DelimitedSequence.Element(
+                content: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 0:5-0:5 Expr.literal(
+                    Literal.int32(2)
+                  )
+                ),
+                separator: SyntaxNode(
+                  leadingTrivia: [],
+                  content: 0:6-0:6 ()
+                )
+              ),
+              [2]: DelimitedSequence.Element(
+                content: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 0:8-0:8 Expr.literal(
+                    Literal.int32(3)
+                  )
+                ),
+                separator: nil
+              )
+            ],
+            end: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 0:10-0:10 ()
+            )
+          )
+        )
+      ),
+      dot: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:11-0:11 ()
+      ),
+      member: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:12-0:22 Identifier(value: "description")
+      )
+    )
+  )
+)

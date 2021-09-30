@@ -2,6 +2,7 @@
 //  Created by Max Desiatov on 22/08/2021.
 //
 
+import CustomDump
 import SnapshotTesting
 @testable import Syntax
 import XCTest
@@ -25,7 +26,10 @@ func assertSnapshot<T>(
     return
   }
   assertFullyConsumed(parsingResult.rest, file: file, line: line)
-  assertSnapshot(matching: output, as: .debugDescription, file: file, testName: testName, line: line)
+
+  var stringDump = ""
+  customDump(output, to: &stringDump)
+  assertSnapshot(matching: stringDump, as: .lines, file: file, testName: testName, line: line)
 }
 
 func assertError<T, E: Error & Equatable>(

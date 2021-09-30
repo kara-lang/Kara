@@ -1,1 +1,54 @@
-0:0-0:73 (Dictionary<Bool, (Int, Double, String)> -> (Array<Character>, Array<Bool>))
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:73 Type.arrow(
+    [
+      [0]: Type.constructor(
+        TypeIdentifier(value: "Dictionary"),
+        [
+          [0]: Type.constructor(
+            TypeIdentifier(value: "Bool"),
+            []
+          ),
+          [1]: Type.tuple(
+            [
+              [0]: Type.constructor(
+                TypeIdentifier(value: "Int"),
+                []
+              ),
+              [1]: Type.constructor(
+                TypeIdentifier(value: "Double"),
+                []
+              ),
+              [2]: Type.constructor(
+                TypeIdentifier(value: "String"),
+                []
+              )
+            ]
+          )
+        ]
+      )
+    ],
+    Type.tuple(
+      [
+        [0]: Type.constructor(
+          TypeIdentifier(value: "Array"),
+          [
+            [0]: Type.constructor(
+              TypeIdentifier(value: "Character"),
+              []
+            )
+          ]
+        ),
+        [1]: Type.constructor(
+          TypeIdentifier(value: "Array"),
+          [
+            [0]: Type.constructor(
+              TypeIdentifier(value: "Bool"),
+              []
+            )
+          ]
+        )
+      ]
+    )
+  )
+)

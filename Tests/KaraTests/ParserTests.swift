@@ -34,6 +34,15 @@ final class ParserTests: XCTestCase {
     XCTAssertNil(identifierParser.parse("123abc").output)
     assertSnapshot(identifierParser.parse("abc123"))
     assertSnapshot(identifierParser.parse("_abc123"))
+    assertSnapshot(identifierParser.parse("/* hello! */abc123"))
+    assertSnapshot(
+      identifierParser.parse(
+        """
+        // test
+        _abc123
+        """
+      )
+    )
   }
 
   func testTuple() {
@@ -164,7 +173,7 @@ final class ParserTests: XCTestCase {
     XCTAssertNil(typeParser.parse(" -> String").output)
   }
 
-  func testFunctionDecl() {
+  func testFuncDecl() {
     assertSnapshot(functionDeclParser.parse("func f(x: Int) -> Int { x }"))
     assertSnapshot(functionDeclParser.parse(#"func f(x y: Bool) -> String { if y { "x" } else { "not x" } }"#))
   }

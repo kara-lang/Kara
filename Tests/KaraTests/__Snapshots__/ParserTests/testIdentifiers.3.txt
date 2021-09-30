@@ -1,0 +1,10 @@
+SyntaxNode(
+  leadingTrivia: [
+    [0]: Comment(
+      kind: Comment.Kind.multipleLines,
+      isDocComment: false,
+      content: " hello! "
+    )
+  ],
+  content: 0:12-0:17 Identifier(value: "abc123")
+)

@@ -1,1 +1,19 @@
-0:0-0:18 (Int, Double, Bool)
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:18 Type.tuple(
+    [
+      [0]: Type.constructor(
+        TypeIdentifier(value: "Int"),
+        []
+      ),
+      [1]: Type.constructor(
+        TypeIdentifier(value: "Double"),
+        []
+      ),
+      [2]: Type.constructor(
+        TypeIdentifier(value: "Bool"),
+        []
+      )
+    ]
+  )
+)

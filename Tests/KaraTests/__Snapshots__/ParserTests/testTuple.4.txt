@@ -1,1 +1,50 @@
-0:0-0:6 (1, 2, 3)
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:6 Expr.tuple(
+    DelimitedSequence(
+      start: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 ()
+      ),
+      elements: [
+        [0]: DelimitedSequence.Element(
+          content: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:1-0:1 Expr.literal(
+              Literal.int32(1)
+            )
+          ),
+          separator: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:2-0:2 ()
+          )
+        ),
+        [1]: DelimitedSequence.Element(
+          content: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:3-0:3 Expr.literal(
+              Literal.int32(2)
+            )
+          ),
+          separator: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:4-0:4 ()
+          )
+        ),
+        [2]: DelimitedSequence.Element(
+          content: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:5-0:5 Expr.literal(
+              Literal.int32(3)
+            )
+          ),
+          separator: nil
+        )
+      ],
+      end: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:6-0:6 ()
+      )
+    )
+  )
+)

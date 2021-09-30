@@ -1,1 +1,16 @@
-0:0-0:24 Result<String, IOError>
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:24 Type.constructor(
+    TypeIdentifier(value: "Result"),
+    [
+      [0]: Type.constructor(
+        TypeIdentifier(value: "String"),
+        []
+      ),
+      [1]: Type.constructor(
+        TypeIdentifier(value: "IOError"),
+        []
+      )
+    ]
+  )
+)

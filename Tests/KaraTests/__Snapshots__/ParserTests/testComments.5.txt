@@ -1,3 +1,9 @@
-0:0-2:1 Comment { kind: .multipleLines; isDocComment: false; content: " Hello, world!
-World, hello!
-"; }
+0:0-2:1 Comment(
+  kind: Comment.Kind.multipleLines,
+  isDocComment: false,
+  content: """
+     Hello, world!
+    World, hello!
+    
+    """
+)

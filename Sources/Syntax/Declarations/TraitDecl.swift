@@ -8,8 +8,8 @@ public struct TraitDecl {
   let name: SourceRange<TypeIdentifier>
 }
 
-extension TraitDecl: CustomDebugStringConvertible {
-  public var debugDescription: String {
+extension TraitDecl: CustomStringConvertible {
+  public var description: String {
     "trait \(name) {}"
   }
 }

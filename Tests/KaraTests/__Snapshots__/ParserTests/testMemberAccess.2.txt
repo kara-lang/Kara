@@ -1,1 +1,23 @@
-0:0-0:14 5.description
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:14 Expr.member(
+    MemberAccess(
+      base: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 Expr.literal(
+          Literal.int32(5)
+        )
+      ),
+      dot: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace("  ")
+        ],
+        content: 0:3-0:3 ()
+      ),
+      member: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:4-0:14 Identifier(value: "description")
+      )
+    )
+  )
+)

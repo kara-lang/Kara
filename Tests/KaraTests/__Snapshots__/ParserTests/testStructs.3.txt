@@ -1,1 +1,4 @@
-struct 1:0-1:2 Baz {}
+StructDecl(
+  name: 1:0-1:2 TypeIdentifier(value: "Baz"),
+  genericParameters: []
+)

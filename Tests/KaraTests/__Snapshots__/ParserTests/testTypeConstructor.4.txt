@@ -1,1 +1,21 @@
-0:0-2:0 Dictionary<String, Array<Bool>>
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-2:0 Type.constructor(
+    TypeIdentifier(value: "Dictionary"),
+    [
+      [0]: Type.constructor(
+        TypeIdentifier(value: "String"),
+        []
+      ),
+      [1]: Type.constructor(
+        TypeIdentifier(value: "Array"),
+        [
+          [0]: Type.constructor(
+            TypeIdentifier(value: "Bool"),
+            []
+          )
+        ]
+      )
+    ]
+  )
+)

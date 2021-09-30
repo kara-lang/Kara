@@ -11,18 +11,23 @@ import Parsing
  (parens), generic parameters and arguments (angle brackets), etc.
  */
 public struct DelimitedSequence<T> {
+  struct Element {
+    let content: SyntaxNode<T>
+    let separator: SyntaxNode<()>?
+  }
+
   /// Syntax node for the starting delimiting token of the sequence.
   let start: SyntaxNode<()>
 
   /// An array of syntax nodes for every element of their sequence and its corresponding separator.
-  let elements: [(SyntaxNode<T>, SyntaxNode<()>?)]
+  let elements: [Element]
 
   /// Syntax node for the ending delimiting token of the ssquences.
   let end: SyntaxNode<()>
 
   /// Helper for retrieving an array of elements in the sequence without their syntax node information.
   public var elementsContent: [T] {
-    elements.map(\.0.content.content)
+    elements.map(\.content.content.content)
   }
 
   /// Helper for wrapping this sequence in its own syntax node.
@@ -57,14 +62,22 @@ func delimitedSequenceParser<T, P: Parser>(
       guard let tail = tail else {
         guard head.count >= minimum else { return nil }
 
-        return DelimitedSequence(start: startNode, elements: head, end: endNode)
+        return DelimitedSequence(
+          start: startNode,
+          elements: head.map { .init(content: $0, separator: $1) },
+          end: endNode
+        )
       }
 
       let result = head + [tail]
 
       guard result.count >= minimum else { return nil }
 
-      return DelimitedSequence(start: startNode, elements: head + [(tail, nil)], end: endNode)
+      return DelimitedSequence(
+        start: startNode,
+        elements: head.map { .init(content: $0, separator: $1) } + [.init(content: tail, separator: nil)],
+        end: endNode
+      )
     }
     .eraseToAnyParser()
 }

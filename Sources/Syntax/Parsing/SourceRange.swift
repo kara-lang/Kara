@@ -2,6 +2,7 @@
 //  Created by Max Desiatov on 10/08/2021.
 //
 
+import CustomDump
 import Parsing
 
 public struct SourceLocation: Equatable {
@@ -33,8 +34,10 @@ extension SourceRange: Equatable where Content == () {
   }
 }
 
-extension SourceRange: CustomDebugStringConvertible {
-  public var debugDescription: String {
-    "\(start.line):\(start.column)-\(end.line):\(end.column) \(String(reflecting: content))"
+extension SourceRange: CustomDumpStringConvertible {
+  public var customDumpDescription: String {
+    var result = ""
+    customDump(content, to: &result)
+    return "\(start.line):\(start.column)-\(end.line):\(end.column) \(result)"
   }
 }
