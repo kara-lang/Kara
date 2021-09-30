@@ -75,7 +75,7 @@ let functionDeclParser =
         startParser: openParenParser,
         endParser: closeParenParser,
         elementParser: functionParameterParser
-      ).debug()
+      )
     )
     .take(Optional.parser(of: arrowParser))
     .take(Optional.parser(of: exprBlockParser))
