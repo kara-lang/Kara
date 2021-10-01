@@ -20,6 +20,17 @@ public struct FuncDecl {
 
   public let returns: SyntaxNode<Type>?
   public let body: ExprBlock?
+
+  var syntaxNode: SyntaxNode<Self> {
+    SyntaxNode(
+      leadingTrivia: funcKeyword.leadingTrivia,
+      content: SourceRange(
+        start: funcKeyword.content.start,
+        end: body?.closeBrace.content.end ?? returns?.content.end ?? parameters.end.content.end,
+        content: self
+      )
+    )
+  }
 }
 
 extension FuncDecl: CustomStringConvertible {
@@ -66,7 +77,7 @@ let functionParameterParser = identifierParser
     )
   }
 
-let functionDeclParser =
+let funcDeclParser =
   Many(declModifierParser)
     .take(SyntaxNodeParser(Terminal("func")))
     .take(identifierParser)
@@ -79,22 +90,15 @@ let functionDeclParser =
     )
     .take(Optional.parser(of: arrowParser))
     .take(Optional.parser(of: exprBlockParser))
-    .map { modifiers, funcKeyword, identifier, parameters, returns, exprBlock in
-      SyntaxNode(
-        leadingTrivia: funcKeyword.leadingTrivia,
-        content: SourceRange(
-          start: funcKeyword.content.start,
-          end: exprBlock?.closeBrace.content.end ?? returns?.content.end ?? parameters.end.content.end,
-          content: FuncDecl(
-            modifers: modifiers,
-            funcKeyword: funcKeyword,
-            identifier: identifier,
-            // FIXME: fix generic parameters parsing
-            genericParameters: [],
-            parameters: parameters,
-            returns: returns,
-            body: exprBlock
-          )
-        )
-      )
+    .map {
+      FuncDecl(
+        modifers: $0,
+        funcKeyword: $1,
+        identifier: $2,
+        // FIXME: fix generic parameters parsing
+        genericParameters: [],
+        parameters: $3,
+        returns: $4,
+        body: $5
+      ).syntaxNode
     }
