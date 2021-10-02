@@ -2,6 +2,7 @@
 //  Created by Max Desiatov on 11/08/2021.
 //
 
+import CustomDump
 import Parsing
 import SnapshotTesting
 @testable import Syntax
@@ -9,11 +10,11 @@ import XCTest
 
 final class ParserTests: XCTestCase {
   func testLiterals() throws {
-    XCTAssertEqual(literalParser.parse("123"), 123)
-    XCTAssertEqual(literalParser.parse("true"), true)
-    XCTAssertEqual(literalParser.parse("false"), false)
-    XCTAssertEqual(literalParser.parse(#""string""#), "string")
-    XCTAssertEqual(literalParser.parse("3.14"), 3.14)
+    XCTAssertNoDifference(literalParser.parse("123"), 123)
+    XCTAssertNoDifference(literalParser.parse("true"), true)
+    XCTAssertNoDifference(literalParser.parse("false"), false)
+    XCTAssertNoDifference(literalParser.parse(#""string""#), "string")
+    XCTAssertNoDifference(literalParser.parse("3.14"), 3.14)
   }
 
   func testStructs() throws {

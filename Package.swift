@@ -62,6 +62,7 @@ let package = Package(
       name: "Driver",
       dependencies: [
         "Syntax",
+        "TypeInference",
         "JSCodegen",
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
       ]
@@ -101,10 +102,8 @@ let package = Package(
     .testTarget(
       name: "KaraTests",
       dependencies: [
-        "JSCodegen",
+        "Driver",
         "SnapshotTesting",
-        "Syntax",
-        "TypeInference",
         .product(name: "CustomDump", package: "swift-custom-dump"),
       ],
       exclude: ["Fixtures", "__Snapshots__"]

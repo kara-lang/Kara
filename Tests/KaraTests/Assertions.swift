@@ -3,6 +3,7 @@
 //
 
 import CustomDump
+@testable import Driver
 import SnapshotTesting
 @testable import Syntax
 import XCTest
@@ -13,6 +14,15 @@ public extension Snapshotting where Format == String {
   static var debugDescription: Snapshotting {
     SimplySnapshotting.lines.pullback(String.init(reflecting:))
   }
+}
+
+func assertJSSnapshot(
+  _ source: String,
+  file: StaticString = #file,
+  testName: String = #function,
+  line: UInt = #line
+) {
+  assertSnapshot(matching: driverPass(source), as: .js, file: file, testName: testName, line: line)
 }
 
 func assertSnapshot<T>(
@@ -47,7 +57,7 @@ func assertError<T, E: Error & Equatable>(
       return
     }
 
-    XCTAssertEqual(error, expectedError, file: file, line: line)
+    XCTAssertNoDifference(error, expectedError, file: file, line: line)
   }
 }
 

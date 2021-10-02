@@ -2,6 +2,7 @@
 //  Created by Max Desiatov on 01/10/2021.
 //
 
+import CustomDump
 import Parsing
 import SnapshotTesting
 @testable import Syntax
@@ -108,7 +109,7 @@ final class TriviaParsersTests: XCTestCase {
 
     XCTAssertNotNil(parser.parse(&state))
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       state,
       ParsingState(
         source: trailingCharacters,
@@ -123,7 +124,7 @@ final class TriviaParsersTests: XCTestCase {
 
     XCTAssertNotNil(parser.parse(&state))
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       state,
       ParsingState(
         source: noWhitespaces,
@@ -141,7 +142,7 @@ final class TriviaParsersTests: XCTestCase {
 
     XCTAssertNil(parser.parse(&state))
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       state,
       ParsingState(source: emptyString, index: emptyString.startIndex, column: 0, line: 0)
     )
@@ -151,7 +152,7 @@ final class TriviaParsersTests: XCTestCase {
 
     XCTAssertNotNil(parser.parse(&state))
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       state,
       ParsingState(source: unixNewline, index: unixNewline.endIndex, column: 0, line: 1)
     )
@@ -161,7 +162,7 @@ final class TriviaParsersTests: XCTestCase {
 
     XCTAssertNotNil(parser.parse(&state))
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       state,
       ParsingState(
         source: classicMacNewline,
@@ -176,7 +177,7 @@ final class TriviaParsersTests: XCTestCase {
 
     XCTAssertNotNil(parser.parse(&state))
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       state,
       ParsingState(
         source: windowsNewline,
@@ -191,7 +192,7 @@ final class TriviaParsersTests: XCTestCase {
 
     XCTAssertNotNil(parser.parse(&state))
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       state,
       ParsingState(
         source: trailingCharacters,
@@ -206,7 +207,7 @@ final class TriviaParsersTests: XCTestCase {
 
     XCTAssertNil(parser.parse(&state))
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       state,
       ParsingState(
         source: noWhitespaces,

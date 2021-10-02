@@ -14,13 +14,13 @@ public let jsModuleCodegen = JSCodegen<ModuleFile> {
 let jsDeclarationCodegen = JSCodegen<Declaration> {
   switch $0 {
   case let .function(f):
-    return jsFunctionCodegen(f)
+    return jsFuncDeclCodegen(f)
   default:
     fatalError()
   }
 }
 
-let jsFunctionCodegen = JSCodegen<FuncDecl> {
+let jsFuncDeclCodegen = JSCodegen<FuncDecl> {
   guard let body = $0.body else {
     // FIXME: Assert that interop modifier is present. Maybe we shouldn't reach this by checking for interop
     // modifier presence earlier?
@@ -29,16 +29,25 @@ let jsFunctionCodegen = JSCodegen<FuncDecl> {
 
   return """
   const \($0.identifier.value) =\
-   (\($0.parameters.elementsContent.map(\.internalName))) => \(jsExprBlockCodegen(body));
+   (\(
+     $0.parameters.elementsContent.map(\.internalName.value).joined(separator: ", ")
+   )) => \(jsExprBlockCodegen(body));
   """
 }
 
 let jsExprBlockCodegen = JSCodegen<ExprBlock> {
-  """
-  {
-    \($0.elements.map(\.content.content).map(jsExprBlockElementCodegen.transform).joined(separator: ";\n"))
+  switch $0.elements.count {
+  case 0:
+    fatalError()
+  case 1:
+    return jsExprBlockElementCodegen($0.elements[0].content.content)
+  default:
+    return """
+    {
+      \($0.elements.map(\.content.content).map(jsExprBlockElementCodegen.transform).joined(separator: ";\n"))
+    }
+    """
   }
-  """
 }
 
 let jsExprBlockElementCodegen = JSCodegen<ExprBlock.Element> {

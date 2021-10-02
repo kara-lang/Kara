@@ -2,6 +2,7 @@
 //  Created by Max Desiatov on 18/08/2021.
 //
 
+import CustomDump
 @testable import Syntax
 @testable import TypeInference
 import XCTest
@@ -27,8 +28,8 @@ final class SyntaxInferenceTests: XCTestCase {
       "stringify": [.init(.int32 --> .string)],
     ]
 
-    try XCTAssertEqual("increment(0)".inferParsedExpr(environment: e), .int32)
-    try XCTAssertEqual("stringify(0)".inferParsedExpr(environment: e), .string)
+    try XCTAssertNoDifference("increment(0)".inferParsedExpr(environment: e), .int32)
+    try XCTAssertNoDifference("stringify(0)".inferParsedExpr(environment: e), .string)
     XCTAssertThrowsError(try "increment(false)".inferParsedExpr())
     XCTAssertThrowsError(try "increment(false)".inferParsedExpr(environment: e))
   }
@@ -40,7 +41,7 @@ final class SyntaxInferenceTests: XCTestCase {
       "decode": [.init(.string --> .int32)],
     ]
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try exprParser.parse(
         """
         { x in decode(stringify(increment(x))) }
@@ -74,7 +75,7 @@ final class SyntaxInferenceTests: XCTestCase {
       "decode": [.init([.string, .string] --> .int32)],
     ]
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try exprParser.parse(
         """
         { x, y in
@@ -101,7 +102,7 @@ final class SyntaxInferenceTests: XCTestCase {
       "decode": [.init([.string, .int32] --> .int32)],
     ]
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try exprParser.parse(
         """
         { str, int in
@@ -124,11 +125,11 @@ final class SyntaxInferenceTests: XCTestCase {
       ],
     ]
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try exprParser.parse(#""Hello, ".appending("World!")"#).output?.content.content.infer(members: m),
       .string
     )
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try exprParser.parse(#""Test".count"#).output?.content.content.infer(members: m),
       .int32
     )
@@ -148,7 +149,7 @@ final class SyntaxInferenceTests: XCTestCase {
       ],
     ]
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try exprParser.parse(#""Test".count.magnitude"#).output?.content.content.infer(members: m),
       .int32
     )
@@ -174,15 +175,15 @@ final class SyntaxInferenceTests: XCTestCase {
       "fizz": [.init(.int32)],
     ]
 
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try exprParser.parse(#"if true { "true" } else { "false" } "#).output?.content.content.infer(members: m),
       .string
     )
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try exprParser.parse(#"if foo { bar } else { baz }  "#).output?.content.content.infer(environment: e, members: m),
       .double
     )
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try exprParser.parse(
         #"""
         if 42.isInteger {
@@ -194,7 +195,7 @@ final class SyntaxInferenceTests: XCTestCase {
       ).output?.content.content.infer(environment: e, members: m),
       .string
     )
-    XCTAssertEqual(
+    XCTAssertNoDifference(
       try exprParser.parse(
         #"""
         if 42.isIntegerFunc() {

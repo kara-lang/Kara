@@ -1,0 +1,1 @@
+const f = (condition) => (condition ? "true" : "false");
