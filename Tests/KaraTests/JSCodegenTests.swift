@@ -10,7 +10,7 @@ final class JSCodegenTests: XCTestCase {
   func testFuncDecl() throws {
     assertJSSnapshot(
       """
-      func f(condition: Bool) {
+      func f(condition: Bool) -> String {
           if condition {
               "true"
           } else {
