@@ -10,7 +10,7 @@ let package = Package(
     // Dependencies declare other packages that this package depends on.
     .package(
       url: "https://github.com/apple/swift-argument-parser.git",
-      .upToNextMinor(from: "0.4.0")
+      .upToNextMinor(from: "0.5.0")
     ),
     .package(
       name: "Benchmark",
@@ -31,8 +31,13 @@ let package = Package(
     // suite. Targets can depend on other targets in this package, and on products in packages this
     // package depends on.
     .target(
+      name: "Basic",
+      dependencies: []
+    ),
+    .target(
       name: "Syntax",
       dependencies: [
+        "Basic",
         .product(name: "CustomDump", package: "swift-custom-dump"),
         .product(name: "Parsing", package: "swift-parsing"),
       ]
@@ -50,12 +55,16 @@ let package = Package(
       ]
     ),
     .target(
-      name: "Codegen",
-      dependencies: []
+      name: "JSCodegen",
+      dependencies: ["Basic", "Syntax"]
     ),
     .target(
-      name: "JSCodegen",
-      dependencies: ["Codegen", "Syntax"]
+      name: "Driver",
+      dependencies: [
+        "Syntax",
+        "JSCodegen",
+        .product(name: "ArgumentParser", package: "swift-argument-parser"),
+      ]
     ),
 
     // jsonrpc: LSP connection using jsonrpc over pipes.
@@ -81,11 +90,7 @@ let package = Package(
 
     .executableTarget(
       name: "kara",
-      dependencies: [
-        "LanguageServerProtocol",
-        "TypeInference",
-        .product(name: "ArgumentParser", package: "swift-argument-parser"),
-      ]
+      dependencies: ["Driver"]
     ),
     .executableTarget(
       name: "kara-benchmark",

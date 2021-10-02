@@ -6,15 +6,13 @@ import CustomDump
 import Parsing
 
 public struct SourceLocation: Equatable {
-  init(column: Int, line: Int, filePath: String? = nil) {
+  init(column: Int, line: Int) {
     self.column = column
     self.line = line
-    self.filePath = filePath
   }
 
   let column: Int
   let line: Int
-  let filePath: String?
 }
 
 public struct SourceRange<Content> {

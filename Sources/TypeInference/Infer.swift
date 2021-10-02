@@ -22,17 +22,3 @@ extension Expr {
     return try type.apply(solver.solve())
   }
 }
-
-extension String {
-  func inferParsedExpr(
-    environment: Environment = [:],
-    members: Members = [:]
-  ) throws -> Type {
-    var state = ParsingState(source: self)
-    guard let expr = exprParser.parse(&state) else {
-      throw ParsingError.unknown(startIndex..<endIndex)
-    }
-
-    return try expr.content.content.infer(environment: environment, members: members)
-  }
-}

@@ -1,3 +1,4 @@
+import CustomDump
 import class Foundation.Bundle
 import XCTest
 
@@ -29,7 +30,24 @@ final class KaraTests: XCTestCase {
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
     let output = String(data: data, encoding: .utf8)
 
-    XCTAssertEqual(output, "")
+    XCTAssertNoDifference(
+      output,
+      """
+      OVERVIEW: Kara is a type-safe general purpose programming language.
+
+      USAGE: kara <subcommand>
+
+      OPTIONS:
+        --version               Show the version.
+        -h, --help              Show help information.
+
+      SUBCOMMANDS:
+        run
+
+        See 'kara help <subcommand>' for detailed help.
+
+      """
+    )
     #endif
   }
 

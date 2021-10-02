@@ -4,7 +4,7 @@
 
 import Parsing
 
-public struct ParsingState: Equatable {
+struct ParsingState: Equatable {
   let source: String
   var index: String.UTF8View.Index
   var column = 0
@@ -16,11 +16,11 @@ public struct ParsingState: Equatable {
   }
 
   var sourceLocation: SourceLocation {
-    .init(column: column, line: line, filePath: nil)
+    .init(column: column, line: line)
   }
 }
 
-public extension ParsingState {
+extension ParsingState {
   init(source: String) {
     self.source = source
     index = source.startIndex
@@ -28,13 +28,13 @@ public extension ParsingState {
 }
 
 extension ParsingState: ExpressibleByStringLiteral {
-  public init(stringLiteral value: String) {
+  init(stringLiteral value: String) {
     self.init(source: value)
   }
 }
 
 extension ParsingState: CustomDebugStringConvertible {
-  public var debugDescription: String {
+  var debugDescription: String {
     String(source[index...])
   }
 }

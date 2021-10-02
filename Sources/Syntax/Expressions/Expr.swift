@@ -62,8 +62,7 @@ enum ExprSyntaxTail {
   case applicationArguments(DelimitedSequence<Expr>)
 }
 
-// FIXME: make it internal
-public let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
+let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
   SyntaxNodeParser(literalParser.map(Expr.literal).stateful())
     .orElse(ifThenElseParser.map { $0.map(Expr.ifThenElse) })
     .orElse(identifierParser.map { $0.map(Expr.identifier) })

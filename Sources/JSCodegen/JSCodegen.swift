@@ -2,12 +2,12 @@
 //  Created by Max Desiatov on 16/09/2021.
 //
 
-import Codegen
+import Basic
 import Syntax
 
-typealias JSCodegen<T> = CompilerPass<T, String>
+public typealias JSCodegen<T> = CompilerPass<T, String>
 
-let jsModuleCodegen = JSCodegen<ModuleFile> {
+public let jsModuleCodegen = JSCodegen<ModuleFile> {
   $0.declarations.map(\.content.content).map(jsDeclarationCodegen.transform).joined(separator: "\n")
 }
 

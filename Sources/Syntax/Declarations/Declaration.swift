@@ -8,3 +8,6 @@ public enum Declaration {
   case `struct`(StructDecl)
   case trait(TraitDecl)
 }
+
+let declarationParser =
+  funcDeclParser.map { $0.map(Declaration.function) }

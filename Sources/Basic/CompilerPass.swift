@@ -13,3 +13,13 @@ public struct CompilerPass<Input, Output> {
     transform(input)
   }
 }
+
+// FIXME: replace with query-based build system
+public func | <Input, Intermediate, Output>(
+  lhs: CompilerPass<Input, Intermediate>,
+  rhs: CompilerPass<Intermediate, Output>
+) -> CompilerPass<Input, Output> {
+  .init {
+    rhs.transform(lhs.transform($0))
+  }
+}
