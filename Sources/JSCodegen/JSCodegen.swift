@@ -7,7 +7,7 @@ import Syntax
 
 public typealias JSCodegen<T> = CompilerPass<T, String>
 
-public let jsModuleCodegen = JSCodegen<ModuleFile> {
+public let jsModuleFileCodegen = JSCodegen<ModuleFile> {
   $0.declarations.map(\.content.content).map(jsDeclarationCodegen.transform).joined(separator: "\n")
 }
 

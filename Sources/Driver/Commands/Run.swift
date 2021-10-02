@@ -8,7 +8,7 @@ import Foundation
 import JSCodegen
 import Syntax
 
-let driverPass = syntaxPass | jsModuleCodegen
+let driverPass = syntaxPass | jsModuleFileCodegen
 
 struct Run: ParsableCommand {
   @Argument(help: "The file to run.")
