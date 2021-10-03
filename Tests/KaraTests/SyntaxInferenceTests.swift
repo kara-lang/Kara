@@ -4,7 +4,7 @@
 
 import CustomDump
 @testable import Syntax
-@testable import TypeInference
+@testable import TypeChecker
 import XCTest
 
 extension String {

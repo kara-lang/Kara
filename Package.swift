@@ -43,7 +43,7 @@ let package = Package(
       ]
     ),
     .target(
-      name: "TypeInference",
+      name: "TypeChecker",
       dependencies: [
         "Syntax",
       ]
@@ -62,7 +62,7 @@ let package = Package(
       name: "Driver",
       dependencies: [
         "Syntax",
-        "TypeInference",
+        "TypeChecker",
         "JSCodegen",
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
       ]
