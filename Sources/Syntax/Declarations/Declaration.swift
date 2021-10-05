@@ -14,6 +14,7 @@ public enum Declaration {
 let declarationParser: AnyParser<ParsingState, SyntaxNode<Declaration>> =
   funcDeclParser.map { $0.map(Declaration.function) }
     .orElse(structParser.map { $0.map(Declaration.struct) })
+    .orElse(traitParser.map { $0.map(Declaration.trait) })
     // Required to give `declarationParser` an explicit type signature, otherwise this won't compile due to mutual
     // recursion with subexpression parsers.
     .eraseToAnyParser()
