@@ -44,6 +44,7 @@ func delimitedSequenceParser<T, P: Parser>(
           .take(SyntaxNodeParser(commaParser))
       )
     )
+    // Optional tail component to cover cases without a trailing comma
     .take(Optional.parser(of: elementParser))
     .take(endParser)
     .compactMap { startNode, head, tail, endNode -> DelimitedSequence<T>? in

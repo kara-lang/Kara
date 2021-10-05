@@ -10,6 +10,7 @@ public struct Closure {
     public let typeAnnotation: SyntaxNode<Type>?
   }
 
+  // FIXME: use a form of `DelimitedSequence` here?
   public let parameters: [Parameter]
   public let inKeyword: SyntaxNode<()>?
   public let body: SyntaxNode<Expr>?
@@ -47,13 +48,13 @@ let closureParser =
   openBraceParser
     .takeSkippingWhitespace(
       Optional.parser(
-        // Parses applications of form `f(a, b, c,)`, note the trailing comma
+        // Parses closures of form `{ a, b, c, in }`, note the trailing comma
         of: Many(
           identifierParser
             .skipWithWhitespace(commaParser)
             .skip(statefulWhitespace())
         )
-        // Optional tail component without the comma to parse applications of form `f(a, b, c)`
+        // Optional tail component without the comma to parse closures of form `{ a, b, c in }`
         .take(
           Optional.parser(of: identifierParser)
         )
