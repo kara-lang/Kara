@@ -12,7 +12,7 @@ public struct FuncDecl {
     public let type: SyntaxNode<Type>
   }
 
-  public let modifers: [SyntaxNode<DeclModifier>]
+  public let modifiers: [SyntaxNode<DeclModifier>]
   public let funcKeyword: SyntaxNode<()>
   public let identifier: SyntaxNode<Identifier>
   public let genericParameters: [TypeVariable]
@@ -20,16 +20,15 @@ public struct FuncDecl {
 
   public let returns: SyntaxNode<Type>?
   public let body: ExprBlock?
+}
 
-  var syntaxNode: SyntaxNode<Self> {
-    SyntaxNode(
-      leadingTrivia: funcKeyword.leadingTrivia,
-      content: SourceRange(
-        start: funcKeyword.content.start,
-        end: body?.closeBrace.content.end ?? returns?.content.end ?? parameters.end.content.end,
-        content: self
-      )
-    )
+extension FuncDecl: SyntaxNodeContainer {
+  var start: SyntaxNode<()> {
+    modifiers.first?.map { _ in () } ?? funcKeyword
+  }
+
+  var end: SyntaxNode<()> {
+    body?.closeBrace ?? returns?.map { _ in () } ?? parameters.end
   }
 }
 
@@ -92,7 +91,7 @@ let funcDeclParser =
     .take(Optional.parser(of: exprBlockParser))
     .map {
       FuncDecl(
-        modifers: $0,
+        modifiers: $0,
         funcKeyword: $1,
         identifier: $2,
         // FIXME: fix generic parameters parsing

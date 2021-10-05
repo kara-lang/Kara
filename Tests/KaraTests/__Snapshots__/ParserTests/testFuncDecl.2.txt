@@ -1,7 +1,7 @@
 SyntaxNode(
   leadingTrivia: [],
   content: 0:0-0:60 FuncDecl(
-    modifers: [],
+    modifiers: [],
     funcKeyword: SyntaxNode(
       leadingTrivia: [],
       content: 0:0-0:3 ()

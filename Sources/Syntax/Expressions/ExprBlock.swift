@@ -43,7 +43,7 @@ extension ExprBlock: CustomStringConvertible {
 let exprBlockParser = SyntaxNodeParser(openBraceParser)
   .take(
     Many(
-      // FIXME: separated by a newline
+      // FIXME: require separation by a newline
       exprParser.map { $0.map(ExprBlock.Element.expr) }
         .orElse(bindingParser.map { $0.map(ExprBlock.Element.binding) })
     )

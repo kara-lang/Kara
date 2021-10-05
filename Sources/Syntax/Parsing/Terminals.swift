@@ -22,6 +22,7 @@ typealias UTF8Terminal = StartsWith<UTF8SubSequence>
 let newlineCodeUnits = [UInt8(ascii: "\n"), UInt8(ascii: "\r")]
 let whitespaceCodeUnits = newlineCodeUnits + [UInt8(ascii: " ")]
 
+// FIXME: these should be wrapped in `SyntaxNodeParser`, or maybe `Terminal` should do that in the first place.
 let openBraceParser = Terminal("{")
 let closeBraceParser = Terminal("}")
 

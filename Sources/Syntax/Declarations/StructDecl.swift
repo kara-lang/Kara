@@ -5,8 +5,21 @@
 import Parsing
 
 public struct StructDecl {
-  let name: SourceRange<TypeIdentifier>
-  let genericParameters: [TypeVariable]
+  public let modifiers: [SyntaxNode<DeclModifier>]
+  public let structKeyword: SyntaxNode<()>
+  public let name: SourceRange<TypeIdentifier>
+  public let genericParameters: [TypeVariable]
+  public let declarations: SyntaxNode<DeclBlock>
+}
+
+extension StructDecl: SyntaxNodeContainer {
+  var start: SyntaxNode<()> {
+    modifiers.first?.map { _ in () } ?? structKeyword
+  }
+
+  var end: SyntaxNode<()> {
+    declarations.end
+  }
 }
 
 extension StructDecl: CustomStringConvertible {
@@ -19,11 +32,12 @@ extension StructDecl: CustomStringConvertible {
   }
 }
 
-let structParser = Terminal("struct")
-  .skip(statefulWhitespace(isRequired: true))
-  .take(typeIdentifierParser)
-  .skipWithWhitespace(openBraceParser)
-  .skipWithWhitespace(closeBraceParser)
-  .map(\.1)
-  // FIXME: generic parameters
-  .map { StructDecl(name: $0, genericParameters: []) }
+let structParser =
+  Many(declModifierParser)
+    .take(SyntaxNodeParser(Terminal("struct")))
+    .skip(statefulWhitespace(isRequired: true))
+    .take(typeIdentifierParser)
+    .take(declBlockParser)
+    // FIXME: generic parameters
+    .map { StructDecl(modifiers: $0, structKeyword: $1, name: $2, genericParameters: [], declarations: $3) }
+    .map(\.syntaxNode)

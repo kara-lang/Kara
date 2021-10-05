@@ -28,6 +28,13 @@ final class ParserTests: XCTestCase {
     }
     """))
 
+    assertSnapshot(structParser.parse("""
+    struct Foo
+    {
+      struct Bar {}
+    }
+    """))
+
     XCTAssertNil(structParser.parse("structBlorg{}").output)
   }
 

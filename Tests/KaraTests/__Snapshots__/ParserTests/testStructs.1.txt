@@ -1,4 +1,30 @@
-StructDecl(
-  name: 0:7-0:9 TypeIdentifier(value: "Foo"),
-  genericParameters: []
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:12 StructDecl(
+    modifiers: [],
+    structKeyword: SyntaxNode(
+      leadingTrivia: [],
+      content: 0:0-0:5 ()
+    ),
+    name: 0:7-0:9 TypeIdentifier(value: "Foo"),
+    genericParameters: [],
+    declarations: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
+      content: 0:11-0:12 DeclBlock(
+        openBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:11-0:11 ()
+        ),
+        elements: [],
+        closeBrace: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:12-0:12 ()
+        )
+      )
+    )
+  )
 )

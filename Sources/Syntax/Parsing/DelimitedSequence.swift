@@ -10,7 +10,7 @@ import Parsing
  Examples of such sequences are tuples (delimited by parens), arrays (square brackets), function application arguments
  (parens), generic parameters and arguments (angle brackets), etc.
  */
-public struct DelimitedSequence<T> {
+public struct DelimitedSequence<T>: SyntaxNodeContainer {
   struct Element {
     let content: SyntaxNode<T>
     let separator: SyntaxNode<()>?
@@ -28,18 +28,6 @@ public struct DelimitedSequence<T> {
   /// Helper for retrieving an array of elements in the sequence without their syntax node information.
   public var elementsContent: [T] {
     elements.map(\.content.content.content)
-  }
-
-  /// Helper for wrapping this sequence in its own syntax node.
-  var syntaxNode: SyntaxNode<DelimitedSequence<T>> {
-    .init(
-      leadingTrivia: start.leadingTrivia,
-      content: .init(
-        start: start.content.start,
-        end: end.content.end,
-        content: self
-      )
-    )
   }
 }
 

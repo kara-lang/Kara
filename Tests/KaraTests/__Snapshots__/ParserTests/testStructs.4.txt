@@ -1,0 +1,69 @@
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-3:0 StructDecl(
+    modifiers: [],
+    structKeyword: SyntaxNode(
+      leadingTrivia: [],
+      content: 0:0-0:5 ()
+    ),
+    name: 0:7-0:9 TypeIdentifier(value: "Foo"),
+    genericParameters: [],
+    declarations: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace("\n")
+      ],
+      content: 1:0-3:0 DeclBlock(
+        openBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("\n")
+          ],
+          content: 1:0-1:0 ()
+        ),
+        elements: [
+          [0]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n  ")
+            ],
+            content: 2:2-2:14 Declaration.struct(
+              StructDecl(
+                modifiers: [],
+                structKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("\n  ")
+                  ],
+                  content: 2:2-2:7 ()
+                ),
+                name: 2:9-2:11 TypeIdentifier(value: "Bar"),
+                genericParameters: [],
+                declarations: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 2:13-2:14 DeclBlock(
+                    openBrace: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 2:13-2:13 ()
+                    ),
+                    elements: [],
+                    closeBrace: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 2:14-2:14 ()
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ],
+        closeBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("\n")
+          ],
+          content: 3:0-3:0 ()
+        )
+      )
+    )
+  )
+)

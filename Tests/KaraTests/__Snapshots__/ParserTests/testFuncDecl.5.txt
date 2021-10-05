@@ -1,9 +1,7 @@
 SyntaxNode(
-  leadingTrivia: [
-    [0]: Whitespace(" ")
-  ],
-  content: 0:15-0:41 FuncDecl(
-    modifers: [
+  leadingTrivia: [],
+  content: 0:0-0:41 FuncDecl(
+    modifiers: [
       [0]: SyntaxNode(
         leadingTrivia: [],
         content: 0:0-0:6 DeclModifier.access(AccessControl.private)

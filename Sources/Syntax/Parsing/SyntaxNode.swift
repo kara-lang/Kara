@@ -49,3 +49,22 @@ struct SyntaxNodeParser<Inner, Content>: Parser
       .parse(&input)
   }
 }
+
+protocol SyntaxNodeContainer {
+  var start: SyntaxNode<()> { get }
+  var end: SyntaxNode<()> { get }
+}
+
+extension SyntaxNodeContainer {
+  /// Helper for wrapping this sequence in its own syntax node.
+  var syntaxNode: SyntaxNode<Self> {
+    .init(
+      leadingTrivia: start.leadingTrivia,
+      content: .init(
+        start: start.content.start,
+        end: end.content.end,
+        content: self
+      )
+    )
+  }
+}
