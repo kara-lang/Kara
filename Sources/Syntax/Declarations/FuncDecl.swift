@@ -24,11 +24,11 @@ public struct FuncDecl {
 
 extension FuncDecl: SyntaxNodeContainer {
   var start: SyntaxNode<()> {
-    modifiers.first?.map { _ in () } ?? funcKeyword
+    modifiers.first?.map { _ in } ?? funcKeyword
   }
 
   var end: SyntaxNode<()> {
-    body?.closeBrace ?? returns?.map { _ in () } ?? parameters.end
+    body?.closeBrace ?? returns?.map { _ in } ?? parameters.end
   }
 }
 

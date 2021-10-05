@@ -14,7 +14,7 @@ public struct StructDecl {
 
 extension StructDecl: SyntaxNodeContainer {
   var start: SyntaxNode<()> {
-    modifiers.first?.map { _ in () } ?? structKeyword
+    modifiers.first?.map { _ in } ?? structKeyword
   }
 
   var end: SyntaxNode<()> {
