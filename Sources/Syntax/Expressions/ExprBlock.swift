@@ -40,7 +40,7 @@ extension ExprBlock: CustomStringConvertible {
   }
 }
 
-let exprBlockParser = SyntaxNodeParser(openBraceParser)
+let exprBlockParser = openBraceParser
   .take(
     Many(
       // FIXME: require separation by a newline
@@ -48,5 +48,5 @@ let exprBlockParser = SyntaxNodeParser(openBraceParser)
         .orElse(bindingParser.map { $0.map(ExprBlock.Element.binding) })
     )
   )
-  .take(SyntaxNodeParser(closeBraceParser))
+  .take(closeBraceParser)
   .map(ExprBlock.init)

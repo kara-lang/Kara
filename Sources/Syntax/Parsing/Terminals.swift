@@ -23,13 +23,13 @@ let newlineCodeUnits = [UInt8(ascii: "\n"), UInt8(ascii: "\r")]
 let whitespaceCodeUnits = newlineCodeUnits + [UInt8(ascii: " ")]
 
 // FIXME: these should be wrapped in `SyntaxNodeParser`, or maybe `Terminal` should do that in the first place.
-let openBraceParser = Terminal("{")
-let closeBraceParser = Terminal("}")
+let openBraceParser = SyntaxNodeParser(Terminal("{"))
+let closeBraceParser = SyntaxNodeParser(Terminal("}"))
 
-let openParenParser = Terminal("(")
-let closeParenParser = Terminal(")")
+let openParenParser = SyntaxNodeParser(Terminal("("))
+let closeParenParser = SyntaxNodeParser(Terminal(")"))
 
-let openAngleBracketParser = Terminal("<")
-let closeAngleBracketParser = Terminal(">")
+let openAngleBracketParser = SyntaxNodeParser(Terminal("<"))
+let closeAngleBracketParser = SyntaxNodeParser(Terminal(">"))
 
 let commaParser = Terminal(",")

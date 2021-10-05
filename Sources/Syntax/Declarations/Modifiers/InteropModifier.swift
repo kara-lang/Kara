@@ -18,11 +18,11 @@ public struct InteropModifier {
 }
 
 let interopModifierParser = SyntaxNodeParser(Terminal("interop"))
-  .take(SyntaxNodeParser(openParenParser))
+  .take(openParenParser)
   .take(SyntaxNodeParser(identifierSequenceParser.stateful()))
   .take(SyntaxNodeParser(commaParser))
   .take(SyntaxNodeParser(singleQuotedStringParser.stateful()))
-  .take(SyntaxNodeParser(closeParenParser))
+  .take(closeParenParser)
   .compactMap { interopKeyword, openParen, rawLanguage, comma, externalName, closeParen -> SyntaxNode<DeclModifier>? in
     guard let language = InteropModifier.Language(rawValue: rawLanguage.content.content) else {
       return nil

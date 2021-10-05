@@ -20,13 +20,13 @@ extension DeclBlock: SyntaxNodeContainer {
   }
 }
 
-let declBlockParser = SyntaxNodeParser(openBraceParser)
+let declBlockParser = openBraceParser
   .take(
     Many(
       // FIXME: require separation by a newline
       Lazy { declarationParser }
     )
   )
-  .take(SyntaxNodeParser(closeBraceParser))
+  .take(closeBraceParser)
   .map(DeclBlock.init)
   .map(\.syntaxNode)

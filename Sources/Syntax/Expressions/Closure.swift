@@ -44,7 +44,7 @@ extension Closure: CustomStringConvertible {
 }
 
 let closureParser =
-  SyntaxNodeParser(openBraceParser)
+  openBraceParser
     .takeSkippingWhitespace(
       Optional.parser(
         // Parses applications of form `f(a, b, c,)`, note the trailing comma
@@ -85,7 +85,7 @@ let closureParser =
       )
     )
     .skip(statefulWhitespace())
-    .take(SyntaxNodeParser(closeBraceParser))
+    .take(closeBraceParser)
     .map { openBrace, params, body, closeBrace in
       SyntaxNode(
         leadingTrivia: openBrace.leadingTrivia,

@@ -32,12 +32,12 @@ public struct DelimitedSequence<T>: SyntaxNodeContainer {
 }
 
 func delimitedSequenceParser<T, P: Parser>(
-  startParser: Terminal,
-  endParser: Terminal,
+  startParser: SyntaxNodeParser<Terminal, ()>,
+  endParser: SyntaxNodeParser<Terminal, ()>,
   elementParser: P,
   atLeast minimum: Int = 0
 ) -> AnyParser<ParsingState, DelimitedSequence<T>> where P.Output == SyntaxNode<T>, P.Input == ParsingState {
-  SyntaxNodeParser(startParser)
+  startParser
     .take(
       Many(
         elementParser
@@ -45,7 +45,7 @@ func delimitedSequenceParser<T, P: Parser>(
       )
     )
     .take(Optional.parser(of: elementParser))
-    .take(SyntaxNodeParser(endParser))
+    .take(endParser)
     .compactMap { startNode, head, tail, endNode -> DelimitedSequence<T>? in
       guard let tail = tail else {
         guard head.count >= minimum else { return nil }

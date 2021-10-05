@@ -5,7 +5,19 @@
 import Parsing
 
 public struct TraitDecl {
-  let name: SourceRange<TypeIdentifier>
+  public let traitKeyword: SyntaxNode<()>
+  public let name: SourceRange<TypeIdentifier>
+  public let declarations: SyntaxNode<DeclBlock>
+}
+
+extension TraitDecl: SyntaxNodeContainer {
+  var start: SyntaxNode<()> {
+    traitKeyword
+  }
+
+  var end: SyntaxNode<()> {
+    declarations.end
+  }
 }
 
 extension TraitDecl: CustomStringConvertible {
@@ -14,11 +26,8 @@ extension TraitDecl: CustomStringConvertible {
   }
 }
 
-let traitParser = Terminal("trait")
-  .skip(statefulWhitespace(isRequired: true))
+let traitParser = SyntaxNodeParser(Terminal("trait"))
   .take(typeIdentifierParser)
-  .skipWithWhitespace(openBraceParser)
-  .skipWithWhitespace(closeBraceParser)
-  .map(\.1)
-  // FIXME: generic parameters
-  .map { TraitDecl(name: $0) }
+  .take(declBlockParser)
+  .map(TraitDecl.init)
+  .map(\.syntaxNode)
