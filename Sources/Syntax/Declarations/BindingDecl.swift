@@ -5,8 +5,14 @@
 import Parsing
 
 public struct BindingDecl {
+  public struct TypeAnnotation {
+    public let colon: SyntaxNode<()>
+    public let signature: SyntaxNode<Type>
+  }
+
   public let bindingKeyword: SyntaxNode<()>
   public let identifier: SyntaxNode<Identifier>
+  public let typeAnnotation: TypeAnnotation?
   public let equalsSign: SyntaxNode<()>
   public let value: SyntaxNode<Expr>
 }
@@ -29,6 +35,13 @@ extension BindingDecl: CustomStringConvertible {
 
 let bindingParser = SyntaxNodeParser(Terminal("let"))
   .take(identifierParser)
+  .take(
+    Optional.parser(
+      of: SyntaxNodeParser(Terminal(":"))
+        .take(typeParser)
+        .map(BindingDecl.TypeAnnotation.init)
+    )
+  )
   .take(SyntaxNodeParser(Terminal("=")))
   .take(exprParser)
   .map(BindingDecl.init)
