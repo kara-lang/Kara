@@ -16,5 +16,9 @@ enum TypeError: Error, Equatable {
   case unknownTupleMember(Identifier)
   case unbound(Identifier)
   case tupleUnificationFailure(Identifier, Identifier)
-  case noExpressions(SourceRange<()>)
+  case noExpressionsInBlock(SourceRange<()>)
+  case topLevelAnnotationMissing(Identifier)
+  case typeDeclAlreadyExists(TypeIdentifier)
+  case funcDeclAlreadyExists(Identifier)
+  case bindingDeclAlreadyExists(Identifier)
 }

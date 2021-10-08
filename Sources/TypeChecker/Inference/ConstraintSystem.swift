@@ -20,14 +20,6 @@ enum Constraint {
   case member(Type, member: Identifier, memberType: Type)
 }
 
-/** Environment of possible overloads for `Identifier`. There's an assumption
- that `[Scheme]` array can't be empty, since an empty array of overloads is
- meaningless. If no overloads are available for `Identifier`, it shouldn't be
- in the `Environoment` dictionary as a key in the first place.
- */
-typealias Environment = [Identifier: [Scheme]]
-typealias Members = [TypeIdentifier: Environment]
-
 struct ConstraintSystem {
   private var typeVariableCount = 0
   private(set) var constraints = [Constraint]()
@@ -208,7 +200,7 @@ struct ConstraintSystem {
     case let .block(block):
       // Expression blocks should always contain at least one expression and end with an expression.
       guard case let .expr(last) = block.elements.last?.content.content else {
-        throw TypeError.noExpressions(block.sourceRange.map { _ in })
+        throw TypeError.noExpressionsInBlock(block.sourceRange)
       }
 
       return try infer(last)
