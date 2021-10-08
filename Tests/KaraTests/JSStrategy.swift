@@ -5,5 +5,5 @@
 import SnapshotTesting
 
 public extension Snapshotting where Value == String, Format == String {
-  static let js = Snapshotting(pathExtension: "jss", diffing: .lines)
+  static let js = Snapshotting(pathExtension: "js", diffing: .lines)
 }
