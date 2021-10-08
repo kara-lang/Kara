@@ -13,11 +13,12 @@ func typeCheck(module: ModuleFile) throws -> ModuleFile {
     switch declaration {
     case let .function(f):
       let identifier = f.identifier.content.content
-      if environment[identifier] != nil {
-        environment[identifier]?.append(f.scheme)
-      } else {
-        environment[identifier] = [f.scheme]
+      guard environment[identifier] == nil else {
+        throw TypeError.funcDeclAlreadyExists(identifier)
       }
+
+      environment[identifier] = f.scheme
+
     case let .binding(b):
       let identifier = b.identifier.content.content
       guard let scheme = b.scheme else {
@@ -28,7 +29,7 @@ func typeCheck(module: ModuleFile) throws -> ModuleFile {
         throw TypeError.bindingDeclAlreadyExists(identifier)
       }
 
-      environment[identifier] = [scheme]
+      environment[identifier] = scheme
 
     case let .struct(s):
       guard members[s.name.content] == nil else {

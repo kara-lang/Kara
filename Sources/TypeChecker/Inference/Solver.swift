@@ -65,44 +65,6 @@ struct Solver {
         substitution: substitution,
         system: system
       ).solve()
-
-    case let .disjunction(id, type, alternatives):
-      switch type {
-      case .variable:
-        // run multiple independent solvers with each `alternative` prepended as
-        // a new `equal` constraint. Potentially, these solvers could run on
-        // multiple threads in parallel?
-        let result = alternatives.compactMap { alternative -> Substitution? in
-          do {
-            var localSystem = system
-            localSystem.prepend(.equal(type, alternative))
-            return try Solver(
-              substitution: substitution,
-              system: localSystem
-            ).solve()
-          } catch {
-            return nil
-          }
-        }
-
-        switch result.count {
-        case 0:
-          throw TypeError.noOverloadFound(id, type)
-        case 1:
-          return result[0]
-        default:
-          throw TypeError.ambiguous(id)
-        }
-
-      default:
-        guard alternatives.contains(type) else {
-          throw TypeError.noOverloadFound(id, type)
-        }
-        return try Solver(
-          substitution: substitution,
-          system: system
-        ).solve()
-      }
     }
   }
 

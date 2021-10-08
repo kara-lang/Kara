@@ -8,12 +8,6 @@ enum Constraint {
   /// Type equality constraint
   case equal(Type, Type)
 
-  /** Constraint used to resolve function overloads. This constraint is valid
-   if `assumption` can be unified with any of the types passed as
-   `alternatives`.
-   */
-  case disjunction(Identifier, assumption: Type, alternatives: [Type])
-
   /** Member constraint representing members of type declarations: functions and
    properties.
    */
@@ -64,7 +58,7 @@ struct ConstraintSystem {
     defer { self.environment = old }
 
     for (id, scheme) in environment {
-      self.environment[id] = [scheme]
+      self.environment[id] = scheme
     }
     return try infer(inferred)
   }
@@ -100,21 +94,11 @@ struct ConstraintSystem {
     in environment: Environment,
     orThrow error: TypeError
   ) throws -> Type {
-    guard let schemes = environment[id] else {
+    guard let scheme = environment[id] else {
       throw error
     }
 
-    let results = schemes.map { instantiate($0) }
-
-    assert(results.count > 0)
-    guard results.count > 1 else { return results[0] }
-
-    let typeVariable = fresh()
-
-    constraints.append(
-      .disjunction(id, assumption: typeVariable, alternatives: results)
-    )
-    return typeVariable
+    return instantiate(scheme)
   }
 
   /// Converting a σ type into a τ type by creating fresh names for each type
