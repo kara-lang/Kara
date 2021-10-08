@@ -159,7 +159,7 @@ public final class Logger {
   }
 
   func log(_ message: String, level: LogLevel = .default, async: Bool) {
-    let currentLevel = self.currentLevel
+    let currentLevel = currentLevel
 
     var usedOSLog = false
     #if canImport(os)

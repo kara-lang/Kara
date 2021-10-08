@@ -69,7 +69,7 @@ extension Type: Substitutable {
 
 extension Scheme: Substitutable {
   func apply(_ sub: Substitution) -> Scheme {
-    let type = self.type.apply(variables.reduce(sub) {
+    let type = type.apply(variables.reduce(sub) {
       var result = $0
       result[$1] = nil
       return result

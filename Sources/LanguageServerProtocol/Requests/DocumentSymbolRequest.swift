@@ -41,7 +41,7 @@ public enum DocumentSymbolResponse: ResponseType, Hashable {
   public init(from decoder: Decoder) throws {
     if let documentSymbols = try? [DocumentSymbol](from: decoder) {
       self = .documentSymbols(documentSymbols)
-    } else if let symbolInformation = try? [SymbolInformation](from: decoder) {
+    } else if let symbolInformation = try? [SymbolInformation].init(from: decoder) {
       self = .symbolInformation(symbolInformation)
     } else {
       let context = DecodingError.Context(
