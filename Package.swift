@@ -15,7 +15,7 @@ let package = Package(
     .package(
       name: "Benchmark",
       url: "https://github.com/google/swift-benchmark.git",
-      from: "0.1.0"
+      from: "0.1.1"
     ),
     .package(
       name: "swift-parsing",
@@ -106,7 +106,7 @@ let package = Package(
         "SnapshotTesting",
         .product(name: "CustomDump", package: "swift-custom-dump"),
       ],
-      exclude: ["Fixtures", "__Snapshots__"]
+      exclude: ["__Snapshots__"]
     ),
     .executableTarget(name: "lite", dependencies: ["LiteSupport"]),
   ]
