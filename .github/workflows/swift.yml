@@ -36,6 +36,7 @@ jobs:
       - uses: MaxDesiatov/swift-windows-action@v1
         with:
           shell-action: swift build
+          swift-version: "5.5"
 # FIXME: re-enable tests when SnapshotTesting is available on Windows.
 #       - name: Run tests
 #         run: swift test
