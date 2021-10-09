@@ -23,7 +23,10 @@ SyntaxNode(
       leadingTrivia: [
         [0]: Whitespace(" ")
       ],
-      content: 0:20-0:20 Identifier(value: "f")
+      content: 0:20-0:20 Identifier(
+        definitionSource: nil,
+        value: "f"
+      )
     ),
     genericParameters: [],
     parameters: DelimitedSequence(
@@ -39,7 +42,10 @@ SyntaxNode(
               externalName: nil,
               internalName: SyntaxNode(
                 leadingTrivia: [],
-                content: 0:22-0:22 Identifier(value: "x")
+                content: 0:22-0:22 Identifier(
+                  definitionSource: nil,
+                  value: "x"
+                )
               ),
               colon: SyntaxNode(
                 leadingTrivia: [],
@@ -85,7 +91,10 @@ SyntaxNode(
           ],
           content: 0:39-0:39 ExprBlock.Element.expr(
             Expr.identifier(
-              Identifier(value: "x")
+              Identifier(
+                definitionSource: nil,
+                value: "x"
+              )
             )
           )
         )

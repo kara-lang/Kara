@@ -14,21 +14,30 @@ SyntaxNode(
                     [0]: Closure.Parameter(
                       identifier: SyntaxNode(
                         leadingTrivia: [],
-                        content: 0:1-0:1 Identifier(value: "x")
+                        content: 0:1-0:1 Identifier(
+                          definitionSource: nil,
+                          value: "x"
+                        )
                       ),
                       typeAnnotation: nil
                     ),
                     [1]: Closure.Parameter(
                       identifier: SyntaxNode(
                         leadingTrivia: [],
-                        content: 0:3-0:3 Identifier(value: "y")
+                        content: 0:3-0:3 Identifier(
+                          definitionSource: nil,
+                          value: "y"
+                        )
                       ),
                       typeAnnotation: nil
                     ),
                     [2]: Closure.Parameter(
                       identifier: SyntaxNode(
                         leadingTrivia: [],
-                        content: 0:5-0:5 Identifier(value: "z")
+                        content: 0:5-0:5 Identifier(
+                          definitionSource: nil,
+                          value: "z"
+                        )
                       ),
                       typeAnnotation: nil
                     )
@@ -40,7 +49,10 @@ SyntaxNode(
                   body: SyntaxNode(
                     leadingTrivia: [],
                     content: 0:10-0:10 Expr.identifier(
-                      Identifier(value: "x")
+                      Identifier(
+                        definitionSource: nil,
+                        value: "x"
+                      )
                     )
                   )
                 )
@@ -112,7 +124,10 @@ SyntaxNode(
       ),
       member: SyntaxNode(
         leadingTrivia: [],
-        content: 0:26-0:36 Identifier(value: "description")
+        content: 0:26-0:36 Identifier(
+          definitionSource: nil,
+          value: "description"
+        )
       )
     )
   )

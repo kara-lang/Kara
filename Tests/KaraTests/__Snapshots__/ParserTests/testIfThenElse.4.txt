@@ -32,7 +32,10 @@ SyntaxNode(
                   ),
                   member: SyntaxNode(
                     leadingTrivia: [],
-                    content: 0:6-0:14 Identifier(value: "isInteger")
+                    content: 0:6-0:14 Identifier(
+                      definitionSource: nil,
+                      value: "isInteger"
+                    )
                   )
                 )
               )

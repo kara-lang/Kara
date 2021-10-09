@@ -7,5 +7,8 @@ SyntaxNode(
     ),
     [1]: Whitespace("\n")
   ],
-  content: 1:0-1:6 Identifier(value: "_abc123")
+  content: 1:0-1:6 Identifier(
+    definitionSource: nil,
+    value: "_abc123"
+  )
 )

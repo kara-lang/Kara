@@ -9,8 +9,8 @@ import XCTest
 
 extension String {
   func inferParsedExpr(
-    environment: Environment = [:],
-    members: Members = [:]
+    environment: BindingEnvironment = [:],
+    members: TypeEnvironment = [:]
   ) throws -> Type {
     var state = ParsingState(source: self)
     guard let expr = exprParser.parse(&state) else {
@@ -23,7 +23,7 @@ extension String {
 
 final class SyntaxInferenceTests: XCTestCase {
   func testApplication() throws {
-    let e: Environment = [
+    let e: BindingEnvironment = [
       "increment": .init(.int32 --> .int32),
       "stringify": .init(.int32 --> .string),
     ]
@@ -35,7 +35,7 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testClosure() throws {
-    let e: Environment = [
+    let e: BindingEnvironment = [
       "increment": .init(.int32 --> .int32),
       "stringify": .init(.int32 --> .string),
       "decode": .init(.string --> .int32),
@@ -69,7 +69,7 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testClosureWithMultipleArguments() throws {
-    let e: Environment = [
+    let e: BindingEnvironment = [
       "sum": .init([.int32, .int32] --> .int32),
       "stringify": .init([.int32, .int32] --> .string),
       "decode": .init([.string, .string] --> .int32),
@@ -96,7 +96,7 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testClosureWithMultipleArgumentsDifferentTypes() throws {
-    let e: Environment = [
+    let e: BindingEnvironment = [
       "concatenate": .init([.int32, .string] --> .string),
       "sum": .init([.int32, .int32] --> .int32),
       "decode": .init([.string, .int32] --> .int32),
@@ -118,7 +118,7 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testMember() throws {
-    let m: Members = [
+    let m: TypeEnvironment = [
       "String": [
         "appending": .init(.string --> .string),
         "count": .init(.int32),
@@ -140,7 +140,7 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testMemberOfMember() throws {
-    let m: Members = [
+    let m: TypeEnvironment = [
       "String": [
         "count": .init(.int32),
       ],
@@ -160,7 +160,7 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testIfThenElse() throws {
-    let m: Members = [
+    let m: TypeEnvironment = [
       "Int32": [
         "isInteger": .init(.bool),
         "isIntegerFunc": .init([] --> .bool),
@@ -168,7 +168,7 @@ final class SyntaxInferenceTests: XCTestCase {
       ],
     ]
 
-    let e: Environment = [
+    let e: BindingEnvironment = [
       "foo": .init(.bool),
       "bar": .init(.double),
       "baz": .init(.double),
