@@ -19,7 +19,7 @@ public struct FuncDecl {
   public let parameters: DelimitedSequence<Parameter>
 
   public let returns: SyntaxNode<Type>?
-  public let body: ExprBlock?
+  public var body: ExprBlock?
 }
 
 extension FuncDecl: SyntaxNodeContainer {

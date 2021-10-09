@@ -14,7 +14,7 @@ public struct BindingDecl {
   public let identifier: SyntaxNode<Identifier>
   public let typeAnnotation: TypeAnnotation?
   public let equalsSign: SyntaxNode<()>
-  public let value: SyntaxNode<Expr>
+  public var value: SyntaxNode<Expr>
 }
 
 extension BindingDecl: SyntaxNodeContainer {

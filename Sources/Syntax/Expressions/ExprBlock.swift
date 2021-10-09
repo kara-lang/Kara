@@ -11,7 +11,7 @@ public struct ExprBlock {
   }
 
   public let openBrace: SyntaxNode<()>
-  public let elements: [SyntaxNode<Element>]
+  public var elements: [SyntaxNode<Element>]
   public let closeBrace: SyntaxNode<()>
 
   public var sourceRange: SourceRange<()> {

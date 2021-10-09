@@ -7,7 +7,7 @@ import Parsing
 @dynamicMemberLookup
 public struct SyntaxNode<Content> {
   let leadingTrivia: [Trivia]
-  public let content: SourceRange<Content>
+  public var content: SourceRange<Content>
 
   func map<NewContent>(_ transform: (Content) -> NewContent) -> SyntaxNode<NewContent> {
     .init(leadingTrivia: leadingTrivia, content: content.map(transform))

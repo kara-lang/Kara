@@ -18,6 +18,7 @@ struct ConstraintSystem {
   private var typeVariableCount = 0
   private(set) var constraints = [Constraint]()
 
+  // FIXME: use a single `Environment` property instead
   private(set) var environment: BindingEnvironment
   let members: TypeEnvironment
 
@@ -78,7 +79,7 @@ struct ConstraintSystem {
     _ member: Identifier,
     in typeID: TypeIdentifier
   ) throws -> Type {
-    guard let environment = members[typeID] else {
+    guard let environment = members[typeID]?.identifiers else {
       throw TypeError.unknownType(typeID)
     }
 
