@@ -18,10 +18,10 @@ struct ConstraintSystem {
   private var typeVariableCount = 0
   private(set) var constraints = [Constraint]()
 
-  private(set) var environment: Environment
-  let members: Members
+  private(set) var environment: BindingEnvironment
+  let members: TypeEnvironment
 
-  init(_ environment: Environment, members: Members) {
+  init(_ environment: BindingEnvironment, members: TypeEnvironment) {
     self.environment = environment
     self.members = members
   }
@@ -91,7 +91,7 @@ struct ConstraintSystem {
 
   private mutating func lookup(
     _ id: Identifier,
-    in environment: Environment,
+    in environment: BindingEnvironment,
     orThrow error: TypeError
   ) throws -> Type {
     guard let scheme = environment[id] else {

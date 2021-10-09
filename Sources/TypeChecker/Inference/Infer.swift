@@ -6,8 +6,8 @@ import Syntax
 
 extension Expr {
   func infer(
-    environment: Environment = [:],
-    members: Members = [:]
+    environment: BindingEnvironment = [:],
+    members: TypeEnvironment = [:]
   ) throws -> Type {
     var system = ConstraintSystem(
       environment,

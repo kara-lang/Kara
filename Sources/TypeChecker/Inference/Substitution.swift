@@ -92,8 +92,8 @@ extension Array: Substitutable where Element: Substitutable {
   }
 }
 
-extension Environment: Substitutable {
-  func apply(_ sub: Substitution) -> Environment {
+extension BindingEnvironment: Substitutable {
+  func apply(_ sub: Substitution) -> BindingEnvironment {
     mapValues { $0.apply(sub) }
   }
 
