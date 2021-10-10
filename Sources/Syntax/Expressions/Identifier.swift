@@ -5,12 +5,6 @@
 import Parsing
 
 public struct Identifier: Hashable {
-  public enum DefinitionSource: Hashable {
-    case local
-    case interop(externalName: String)
-  }
-
-  public var definitionSource: DefinitionSource?
   public let value: String
 }
 

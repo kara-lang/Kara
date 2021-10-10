@@ -6,10 +6,7 @@ SyntaxNode(
         [0]: Closure.Parameter(
           identifier: SyntaxNode(
             leadingTrivia: [],
-            content: 0:1-0:1 Identifier(
-              definitionSource: nil,
-              value: "x"
-            )
+            content: 0:1-0:1 Identifier(value: "x")
           ),
           typeAnnotation: nil
         )

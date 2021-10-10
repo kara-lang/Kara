@@ -11,10 +11,7 @@ SyntaxNode(
           [0]: Whitespace(" ")
         ],
         content: 0:3-0:5 Expr.identifier(
-          Identifier(
-            definitionSource: nil,
-            value: "foo"
-          )
+          Identifier(value: "foo")
         )
       ),
       thenBlock: ExprBlock(
@@ -31,10 +28,7 @@ SyntaxNode(
             ],
             content: 0:9-0:11 ExprBlock.Element.expr(
               Expr.identifier(
-                Identifier(
-                  definitionSource: nil,
-                  value: "bar"
-                )
+                Identifier(value: "bar")
               )
             )
           )
@@ -67,10 +61,7 @@ SyntaxNode(
               ],
               content: 0:22-0:24 ExprBlock.Element.expr(
                 Expr.identifier(
-                  Identifier(
-                    definitionSource: nil,
-                    value: "baz"
-                  )
+                  Identifier(value: "baz")
                 )
               )
             )

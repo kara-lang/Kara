@@ -21,4 +21,5 @@ enum TypeError: Error, Equatable {
   case typeDeclAlreadyExists(TypeIdentifier)
   case funcDeclAlreadyExists(Identifier)
   case bindingDeclAlreadyExists(Identifier)
+  case multipleInteropModifiers
 }

@@ -8,9 +8,9 @@ import Syntax
 typealias BindingEnvironment = [Identifier: Scheme]
 
 /** Mapping from a type identifier to an environment with its members. */
-typealias TypeEnvironment = [TypeIdentifier: Environment]
+typealias TypeEnvironment = [TypeIdentifier: ModuleEnvironment]
 
-struct Environment {
+struct ModuleEnvironment {
   init(identifiers: BindingEnvironment, types: TypeEnvironment) {
     self.identifiers = identifiers
     self.types = types
@@ -21,12 +21,14 @@ struct Environment {
   }
 
   /// Environment of top-level bindings in this module.
-  var identifiers: BindingEnvironment
+  private(set) var identifiers: BindingEnvironment
 
   /// Environment of top-level types in this module.
-  var types: TypeEnvironment
+  private(set) var types: TypeEnvironment
 
-  mutating func append(_ declaration: Declaration) throws {
+  /// Inserts a given declaration type (and members if appropriate) into this environment.
+  /// - Parameter declaration: `Declaration` value to use for inserting intto the environment
+  mutating func insert(_ declaration: Declaration) throws {
     switch declaration {
     case let .function(f):
       let identifier = f.identifier.content.content
@@ -61,27 +63,27 @@ struct Environment {
   }
 }
 
-extension Environment: ExpressibleByDictionaryLiteral {
+extension ModuleEnvironment: ExpressibleByDictionaryLiteral {
   init(dictionaryLiteral elements: (Identifier, Scheme)...) {
     self.init(identifiers: BindingEnvironment(uniqueKeysWithValues: elements), types: [:])
   }
 }
 
 extension StructDecl {
-  var environment: Environment {
+  var environment: ModuleEnvironment {
     get throws {
-      try declarations.elements.map(\.content.content).reduce(into: Environment()) {
-        try $0.append($1)
+      try declarations.elements.map(\.content.content).reduce(into: ModuleEnvironment()) {
+        try $0.insert($1)
       }
     }
   }
 }
 
 extension ModuleFile {
-  var environment: Environment {
+  var environment: ModuleEnvironment {
     get throws {
-      try declarations.map(\.content.content).reduce(into: Environment()) {
-        try $0.append($1)
+      try declarations.map(\.content.content).reduce(into: ModuleEnvironment()) {
+        try $0.insert($1)
       }
     }
   }

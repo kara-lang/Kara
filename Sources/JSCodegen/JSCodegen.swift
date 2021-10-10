@@ -5,6 +5,7 @@
 import Basic
 import Syntax
 
+// FIXME: use extensions on these Syntax types instead of the weird `JSCodegen` functions pattern
 public typealias JSCodegen<T> = CompilerPass<T, String>
 
 public let jsModuleFileCodegen = JSCodegen<ModuleFile> {
@@ -50,6 +51,11 @@ let jsExprBlockCodegen = JSCodegen<ExprBlock> {
   }
 }
 
+let jsIdentifierCodegen = JSCodegen<Identifier> {
+  // FIXME: check for other keywords and predefined identifiers
+  $0.value == "undefined" ? "undefined_" : $0.value
+}
+
 let jsExprBlockElementCodegen = JSCodegen<ExprBlock.Element> {
   switch $0 {
   case let .expr(e):
@@ -72,8 +78,7 @@ func jsExprCodegenTransform(_ input: Expr) -> String {
   case let .literal(.string(s)):
     return #""\#(s)""#
   case let .identifier(id):
-    // FIXME: check for other keywords and predefined identifiers
-    return id.value == "undefined" ? "undefined_" : id.value
+    return jsIdentifierCodegen(id)
   case let .application(a):
     return """
     \(jsExprCodegenTransform(a.function.content.content))\

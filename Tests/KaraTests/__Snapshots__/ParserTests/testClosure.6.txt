@@ -7,10 +7,7 @@ SyntaxNode(
       body: SyntaxNode(
         leadingTrivia: [],
         content: 0:1-0:4 Expr.identifier(
-          Identifier(
-            definitionSource: nil,
-            value: "xin1"
-          )
+          Identifier(value: "xin1")
         )
       )
     )

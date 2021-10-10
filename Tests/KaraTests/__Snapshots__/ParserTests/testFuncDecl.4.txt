@@ -17,10 +17,7 @@ SyntaxNode(
       leadingTrivia: [
         [0]: Whitespace(" ")
       ],
-      content: 0:12-0:12 Identifier(
-        definitionSource: nil,
-        value: "f"
-      )
+      content: 0:12-0:12 Identifier(value: "f")
     ),
     genericParameters: [],
     parameters: DelimitedSequence(
@@ -35,19 +32,13 @@ SyntaxNode(
             content: 0:14-0:22 FuncDecl.Parameter(
               externalName: SyntaxNode(
                 leadingTrivia: [],
-                content: 0:14-0:14 Identifier(
-                  definitionSource: nil,
-                  value: "x"
-                )
+                content: 0:14-0:14 Identifier(value: "x")
               ),
               internalName: SyntaxNode(
                 leadingTrivia: [
                   [0]: Whitespace(" ")
                 ],
-                content: 0:16-0:16 Identifier(
-                  definitionSource: nil,
-                  value: "y"
-                )
+                content: 0:16-0:16 Identifier(value: "y")
               ),
               colon: SyntaxNode(
                 leadingTrivia: [],
@@ -105,10 +96,7 @@ SyntaxNode(
                     [0]: Whitespace(" ")
                   ],
                   content: 0:40-0:40 Expr.identifier(
-                    Identifier(
-                      definitionSource: nil,
-                      value: "y"
-                    )
+                    Identifier(value: "y")
                   )
                 ),
                 thenBlock: ExprBlock(

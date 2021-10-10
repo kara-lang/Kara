@@ -14,30 +14,21 @@ SyntaxNode(
                     [0]: Closure.Parameter(
                       identifier: SyntaxNode(
                         leadingTrivia: [],
-                        content: 0:1-0:1 Identifier(
-                          definitionSource: nil,
-                          value: "x"
-                        )
+                        content: 0:1-0:1 Identifier(value: "x")
                       ),
                       typeAnnotation: nil
                     ),
                     [1]: Closure.Parameter(
                       identifier: SyntaxNode(
                         leadingTrivia: [],
-                        content: 0:3-0:3 Identifier(
-                          definitionSource: nil,
-                          value: "y"
-                        )
+                        content: 0:3-0:3 Identifier(value: "y")
                       ),
                       typeAnnotation: nil
                     ),
                     [2]: Closure.Parameter(
                       identifier: SyntaxNode(
                         leadingTrivia: [],
-                        content: 0:5-0:5 Identifier(
-                          definitionSource: nil,
-                          value: "z"
-                        )
+                        content: 0:5-0:5 Identifier(value: "z")
                       ),
                       typeAnnotation: nil
                     )
@@ -61,10 +52,7 @@ SyntaxNode(
             ),
             member: SyntaxNode(
               leadingTrivia: [],
-              content: 0:13-0:23 Identifier(
-                definitionSource: nil,
-                value: "description"
-              )
+              content: 0:13-0:23 Identifier(value: "description")
             )
           )
         )
@@ -75,10 +63,7 @@ SyntaxNode(
       ),
       member: SyntaxNode(
         leadingTrivia: [],
-        content: 0:25-0:35 Identifier(
-          definitionSource: nil,
-          value: "description"
-        )
+        content: 0:25-0:35 Identifier(value: "description")
       )
     )
   )

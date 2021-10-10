@@ -6,30 +6,21 @@ SyntaxNode(
         [0]: Closure.Parameter(
           identifier: SyntaxNode(
             leadingTrivia: [],
-            content: 0:2-0:2 Identifier(
-              definitionSource: nil,
-              value: "x"
-            )
+            content: 0:2-0:2 Identifier(value: "x")
           ),
           typeAnnotation: nil
         ),
         [1]: Closure.Parameter(
           identifier: SyntaxNode(
             leadingTrivia: [],
-            content: 0:4-0:4 Identifier(
-              definitionSource: nil,
-              value: "y"
-            )
+            content: 0:4-0:4 Identifier(value: "y")
           ),
           typeAnnotation: nil
         ),
         [2]: Closure.Parameter(
           identifier: SyntaxNode(
             leadingTrivia: [],
-            content: 0:6-0:6 Identifier(
-              definitionSource: nil,
-              value: "z"
-            )
+            content: 0:6-0:6 Identifier(value: "z")
           ),
           typeAnnotation: nil
         )

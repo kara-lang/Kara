@@ -20,6 +20,6 @@ public func | <Input, Intermediate, Output>(
   rhs: CompilerPass<Intermediate, Output>
 ) -> CompilerPass<Input, Output> {
   .init {
-    rhs.transform(lhs.transform($0))
+    rhs(lhs($0))
   }
 }

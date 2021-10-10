@@ -1,7 +1,4 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-0:6 Identifier(
-    definitionSource: nil,
-    value: "_abc123"
-  )
+  content: 0:0-0:6 Identifier(value: "_abc123")
 )

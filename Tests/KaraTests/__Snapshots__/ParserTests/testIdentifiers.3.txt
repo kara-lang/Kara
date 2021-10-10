@@ -6,8 +6,5 @@ SyntaxNode(
       content: " hello! "
     )
   ],
-  content: 0:12-0:17 Identifier(
-    definitionSource: nil,
-    value: "abc123"
-  )
+  content: 0:12-0:17 Identifier(value: "abc123")
 )

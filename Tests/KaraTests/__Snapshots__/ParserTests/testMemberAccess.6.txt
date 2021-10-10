@@ -68,10 +68,7 @@ SyntaxNode(
       ),
       member: SyntaxNode(
         leadingTrivia: [],
-        content: 0:13-0:23 Identifier(
-          definitionSource: nil,
-          value: "description"
-        )
+        content: 0:13-0:23 Identifier(value: "description")
       )
     )
   )

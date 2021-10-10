@@ -46,7 +46,7 @@ extension Expr: CustomStringConvertible {
     case let .ifThenElse(ifThenElse):
       return ifThenElse.description
     case let .member(memberAccess):
-      return "\(memberAccess.base.content.content.description).\(memberAccess.member.content.content.value)"
+      return "\(memberAccess.base.content.content.description).\(memberAccess.member.value)"
     case let .tuple(tuple):
       return "(\(tuple.elementsContent.map(\.description).joined(separator: ", ")))"
     case let .block(block):
