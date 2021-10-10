@@ -43,16 +43,16 @@ let package = Package(
       ]
     ),
     .target(
+      name: "Interpreter",
+      dependencies: ["Syntax"]
+    ),
+    .target(
       name: "TypeChecker",
-      dependencies: [
-        "Syntax",
-      ]
+      dependencies: ["Syntax"]
     ),
     .target(
       name: "DependentTypes",
-      dependencies: [
-        "Syntax",
-      ]
+      dependencies: ["Syntax"]
     ),
     .target(
       name: "JSCodegen",
@@ -71,10 +71,7 @@ let package = Package(
     // jsonrpc: LSP connection using jsonrpc over pipes.
     .target(
       name: "LanguageServerProtocolJSONRPC",
-      dependencies: [
-        "LanguageServerProtocol",
-        "LSPLogging",
-      ]
+      dependencies: ["LanguageServerProtocol", "LSPLogging"]
     ),
 
     // LanguageServerProtocol: The core LSP types, suitable for any LSP implementation.
@@ -95,9 +92,7 @@ let package = Package(
     ),
     .executableTarget(
       name: "kara-benchmark",
-      dependencies: [
-        "Benchmark",
-      ]
+      dependencies: ["Benchmark"]
     ),
     .testTarget(
       name: "KaraTests",
