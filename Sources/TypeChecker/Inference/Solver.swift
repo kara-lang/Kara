@@ -27,7 +27,7 @@ struct Solver {
   private var empty: Solver {
     Solver(
       substitution: [:],
-      system: ConstraintSystem(system.environment, members: system.members)
+      system: ConstraintSystem(system.environment)
     )
   }
 

@@ -18,13 +18,10 @@ struct ConstraintSystem {
   private var typeVariableCount = 0
   private(set) var constraints = [Constraint]()
 
-  // FIXME: use a single `Environment` property instead
-  private(set) var environment: BindingEnvironment
-  let members: TypeEnvironment
+  private(set) var environment: ModuleEnvironment
 
-  init(_ environment: BindingEnvironment, members: TypeEnvironment) {
+  init(_ environment: ModuleEnvironment) {
     self.environment = environment
-    self.members = members
   }
 
   mutating func removeFirst() -> Constraint? {
@@ -58,9 +55,8 @@ struct ConstraintSystem {
 
     defer { self.environment = old }
 
-    for (id, scheme) in environment {
-      self.environment[id] = scheme
-    }
+    self.environment.insert(environment)
+
     return try infer(inferred)
   }
 
@@ -79,7 +75,7 @@ struct ConstraintSystem {
     _ member: Identifier,
     in typeID: TypeIdentifier
   ) throws -> Type {
-    guard let environment = members[typeID]?.identifiers else {
+    guard let environment = environment.types[typeID]?.identifiers else {
       throw TypeError.unknownType(typeID)
     }
 
@@ -92,10 +88,10 @@ struct ConstraintSystem {
 
   private mutating func lookup(
     _ id: Identifier,
-    in environment: BindingEnvironment,
+    in bindingEnvironment: BindingEnvironment,
     orThrow error: TypeError
   ) throws -> Type {
-    guard let scheme = environment[id] else {
+    guard let scheme = bindingEnvironment[id] else {
       throw error
     }
 
@@ -115,14 +111,14 @@ struct ConstraintSystem {
       return literal.defaultType
 
     case let .identifier(id):
-      return try lookup(id, in: environment, orThrow: .unbound(id))
+      return try lookup(id, in: environment.identifiers, orThrow: .unbound(id))
 
-    case let .closure(l):
-      let ids = l.parameters.map(\.identifier.content.content)
+    case let .closure(c):
+      let ids = c.parameters.map(\.identifier.content.content)
       let parameters = ids.map { _ in fresh() }
       return try .arrow(
         parameters,
-        infer(inExtended: zip(ids, parameters.map { Scheme($0) }), l.body?.content.content ?? .unit)
+        infer(inExtended: zip(ids, parameters.map { Scheme($0) }), c.body?.content.content ?? .unit)
       )
 
     case let .application(app):

@@ -6,13 +6,9 @@ import Syntax
 
 extension Expr {
   func infer(
-    environment: BindingEnvironment = [:],
-    members: TypeEnvironment = [:]
+    _ environment: ModuleEnvironment = ModuleEnvironment()
   ) throws -> Type {
-    var system = ConstraintSystem(
-      environment,
-      members: members
-    )
+    var system = ConstraintSystem(environment)
     let type = try system.infer(self)
 
     let solver = Solver(

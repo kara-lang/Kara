@@ -17,7 +17,7 @@ extension String {
       throw ParsingError.unknown(startIndex..<endIndex)
     }
 
-    return try expr.content.content.infer(environment: environment, members: members)
+    return try expr.content.content.infer(ModuleEnvironment(identifiers: environment, types: members))
   }
 }
 
@@ -42,19 +42,18 @@ final class SyntaxInferenceTests: XCTestCase {
     ]
 
     XCTAssertNoDifference(
-      try exprParser.parse(
+      try
         """
         { x in decode(stringify(increment(x))) }
         """
-      ).output?.content.content.infer(environment: e), .int32 --> .int32
+        .inferParsedExpr(environment: e), .int32 --> .int32
     )
 
     assertError(
-      try exprParser.parse(
+      try
         """
         { x in stringify(decode(increment(x))) }
-        """
-      ).output?.content.content.infer(environment: e),
+        """.inferParsedExpr(environment: e),
       TypeError.unificationFailure(.string, .int32)
     )
 
@@ -76,7 +75,7 @@ final class SyntaxInferenceTests: XCTestCase {
     ]
 
     XCTAssertNoDifference(
-      try exprParser.parse(
+      try
         """
         { x, y in
           decode(
@@ -90,8 +89,7 @@ final class SyntaxInferenceTests: XCTestCase {
             )
           )
         }
-        """
-      ).output?.content.content.infer(environment: e), [.int32, .int32] --> .int32
+        """.inferParsedExpr(environment: e), [.int32, .int32] --> .int32
     )
   }
 
@@ -103,7 +101,7 @@ final class SyntaxInferenceTests: XCTestCase {
     ]
 
     XCTAssertNoDifference(
-      try exprParser.parse(
+      try
         """
         { str, int in
           decode(
@@ -111,8 +109,7 @@ final class SyntaxInferenceTests: XCTestCase {
             sum(int, int)
           )
         }
-        """
-      ).output?.content.content.infer(environment: e),
+        """.inferParsedExpr(environment: e),
       [.string, .int32] --> .int32
     )
   }
@@ -126,15 +123,15 @@ final class SyntaxInferenceTests: XCTestCase {
     ]
 
     XCTAssertNoDifference(
-      try exprParser.parse(#""Hello, ".appending("World!")"#).output?.content.content.infer(members: m),
+      try #""Hello, ".appending("World!")"#.inferParsedExpr(members: m),
       .string
     )
     XCTAssertNoDifference(
-      try exprParser.parse(#""Test".count"#).output?.content.content.infer(members: m),
+      try #""Test".count"#.inferParsedExpr(members: m),
       .int32
     )
     assertError(
-      try exprParser.parse(#""Test".description"#).output?.content.content.infer(members: m),
+      try #""Test".description"#.inferParsedExpr(members: m),
       TypeError.unknownMember("String", "description")
     )
   }
@@ -150,11 +147,11 @@ final class SyntaxInferenceTests: XCTestCase {
     ]
 
     XCTAssertNoDifference(
-      try exprParser.parse(#""Test".count.magnitude"#).output?.content.content.infer(members: m),
+      try #""Test".count.magnitude"#.inferParsedExpr(members: m),
       .int32
     )
     assertError(
-      try exprParser.parse(#""Test".magnitude.count"#).output?.content.content.infer(members: m),
+      try #""Test".magnitude.count"#.inferParsedExpr(members: m),
       TypeError.unknownMember("String", "magnitude")
     )
   }
@@ -176,59 +173,55 @@ final class SyntaxInferenceTests: XCTestCase {
     ]
 
     XCTAssertNoDifference(
-      try exprParser.parse(#"if true { "true" } else { "false" } "#).output?.content.content.infer(members: m),
+      try #"if true { "true" } else { "false" } "#.inferParsedExpr(members: m),
       .string
     )
     XCTAssertNoDifference(
-      try exprParser.parse(#"if foo { bar } else { baz }  "#).output?.content.content.infer(environment: e, members: m),
+      try #"if foo { bar } else { baz }  "#.inferParsedExpr(environment: e, members: m),
       .double
     )
     XCTAssertNoDifference(
-      try exprParser.parse(
+      try
         #"""
         if 42.isInteger {
           "is integer"
         } else {
           "is not integer"
         }
-        """#
-      ).output?.content.content.infer(environment: e, members: m),
+        """#.inferParsedExpr(environment: e, members: m),
       .string
     )
     XCTAssertNoDifference(
-      try exprParser.parse(
+      try
         #"""
         if 42.isIntegerFunc() {
           "is integer"
         } else {
           "is not integer"
         }
-        """#
-      ).output?.content.content.infer(environment: e, members: m),
+        """#.inferParsedExpr(environment: e, members: m),
       .string
     )
     assertError(
-      try exprParser.parse(
+      try
         #"""
         if 42.toDouble() {
           "is integer"
         } else {
           "is not integer"
         }
-        """#
-      ).output?.content.content.infer(members: m),
+        """#.inferParsedExpr(members: m),
       TypeError.unificationFailure(.double, .bool)
     )
     assertError(
-      try exprParser.parse(
+      try
         #"""
         if 42 {
           "is integer"
         } else {
           "is not integer"
         }
-        """#
-      ).output?.content.content.infer(members: m),
+        """#.inferParsedExpr(members: m),
       TypeError.unificationFailure(.int32, .bool)
     )
   }

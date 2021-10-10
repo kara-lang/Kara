@@ -5,9 +5,40 @@
 import Basic
 import Syntax
 
+extension Declaration {
+  func typeCheck(_ environment: ModuleEnvironment) throws {
+    switch self {
+    case let .function(f):
+      guard let body = f.body else {
+        throw TypeError.funcDeclBodyMissing(f.identifier.content.content)
+      }
+
+      var functionEnvironment = environment
+      for parameter in f.parameters.elementsContent {
+        functionEnvironment.insert(parameter)
+      }
+
+      let inferredReturnType = try Expr.block(body).infer(functionEnvironment)
+      let expectedReturnType = f.returns?.content.content ?? .unit
+
+      guard expectedReturnType == inferredReturnType else {
+        throw TypeError.returnTypeMismatch(expected: expectedReturnType, actual: inferredReturnType)
+      }
+
+    case let .struct(s):
+      try s.declarations.content.content.elements.map(\.content.content).forEach { try $0.typeCheck(environment) }
+
+    default:
+      return
+    }
+  }
+}
+
 extension ModuleFile {
   func typeCheck() throws {
-    _ = try environment
+    let environment = try environment
+
+    try declarations.map(\.content.content).forEach { try $0.typeCheck(environment) }
   }
 }
 

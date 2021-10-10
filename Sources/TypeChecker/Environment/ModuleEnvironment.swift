@@ -61,6 +61,18 @@ struct ModuleEnvironment {
       return
     }
   }
+
+  /// Inserts a given function parameter into this environment.
+  /// - Parameter parameter: `FuncDecl.Parameter` value to use for inserting intto the environment
+  mutating func insert(_ parameter: FuncDecl.Parameter) {
+    identifiers[parameter.internalName.content.content] = .init(parameter.type.content.content)
+  }
+
+  mutating func insert<T>(_ sequence: T) where T: Sequence, T.Element == (Identifier, Scheme) {
+    for (id, scheme) in sequence {
+      identifiers[id] = scheme
+    }
+  }
 }
 
 extension ModuleEnvironment: ExpressibleByDictionaryLiteral {

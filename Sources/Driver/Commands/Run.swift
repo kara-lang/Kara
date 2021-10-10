@@ -7,8 +7,9 @@ import Basic
 import Foundation
 import JSCodegen
 import Syntax
+import TypeChecker
 
-let driverPass = syntaxPass | jsModuleFileCodegen
+let driverPass = syntaxPass | typeCheckerPass | jsModuleFileCodegen
 
 struct Run: ParsableCommand {
   @Argument(help: "The file to run.")
