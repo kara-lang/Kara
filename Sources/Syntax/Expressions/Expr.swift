@@ -13,6 +13,7 @@ public indirect enum Expr {
   case member(MemberAccess)
   case tuple(DelimitedSequence<Expr>)
   case block(ExprBlock)
+  case type(Type)
   case unit
 }
 
@@ -51,6 +52,8 @@ extension Expr: CustomStringConvertible {
       return "(\(tuple.elementsContent.map(\.description).joined(separator: ", ")))"
     case let .block(block):
       return block.description
+    case let .type(type):
+      return type.description
     case .unit:
       return "()"
     }
@@ -68,6 +71,7 @@ let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
     .orElse(identifierParser.map { $0.map(Expr.identifier) })
     .orElse(tupleExprParser.map { $0.syntaxNode.map(Expr.tuple) })
     .orElse(closureParser.map { $0.map(Expr.closure) })
+    .orElse(typeParser.map { $0.map(Expr.type) })
 
     // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain
     // derivations, specifically member access and function application. Expressing left recursion with combinators

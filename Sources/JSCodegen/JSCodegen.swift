@@ -110,8 +110,10 @@ func jsExprCodegenTransform(_ input: Expr) -> String {
     return "\(jsExprCodegenTransform(m.base.content.content)).\(m.member.value)"
   case let .tuple(t):
     return "[\(t.elementsContent.map(jsExprCodegenTransform).joined(separator: ","))]"
-  case let .block(block):
-    return jsExprBlockCodegen(block)
+  case let .block(b):
+    return jsExprBlockCodegen(b)
+  case let .type(t):
+    return #""\#(t.description)""#
   case .unit:
     return "undefined"
   }

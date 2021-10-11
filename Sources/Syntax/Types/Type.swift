@@ -35,28 +35,9 @@ public enum Type {
    type arguments, it's useful to introduce a notion of
    ["kinds"](https://en.wikipedia.org/wiki/Kind_(type_theory)). At compile time
    all values have types that help us verify correctness of expressions, types
-   have kinds that allow us to verify type constructor applications. Note that
-   this is different from metatypes in Swift. Metatypes are still types,
-   and metatype values can be stored as constants/variables and operated on at
-   run time. Kinds are completely separate from this, and are a purely
-   compile-time concept that helps us to reason about generic types.
+   have kinds that allow us to verify type constructor applications.
 
-   All nullary type constructors have a kind `*`, you can think of `*` as a
-   "placeholder" for a type. If we use `::` to represent "has a kind"
-   declarations, we could declare that `Int :: *` or `String :: *`. Unary type
-   constructors have a kind `<*> ~> *`, where `~>` is a binary operator for a
-   "type function", and so `Array :: <*> ~> *`, while `Array<Int> :: *`. A
-   binary type constructor has a kind `<*, *> ~> *`, therefore
-   `Dictionary :: <*, *> ~> *` and `Dictionary<String, Int> :: *`.
-
-   In Kara we adopt a notation for kinds similar to the one
-   used in the widely available content on the type theory, but slightly
-   modified for Kara. Specifically, type constructors in Swift don't use
-   [currying](https://en.wikipedia.org/wiki/Currying), and Kara uses `~>`
-   for type functions on the level of kinds, compared to `->` for value
-   functions used on the level of types. Compare this to the type theory papers,
-   which commonly use `->` on both levels. We find the common approach confusing
-   in the context of Kara's type system.
+   The only available primitive kind in Kara is `Type`.
    */
   case constructor(TypeIdentifier, [Type])
 
@@ -84,6 +65,10 @@ public enum Type {
    ```
    */
   case tuple([Type])
+
+  /** The kind of all other types representable in Kara.
+   */
+  public static let type = Type.constructor("Type", [])
 
   public static let bool = Type.constructor("Bool", [])
   public static let string = Type.constructor("String", [])
@@ -121,11 +106,11 @@ extension Type: Equatable {
   }
 }
 
-extension Type: CustomDebugStringConvertible {
-  public var debugDescription: String {
+extension Type: CustomStringConvertible {
+  public var description: String {
     switch self {
     case let .constructor(id, args) where !args.isEmpty:
-      return "\(id.value)<\(args.map(\.debugDescription).joined(separator: ", "))>"
+      return "\(id.value)<\(args.map(\.description).joined(separator: ", "))>"
     case let .constructor(id, _):
       return id.value
     case let .variable(v):
@@ -135,10 +120,10 @@ extension Type: CustomDebugStringConvertible {
 
       guard args.count > 1 else { return "(\(args[0]) -> \(result))" }
 
-      return "((\(args.map(\.debugDescription).joined(separator: ", "))) -> \(result))"
+      return "((\(args.map(\.description).joined(separator: ", "))) -> \(result))"
     case let .tuple(elements):
       return """
-      (\(elements.map(\.debugDescription).joined(separator: ", ")))
+      (\(elements.map(\.description).joined(separator: ", ")))
       """
     }
   }

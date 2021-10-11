@@ -186,6 +186,9 @@ struct ConstraintSystem {
 
       return try infer(last)
 
+    case .type:
+      return .type
+
     case .unit:
       return .unit
     }
