@@ -79,18 +79,6 @@ public enum Type {
   public static let unit = Type.tuple([])
 }
 
-infix operator -->
-
-/// A shorthand version of `Type.arrow`
-public func --> (arguments: [Type], returned: Type) -> Type {
-  Type.arrow(arguments, returned)
-}
-
-/// A shorthand version of `Type.arrow` for single argument functions
-public func --> (argument: Type, returned: Type) -> Type {
-  Type.arrow([argument], returned)
-}
-
 extension Type: Equatable {
   public static func == (lhs: Type, rhs: Type) -> Bool {
     switch (lhs, rhs) {

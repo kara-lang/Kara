@@ -45,7 +45,7 @@ extension Type: Substitutable {
     case let .variable(v):
       return sub[v] ?? .variable(v)
     case let .arrow(t1, t2):
-      return t1.apply(sub) --> t2.apply(sub)
+      return .arrow(t1.apply(sub), t2.apply(sub))
     case .constructor:
       return self
     case let .tuple(elements):
