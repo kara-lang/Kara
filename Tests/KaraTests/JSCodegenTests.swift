@@ -20,4 +20,18 @@ final class JSCodegenTests: XCTestCase {
       """
     )
   }
+
+  func testTypeFuncDecl() throws {
+    assertJSSnapshot(
+      """
+      func stringOrInt(x: Bool) -> Type {
+          if x {
+              String
+          } else {
+              Int
+          }
+      }
+      """
+    )
+  }
 }

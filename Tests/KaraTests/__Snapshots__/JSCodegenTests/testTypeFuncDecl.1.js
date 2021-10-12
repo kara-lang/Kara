@@ -1,0 +1,1 @@
+const stringOrInt = (x) => (x ? "String" : "Int");

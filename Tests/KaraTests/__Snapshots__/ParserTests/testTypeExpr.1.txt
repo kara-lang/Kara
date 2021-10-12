@@ -1,0 +1,9 @@
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:4 Expr.type(
+    Type.constructor(
+      TypeIdentifier(value: "Array"),
+      []
+    )
+  )
+)

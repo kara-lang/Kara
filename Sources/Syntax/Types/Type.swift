@@ -117,7 +117,7 @@ extension Type: CustomStringConvertible {
   }
 }
 
-private let typeConstructorParser = identifierSequenceParser
+private let typeConstructorParser = typeIdentifierSequenceParser
   .map(TypeIdentifier.init(value:))
   .stateful()
 

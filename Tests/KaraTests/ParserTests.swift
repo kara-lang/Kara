@@ -196,4 +196,9 @@ final class ParserTests: XCTestCase {
       )
     )
   }
+
+  func testTypeExpr() {
+    assertSnapshot(exprParser.parse("Array"))
+    assertSnapshot(exprParser.parse("Int32"))
+  }
 }

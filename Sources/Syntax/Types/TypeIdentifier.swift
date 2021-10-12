@@ -20,6 +20,14 @@ extension TypeIdentifier: CustomDebugStringConvertible {
   }
 }
 
-let typeIdentifierParser = identifierSequenceParser
+/// TypeIdentifiers can only start with an uppercase letter.
+let typeIdentifierHead = UInt8(ascii: "A")...UInt8(ascii: "Z")
+
+let typeIdentifierSequenceParser =
+  First<UTF8SubSequence>().filter { typeIdentifierHead.contains($0) }
+    .take(Prefix { identifierTail.contains($0) })
+    .compactMap { String(bytes: [$0] + Array($1), encoding: .utf8) }
+
+let typeIdentifierParser = typeIdentifierSequenceParser
   .map { TypeIdentifier(value: $0) }
   .stateful()
