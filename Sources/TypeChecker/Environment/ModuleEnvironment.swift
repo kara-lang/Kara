@@ -56,6 +56,12 @@ struct ModuleEnvironment {
       }
       types[s.name.content] = try s.environment
 
+    case let .enum(e):
+      guard types[e.name.content] == nil else {
+        throw TypeError.typeDeclAlreadyExists(e.name.content)
+      }
+      types[e.name.content] = try e.environment
+
     case .trait:
       // FIXME: handle trait declarations
       return
@@ -73,6 +79,27 @@ struct ModuleEnvironment {
       identifiers[id] = scheme
     }
   }
+
+  func verifyContains(_ type: Type) throws {
+    switch type {
+    case let .arrow(argumentTypes, returnType):
+      try argumentTypes.forEach { try verifyContains($0) }
+      try verifyContains(returnType)
+
+    case let .constructor(typeID, arguments):
+      guard types.keys.contains(typeID) else {
+        throw TypeError.unknownType(typeID)
+      }
+      try arguments.forEach { try verifyContains($0) }
+
+    case .variable:
+      // FIXME: handle type variables correctly
+      fatalError()
+
+    case let .tuple(elements):
+      try elements.forEach { try verifyContains($0) }
+    }
+  }
 }
 
 extension ModuleEnvironment: ExpressibleByDictionaryLiteral {
@@ -82,6 +109,16 @@ extension ModuleEnvironment: ExpressibleByDictionaryLiteral {
 }
 
 extension StructDecl {
+  var environment: ModuleEnvironment {
+    get throws {
+      try declarations.elements.map(\.content.content).reduce(into: ModuleEnvironment()) {
+        try $0.insert($1)
+      }
+    }
+  }
+}
+
+extension EnumDecl {
   var environment: ModuleEnvironment {
     get throws {
       try declarations.elements.map(\.content.content).reduce(into: ModuleEnvironment()) {

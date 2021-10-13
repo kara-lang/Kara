@@ -201,4 +201,32 @@ final class ParserTests: XCTestCase {
     assertSnapshot(exprParser.parse("Array"))
     assertSnapshot(exprParser.parse("Int32"))
   }
+
+  func testModuleFile() {
+    assertSnapshot(
+      moduleFileParser.parse(
+        """
+        struct String {}
+
+        func f(condition: Bool) -> String {
+          if condition {
+            "true"
+          } else {
+            "false"
+          }
+        }
+        """
+      )
+    )
+
+    assertSnapshot(
+      moduleFileParser.parse(
+        """
+        enum Bool {}
+
+        func f(condition: Bool) -> Int { 42 }
+        """
+      )
+    )
+  }
 }

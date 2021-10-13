@@ -1,0 +1,131 @@
+ModuleFile(
+  declarations: [
+    [0]: SyntaxNode(
+      leadingTrivia: [],
+      content: 0:0-0:11 Declaration.enum(
+        EnumDecl(
+          modifiers: [],
+          enumKeyword: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:0-0:3 ()
+          ),
+          name: 0:5-0:8 TypeIdentifier(value: "Bool"),
+          genericParameters: [],
+          declarations: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
+            content: 0:10-0:11 DeclBlock(
+              openBrace: SyntaxNode(
+                leadingTrivia: [
+                  [0]: Whitespace(" ")
+                ],
+                content: 0:10-0:10 ()
+              ),
+              elements: [],
+              closeBrace: SyntaxNode(
+                leadingTrivia: [],
+                content: 0:11-0:11 ()
+              )
+            )
+          )
+        )
+      )
+    ),
+    [1]: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace("\n\n")
+      ],
+      content: 2:0-2:36 Declaration.function(
+        FuncDecl(
+          modifiers: [],
+          funcKeyword: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n\n")
+            ],
+            content: 2:0-2:3 ()
+          ),
+          identifier: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
+            content: 2:5-2:5 Identifier(value: "f")
+          ),
+          genericParameters: [],
+          parameters: DelimitedSequence(
+            start: SyntaxNode(
+              leadingTrivia: [],
+              content: 2:6-2:6 ()
+            ),
+            elements: [
+              [0]: DelimitedSequence.Element(
+                content: SyntaxNode(
+                  leadingTrivia: [],
+                  content: 2:7-2:21 FuncDecl.Parameter(
+                    externalName: nil,
+                    internalName: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 2:7-2:15 Identifier(value: "condition")
+                    ),
+                    colon: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 2:16-2:16 ()
+                    ),
+                    type: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 2:18-2:21 Type.constructor(
+                        TypeIdentifier(value: "Bool"),
+                        []
+                      )
+                    )
+                  )
+                ),
+                separator: nil
+              )
+            ],
+            end: SyntaxNode(
+              leadingTrivia: [],
+              content: 2:22-2:22 ()
+            )
+          ),
+          returns: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
+            content: 2:27-2:29 Type.constructor(
+              TypeIdentifier(value: "Int"),
+              []
+            )
+          ),
+          body: ExprBlock(
+            openBrace: SyntaxNode(
+              leadingTrivia: [],
+              content: 2:31-2:31 ()
+            ),
+            elements: [
+              [0]: SyntaxNode(
+                leadingTrivia: [
+                  [0]: Whitespace(" ")
+                ],
+                content: 2:33-2:34 ExprBlock.Element.expr(
+                  Expr.literal(
+                    Literal.int32(42)
+                  )
+                )
+              )
+            ],
+            closeBrace: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 2:36-2:36 ()
+            )
+          )
+        )
+      )
+    )
+  ],
+  trailingTrivia: []
+)

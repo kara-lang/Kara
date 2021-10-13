@@ -1,0 +1,206 @@
+ModuleFile(
+  declarations: [
+    [0]: SyntaxNode(
+      leadingTrivia: [],
+      content: 0:0-0:15 Declaration.struct(
+        StructDecl(
+          modifiers: [],
+          structKeyword: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:0-0:5 ()
+          ),
+          name: 0:7-0:12 TypeIdentifier(value: "String"),
+          genericParameters: [],
+          declarations: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
+            content: 0:14-0:15 DeclBlock(
+              openBrace: SyntaxNode(
+                leadingTrivia: [
+                  [0]: Whitespace(" ")
+                ],
+                content: 0:14-0:14 ()
+              ),
+              elements: [],
+              closeBrace: SyntaxNode(
+                leadingTrivia: [],
+                content: 0:15-0:15 ()
+              )
+            )
+          )
+        )
+      )
+    ),
+    [1]: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace("\n\n")
+      ],
+      content: 2:0-8:0 Declaration.function(
+        FuncDecl(
+          modifiers: [],
+          funcKeyword: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n\n")
+            ],
+            content: 2:0-2:3 ()
+          ),
+          identifier: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
+            content: 2:5-2:5 Identifier(value: "f")
+          ),
+          genericParameters: [],
+          parameters: DelimitedSequence(
+            start: SyntaxNode(
+              leadingTrivia: [],
+              content: 2:6-2:6 ()
+            ),
+            elements: [
+              [0]: DelimitedSequence.Element(
+                content: SyntaxNode(
+                  leadingTrivia: [],
+                  content: 2:7-2:21 FuncDecl.Parameter(
+                    externalName: nil,
+                    internalName: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 2:7-2:15 Identifier(value: "condition")
+                    ),
+                    colon: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 2:16-2:16 ()
+                    ),
+                    type: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 2:18-2:21 Type.constructor(
+                        TypeIdentifier(value: "Bool"),
+                        []
+                      )
+                    )
+                  )
+                ),
+                separator: nil
+              )
+            ],
+            end: SyntaxNode(
+              leadingTrivia: [],
+              content: 2:22-2:22 ()
+            )
+          ),
+          returns: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
+            content: 2:27-2:32 Type.constructor(
+              TypeIdentifier(value: "String"),
+              []
+            )
+          ),
+          body: ExprBlock(
+            openBrace: SyntaxNode(
+              leadingTrivia: [],
+              content: 2:34-2:34 ()
+            ),
+            elements: [
+              [0]: SyntaxNode(
+                leadingTrivia: [
+                  [0]: Whitespace("\n  ")
+                ],
+                content: 3:2-7:2 ExprBlock.Element.expr(
+                  Expr.ifThenElse(
+                    IfThenElse(
+                      ifKeyword: SyntaxNode(
+                        leadingTrivia: [
+                          [0]: Whitespace("\n  ")
+                        ],
+                        content: 3:2-3:3 ()
+                      ),
+                      condition: SyntaxNode(
+                        leadingTrivia: [
+                          [0]: Whitespace(" ")
+                        ],
+                        content: 3:5-3:13 Expr.identifier(
+                          Identifier(value: "condition")
+                        )
+                      ),
+                      thenBlock: ExprBlock(
+                        openBrace: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace(" ")
+                          ],
+                          content: 3:15-3:15 ()
+                        ),
+                        elements: [
+                          [0]: SyntaxNode(
+                            leadingTrivia: [
+                              [0]: Whitespace("\n    ")
+                            ],
+                            content: 4:4-4:9 ExprBlock.Element.expr(
+                              Expr.literal(
+                                Literal.string("true")
+                              )
+                            )
+                          )
+                        ],
+                        closeBrace: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace("\n  ")
+                          ],
+                          content: 5:2-5:2 ()
+                        )
+                      ),
+                      elseBranch: ElseBranch(
+                        elseKeyword: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace(" ")
+                          ],
+                          content: 5:4-5:7 ()
+                        ),
+                        elseBlock: ExprBlock(
+                          openBrace: SyntaxNode(
+                            leadingTrivia: [
+                              [0]: Whitespace(" ")
+                            ],
+                            content: 5:9-5:9 ()
+                          ),
+                          elements: [
+                            [0]: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace("\n    ")
+                              ],
+                              content: 6:4-6:10 ExprBlock.Element.expr(
+                                Expr.literal(
+                                  Literal.string("false")
+                                )
+                              )
+                            )
+                          ],
+                          closeBrace: SyntaxNode(
+                            leadingTrivia: [
+                              [0]: Whitespace("\n  ")
+                            ],
+                            content: 7:2-7:2 ()
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            ],
+            closeBrace: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace("\n")
+              ],
+              content: 8:0-8:0 ()
+            )
+          )
+        )
+      )
+    )
+  ],
+  trailingTrivia: []
+)

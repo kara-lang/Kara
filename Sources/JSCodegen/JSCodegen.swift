@@ -5,17 +5,30 @@
 import Basic
 import Syntax
 
+extension Bool {
+  var not: Bool { !self }
+}
+
 // FIXME: use extensions on these Syntax types instead of the weird `JSCodegen` functions pattern
 public typealias JSCodegen<T> = CompilerPass<T, String>
 
 public let jsModuleFileCodegen = JSCodegen<ModuleFile> {
-  $0.declarations.map(\.content.content).map(jsDeclarationCodegen.transform).joined(separator: "\n")
+  $0.declarations.map(\.content.content).map(jsDeclarationCodegen.transform).filter(\.isEmpty.not)
+    .joined(separator: "\n")
 }
 
 let jsDeclarationCodegen = JSCodegen<Declaration> {
   switch $0 {
   case let .function(f):
     return jsFuncDeclCodegen(f)
+  case let .struct(s):
+    // FIXME: handle structs with functions
+    return ""
+
+  case let .enum(e):
+    // FIXME: handle enum cases and enums with functions
+    return ""
+
   default:
     fatalError()
   }
