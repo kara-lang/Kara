@@ -1,1 +1,1 @@
-const stringOrInt = (x) => (x ? "String" : "Int");
+const stringOrInt = (x) => (x ? Symbol.for("Kara.String") : Symbol.for("Kara.Int"));

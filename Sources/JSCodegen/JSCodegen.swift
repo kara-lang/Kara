@@ -113,7 +113,7 @@ func jsExprCodegenTransform(_ input: Expr) -> String {
   case let .block(b):
     return jsExprBlockCodegen(b)
   case let .type(t):
-    return #""\#(t.description)""#
+    return #"Symbol.for("Kara.\#(t.description)")"#
   case .unit:
     return "undefined"
   }
