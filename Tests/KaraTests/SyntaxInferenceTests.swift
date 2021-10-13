@@ -17,7 +17,7 @@ extension String {
       throw ParsingError.unknown(startIndex..<endIndex)
     }
 
-    return try expr.content.content.infer(ModuleEnvironment(identifiers: environment, types: members))
+    return try expr.content.content.infer(DeclEnvironment(identifiers: environment, types: members))
   }
 }
 

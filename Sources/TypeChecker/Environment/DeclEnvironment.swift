@@ -8,9 +8,9 @@ import Syntax
 typealias BindingEnvironment = [Identifier: Scheme]
 
 /** Mapping from a type identifier to an environment with its members. */
-typealias TypeEnvironment = [TypeIdentifier: ModuleEnvironment]
+typealias TypeEnvironment = [TypeIdentifier: DeclEnvironment]
 
-struct ModuleEnvironment {
+struct DeclEnvironment {
   init(identifiers: BindingEnvironment, types: TypeEnvironment) {
     self.identifiers = identifiers
     self.types = types
@@ -102,16 +102,16 @@ struct ModuleEnvironment {
   }
 }
 
-extension ModuleEnvironment: ExpressibleByDictionaryLiteral {
+extension DeclEnvironment: ExpressibleByDictionaryLiteral {
   init(dictionaryLiteral elements: (Identifier, Scheme)...) {
     self.init(identifiers: BindingEnvironment(uniqueKeysWithValues: elements), types: [:])
   }
 }
 
 extension StructDecl {
-  var environment: ModuleEnvironment {
+  var environment: DeclEnvironment {
     get throws {
-      try declarations.elements.map(\.content.content).reduce(into: ModuleEnvironment()) {
+      try declarations.elements.map(\.content.content).reduce(into: DeclEnvironment()) {
         try $0.insert($1)
       }
     }
@@ -119,9 +119,9 @@ extension StructDecl {
 }
 
 extension EnumDecl {
-  var environment: ModuleEnvironment {
+  var environment: DeclEnvironment {
     get throws {
-      try declarations.elements.map(\.content.content).reduce(into: ModuleEnvironment()) {
+      try declarations.elements.map(\.content.content).reduce(into: DeclEnvironment()) {
         try $0.insert($1)
       }
     }
@@ -129,9 +129,9 @@ extension EnumDecl {
 }
 
 extension ModuleFile {
-  var environment: ModuleEnvironment {
+  var environment: DeclEnvironment {
     get throws {
-      try declarations.map(\.content.content).reduce(into: ModuleEnvironment()) {
+      try declarations.map(\.content.content).reduce(into: DeclEnvironment()) {
         try $0.insert($1)
       }
     }

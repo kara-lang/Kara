@@ -6,7 +6,7 @@ import Basic
 import Syntax
 
 extension FuncDecl {
-  func typeCheck(_ environment: ModuleEnvironment) throws {
+  func typeCheck(_ environment: DeclEnvironment) throws {
     guard let body = body else {
       throw TypeError.funcDeclBodyMissing(identifier.content.content)
     }
@@ -28,13 +28,13 @@ extension FuncDecl {
 }
 
 extension StructDecl {
-  func typeCheck(_ environment: ModuleEnvironment) throws {
+  func typeCheck(_ environment: DeclEnvironment) throws {
     try declarations.content.content.elements.map(\.content.content).forEach { try $0.typeCheck(environment) }
   }
 }
 
 extension Declaration {
-  func typeCheck(_ environment: ModuleEnvironment) throws {
+  func typeCheck(_ environment: DeclEnvironment) throws {
     switch self {
     case let .function(f):
       try f.typeCheck(environment)

@@ -18,9 +18,9 @@ struct ConstraintSystem {
   private var typeVariableCount = 0
   private(set) var constraints = [Constraint]()
 
-  private(set) var environment: ModuleEnvironment
+  private(set) var environment: DeclEnvironment
 
-  init(_ environment: ModuleEnvironment) {
+  init(_ environment: DeclEnvironment) {
     self.environment = environment
   }
 

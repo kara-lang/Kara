@@ -6,7 +6,7 @@ import Syntax
 
 extension Expr {
   func infer(
-    _ environment: ModuleEnvironment = ModuleEnvironment()
+    _ environment: DeclEnvironment = DeclEnvironment()
   ) throws -> Type {
     var system = ConstraintSystem(environment)
     let type = try system.infer(self)
