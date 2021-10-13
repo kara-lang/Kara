@@ -27,17 +27,11 @@ extension BindingDecl: SyntaxNodeContainer {
   }
 }
 
-extension BindingDecl: CustomStringConvertible {
-  public var description: String {
-    "let \(identifier.description) = \(value.description)"
-  }
-}
-
 let bindingParser = SyntaxNodeParser(Terminal("let"))
   .take(identifierParser)
   .take(
     Optional.parser(
-      of: SyntaxNodeParser(Terminal(":"))
+      of: colonParser
         .take(typeParser)
         .map(BindingDecl.TypeAnnotation.init)
     )

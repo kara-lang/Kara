@@ -7,7 +7,7 @@ import Parsing
 public struct StructDecl {
   public let modifiers: [SyntaxNode<DeclModifier>]
   public let structKeyword: SyntaxNode<()>
-  public let name: SourceRange<TypeIdentifier>
+  public let name: SyntaxNode<TypeIdentifier>
   public let genericParameters: [TypeVariable]
   public let declarations: SyntaxNode<DeclBlock>
 }

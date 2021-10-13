@@ -28,6 +28,8 @@ let typeIdentifierSequenceParser =
     .take(Prefix { identifierTail.contains($0) })
     .compactMap { String(bytes: [$0] + Array($1), encoding: .utf8) }
 
-let typeIdentifierParser = typeIdentifierSequenceParser
-  .map { TypeIdentifier(value: $0) }
-  .stateful()
+let typeIdentifierParser = SyntaxNodeParser(
+  typeIdentifierSequenceParser
+    .map { TypeIdentifier(value: $0) }
+    .stateful()
+)

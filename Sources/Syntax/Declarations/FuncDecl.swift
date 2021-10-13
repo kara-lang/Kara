@@ -32,32 +32,9 @@ extension FuncDecl: SyntaxNodeContainer {
   }
 }
 
-extension FuncDecl: CustomStringConvertible {
-  public var description: String {
-    let bodyTail: String
-    if let body = body {
-      bodyTail = " \(body.description)"
-    } else {
-      bodyTail = ""
-    }
-
-    return """
-    func \(identifier.content.content.value)(\(
-      parameters.elementsContent.map {
-        """
-        \($0.externalName?.content.content.value ?? "")\(
-          $0.externalName == nil ? "" : " "
-        )\($0.internalName.content.content.value): \($0.type.content.content)
-        """
-      }.joined(separator: ", ")
-    )) -> \(returns?.description ?? "()")\(bodyTail)
-    """
-  }
-}
-
 let functionParameterParser = identifierParser
   .take(Optional.parser(of: identifierParser))
-  .take(SyntaxNodeParser(Terminal(":")))
+  .take(colonParser)
   .take(typeParser)
   .map { firstName, secondName, colon, type in
     SyntaxNode(

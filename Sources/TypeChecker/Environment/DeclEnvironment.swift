@@ -51,16 +51,19 @@ struct DeclEnvironment {
       identifiers[identifier] = scheme
 
     case let .struct(s):
-      guard types[s.name.content] == nil else {
-        throw TypeError.typeDeclAlreadyExists(s.name.content)
+      let typeIdentifier = s.name.content.content
+
+      guard types[typeIdentifier] == nil else {
+        throw TypeError.typeDeclAlreadyExists(typeIdentifier)
       }
-      types[s.name.content] = try s.environment
+      types[typeIdentifier] = try s.environment
 
     case let .enum(e):
-      guard types[e.name.content] == nil else {
-        throw TypeError.typeDeclAlreadyExists(e.name.content)
+      let typeIdentifier = e.name.content.content
+      guard types[typeIdentifier] == nil else {
+        throw TypeError.typeDeclAlreadyExists(typeIdentifier)
       }
-      types[e.name.content] = try e.environment
+      types[typeIdentifier] = try e.environment
 
     case .trait:
       // FIXME: handle trait declarations

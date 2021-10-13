@@ -6,7 +6,7 @@ import Parsing
 
 public struct TraitDecl {
   public let traitKeyword: SyntaxNode<()>
-  public let name: SourceRange<TypeIdentifier>
+  public let name: SyntaxNode<TypeIdentifier>
   public let declarations: SyntaxNode<DeclBlock>
 }
 

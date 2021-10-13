@@ -7,7 +7,7 @@ import Parsing
 public struct EnumDecl {
   public let modifiers: [SyntaxNode<DeclModifier>]
   public let enumKeyword: SyntaxNode<()>
-  public let name: SourceRange<TypeIdentifier>
+  public let name: SyntaxNode<TypeIdentifier>
   public let genericParameters: [TypeVariable]
   public let declarations: SyntaxNode<DeclBlock>
 }

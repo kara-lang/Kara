@@ -32,4 +32,9 @@ let closeParenParser = SyntaxNodeParser(Terminal(")"))
 let openAngleBracketParser = SyntaxNodeParser(Terminal("<"))
 let closeAngleBracketParser = SyntaxNodeParser(Terminal(">"))
 
+let openSquareBracketParser = SyntaxNodeParser(Terminal("["))
+let closeSquareBracketParser = SyntaxNodeParser(Terminal("]"))
+
+let colonParser = SyntaxNodeParser(Terminal(":"))
+
 let commaParser = Terminal(",")

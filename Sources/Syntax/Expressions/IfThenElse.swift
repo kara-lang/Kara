@@ -13,23 +13,6 @@ public struct IfThenElse {
   public let elseBranch: ElseBranch?
 }
 
-extension IfThenElse: CustomStringConvertible {
-  public var description: String {
-    let tail: String
-    if let elseBranch = elseBranch {
-      tail = " else \(elseBranch.elseBlock.description)"
-    } else {
-      tail = ""
-    }
-
-    return """
-    if \(condition.content.content.description) \
-    \(thenBlock.description)\
-    \(tail)
-    """
-  }
-}
-
 public struct ElseBranch {
   public let elseKeyword: SyntaxNode<()>
   public let elseBlock: ExprBlock

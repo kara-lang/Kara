@@ -13,6 +13,7 @@ public indirect enum Expr {
   case member(MemberAccess)
   case tuple(DelimitedSequence<Expr>)
   case block(ExprBlock)
+  case structLiteral(StructLiteral)
   case type(Type)
   case unit
 }
@@ -26,37 +27,6 @@ extension Expr: ExpressibleByStringLiteral {
 extension Expr: ExpressibleByIntegerLiteral {
   public init(integerLiteral value: Int) {
     self = .literal(Literal(integerLiteral: value))
-  }
-}
-
-extension Expr: CustomStringConvertible {
-  public var description: String {
-    switch self {
-    case let .identifier(i):
-      return i.value
-    case let .application(app):
-      return """
-      \(
-        app.function.content.content
-      )(\(app.arguments.elementsContent.map(\.description).joined(separator: ", ")))
-      """
-    case let .closure(l):
-      return l.description
-    case let .literal(l):
-      return l.description
-    case let .ifThenElse(ifThenElse):
-      return ifThenElse.description
-    case let .member(memberAccess):
-      return "\(memberAccess.base.content.content.description).\(memberAccess.member.value)"
-    case let .tuple(tuple):
-      return "(\(tuple.elementsContent.map(\.description).joined(separator: ", ")))"
-    case let .block(block):
-      return block.description
-    case let .type(type):
-      return type.description
-    case .unit:
-      return "()"
-    }
   }
 }
 

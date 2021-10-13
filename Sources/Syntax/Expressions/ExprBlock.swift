@@ -19,27 +19,6 @@ public struct ExprBlock {
   }
 }
 
-extension ExprBlock.Element: CustomStringConvertible {
-  public var description: String {
-    switch self {
-    case let .expr(e):
-      return e.description
-    case let .binding(b):
-      return b.description
-    }
-  }
-}
-
-extension ExprBlock: CustomStringConvertible {
-  public var description: String {
-    """
-    {
-      \(elements.map(\.content.content.description).joined(separator: "\n"))
-    }
-    """
-  }
-}
-
 let exprBlockParser = openBraceParser
   .take(
     Many(

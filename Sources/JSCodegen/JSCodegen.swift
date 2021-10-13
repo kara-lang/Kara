@@ -9,132 +9,156 @@ extension Bool {
   var not: Bool { !self }
 }
 
-// FIXME: use extensions on these Syntax types instead of the weird `JSCodegen` functions pattern
-public typealias JSCodegen<T> = CompilerPass<T, String>
-
-public let jsModuleFileCodegen = JSCodegen<ModuleFile> {
-  $0.declarations.map(\.content.content).map(jsDeclarationCodegen.transform).filter(\.isEmpty.not)
+public let jsModuleFileCodegen = CompilerPass<ModuleFile, String> {
+  $0.declarations.map(\.jsCodegen).filter(\.isEmpty.not)
     .joined(separator: "\n")
 }
 
-let jsDeclarationCodegen = JSCodegen<Declaration> {
-  switch $0 {
-  case let .function(f):
-    return jsFuncDeclCodegen(f)
-  case let .struct(s):
-    // FIXME: handle structs with functions
-    return ""
+extension Declaration {
+  var jsCodegen: String {
+    switch self {
+    case let .function(f):
+      return f.jsCodegen
+    case .struct:
+      // FIXME: handle structs with functions
+      return ""
 
-  case let .enum(e):
-    // FIXME: handle enum cases and enums with functions
-    return ""
+    case .enum:
+      // FIXME: handle enum cases and enums with functions
+      return ""
 
-  default:
-    fatalError()
-  }
-}
-
-let jsFuncDeclCodegen = JSCodegen<FuncDecl> {
-  guard let body = $0.body else {
-    // FIXME: Assert that interop modifier is present. Maybe we shouldn't reach this by checking for interop
-    // modifier presence earlier?
-    return ""
-  }
-
-  return """
-  const \($0.identifier.value) =\
-   (\(
-     $0.parameters.elementsContent.map(\.internalName.value).joined(separator: ", ")
-   )) => \(jsExprBlockCodegen(body));
-  """
-}
-
-let jsExprBlockCodegen = JSCodegen<ExprBlock> {
-  switch $0.elements.count {
-  case 0:
-    fatalError()
-  case 1:
-    return jsExprBlockElementCodegen($0.elements[0].content.content)
-  default:
-    return """
-    {
-      \($0.elements.map(\.content.content).map(jsExprBlockElementCodegen.transform).joined(separator: ";\n"))
+    default:
+      fatalError()
     }
-    """
   }
 }
 
-let jsIdentifierCodegen = JSCodegen<Identifier> {
-  // FIXME: check for other keywords and predefined identifiers
-  $0.value == "undefined" ? "undefined_" : $0.value
-}
+extension FuncDecl {
+  var jsCodegen: String {
+    guard let body = body else {
+      // FIXME: Assert that interop modifier is present. Maybe we shouldn't reach this by checking for interop
+      // modifier presence earlier?
+      return ""
+    }
 
-let jsExprBlockElementCodegen = JSCodegen<ExprBlock.Element> {
-  switch $0 {
-  case let .expr(e):
-    return jsExprCodegenTransform(e)
-  case let .binding(b):
-    return jsBindingCodegen(b)
-  }
-}
-
-func jsExprCodegenTransform(_ input: Expr) -> String {
-  switch input {
-  case let .literal(.bool(b)):
-    return "\(b)"
-  case let .literal(.int32(i32)):
-    return "\(i32)"
-  case let .literal(.int64(i64)):
-    return "\(i64)n"
-  case let .literal(.double(d)):
-    return "\(d)"
-  case let .literal(.string(s)):
-    return #""\#(s)""#
-  case let .identifier(id):
-    return jsIdentifierCodegen(id)
-  case let .application(a):
     return """
-    \(jsExprCodegenTransform(a.function.content.content))\
-    (\(a.arguments.elementsContent.map(jsExprCodegenTransform).joined(separator: ",")))
+    const \(identifier.jsCodegen) =\
+     (\(
+       parameters.elementsContent.map(\.internalName.jsCodegen).joined(separator: ", ")
+     )) => \(body.jsCodegen);
     """
-  case let .closure(c):
-    return
+  }
+}
+
+extension ExprBlock.Element {
+  var jsCodegen: String {
+    switch self {
+    case let .expr(e):
+      return e.jsCodegen
+    case let .binding(b):
+      return b.jsCodegen
+    }
+  }
+}
+
+extension ExprBlock {
+  var jsCodegen: String {
+    switch elements.count {
+    case 0:
+      fatalError()
+    case 1:
+      return elements[0].jsCodegen
+    default:
+      return """
+      {
+        \(elements.map(\.jsCodegen).joined(separator: ";\n"))
+      }
       """
-      (\(c.parameters.map(\.identifier.content.content.value).joined(separator: ","))) =>
-      \(jsExprCodegenTransform(c.body?.content.content ?? .unit));
+    }
+  }
+}
+
+extension Identifier {
+  var jsCodegen: String {
+    // FIXME: check for other keywords and predefined identifiers
+    value == "undefined" ? "undefined_" : value
+  }
+}
+
+extension StructLiteral.Element {
+  var jsCodegen: String {
+    "\(property.jsCodegen)): \(value.jsCodegen))"
+  }
+}
+
+extension StructLiteral {
+  var jsCodegen: String {
+    "{ \(elements.elementsContent.map(\.jsCodegen).joined(separator: ", ")) }"
+  }
+}
+
+extension Expr {
+  var jsCodegen: String {
+    switch self {
+    case let .literal(.bool(b)):
+      return "\(b)"
+    case let .literal(.int32(i32)):
+      return "\(i32)"
+    case let .literal(.int64(i64)):
+      return "\(i64)n"
+    case let .literal(.double(d)):
+      return "\(d)"
+    case let .literal(.string(s)):
+      return #""\#(s)""#
+    case let .identifier(id):
+      return id.jsCodegen
+    case let .application(a):
+      return """
+      \(a.function.jsCodegen))\
+      (\(a.arguments.elementsContent.map(\.jsCodegen).joined(separator: ",")))
       """
-  case let .ifThenElse(ifThenElse):
-    guard let elseBlock = ifThenElse.elseBranch?.elseBlock else {
+    case let .closure(c):
       return
         """
-        if (\(jsExprCodegenTransform(ifThenElse.condition.content.content))) \
-        \(jsExprBlockCodegen(ifThenElse.thenBlock))
+        (\(c.parameters.map(\.identifier.jsCodegen).joined(separator: ","))) =>
+        \(c.body?.jsCodegen ?? Expr.unit.jsCodegen);
         """
-    }
+    case let .ifThenElse(ifThenElse):
+      guard let elseBlock = ifThenElse.elseBranch?.elseBlock else {
+        return
+          """
+          if (\(ifThenElse.condition.jsCodegen)) \
+          \(ifThenElse.thenBlock.jsCodegen)
+          """
+      }
 
-    // FIXME: this is unlikely to work in blocks with multiple expressions
-    return
-      """
-      (\(jsExprCodegenTransform(ifThenElse.condition.content.content)) ?\
-       \(jsExprBlockCodegen(ifThenElse.thenBlock)) :\
-       \(jsExprBlockCodegen(elseBlock)))
-      """
-  case let .member(m):
-    return "\(jsExprCodegenTransform(m.base.content.content)).\(m.member.value)"
-  case let .tuple(t):
-    return "[\(t.elementsContent.map(jsExprCodegenTransform).joined(separator: ","))]"
-  case let .block(b):
-    return jsExprBlockCodegen(b)
-  case let .type(t):
-    return #"Symbol.for("Kara.\#(t.description)")"#
-  case .unit:
-    return "undefined"
+      // FIXME: this is unlikely to work in blocks with multiple expressions
+      return
+        """
+        (\(ifThenElse.condition.jsCodegen) ?\
+         \(ifThenElse.thenBlock.jsCodegen) :\
+         \(elseBlock.jsCodegen))
+        """
+    case let .member(m):
+      return "\(m.base.jsCodegen).\(m.member.jsCodegen)"
+    case let .tuple(t):
+      return "[\(t.elementsContent.map(\.jsCodegen).joined(separator: ","))]"
+    case let .block(b):
+      return b.jsCodegen
+    case let .structLiteral(s):
+      return s.jsCodegen
+    case let .type(t):
+      // FIXME: specify module type here to avoid name collisions
+      return #"Symbol.for("Kara.\#(t.description)")"#
+    case .unit:
+      return "undefined"
+    }
   }
 }
 
-let jsExprCodegen = JSCodegen(transform: jsExprCodegenTransform)
-
-let jsBindingCodegen = JSCodegen<BindingDecl> {
-  // FIXME: separate identifier codegen
-  "const \($0.identifier.value) = \(jsExprCodegenTransform($0.value.content.content))"
+extension BindingDecl {
+  var jsCodegen: String {
+    // FIXME: separate identifier codegen
+    "const \(identifier.jsCodegen) = \(value.jsCodegen))"
+  }
 }

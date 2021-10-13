@@ -6,7 +6,10 @@ SyntaxNode(
       leadingTrivia: [],
       content: 0:0-0:5 ()
     ),
-    name: 0:7-0:9 TypeIdentifier(value: "Foo"),
+    name: SyntaxNode(
+      leadingTrivia: [],
+      content: 0:7-0:9 TypeIdentifier(value: "Foo")
+    ),
     genericParameters: [],
     declarations: SyntaxNode(
       leadingTrivia: [
@@ -33,7 +36,10 @@ SyntaxNode(
                   ],
                   content: 2:2-2:7 ()
                 ),
-                name: 2:9-2:11 TypeIdentifier(value: "Bar"),
+                name: SyntaxNode(
+                  leadingTrivia: [],
+                  content: 2:9-2:11 TypeIdentifier(value: "Bar")
+                ),
                 genericParameters: [],
                 declarations: SyntaxNode(
                   leadingTrivia: [

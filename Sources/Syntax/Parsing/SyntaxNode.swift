@@ -18,12 +18,6 @@ public struct SyntaxNode<Content> {
   }
 }
 
-extension SyntaxNode: CustomStringConvertible {
-  public var description: String {
-    "\(leadingTrivia.map(String.init(describing:)).joined())\(String(describing: content.content))"
-  }
-}
-
 extension SyntaxNode: CustomDebugStringConvertible {
   public var debugDescription: String {
     """

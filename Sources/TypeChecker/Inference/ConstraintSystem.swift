@@ -186,6 +186,9 @@ struct ConstraintSystem {
 
       return try infer(last)
 
+    case let .structLiteral(structLiteral):
+      return structLiteral.type.content.content
+
     case .type:
       return .type
 
