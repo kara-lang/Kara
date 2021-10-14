@@ -6,7 +6,7 @@ SyntaxNode(
       leadingTrivia: [],
       content: 0:0-0:5 ()
     ),
-    name: SyntaxNode(
+    identifier: SyntaxNode(
       leadingTrivia: [],
       content: 0:7-0:22 TypeIdentifier(value: "StoredProperties")
     ),

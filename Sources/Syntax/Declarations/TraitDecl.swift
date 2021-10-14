@@ -6,7 +6,7 @@ import Parsing
 
 public struct TraitDecl {
   public let traitKeyword: SyntaxNode<()>
-  public let name: SyntaxNode<TypeIdentifier>
+  public let identifier: SyntaxNode<TypeIdentifier>
   public let declarations: SyntaxNode<DeclBlock>
 }
 
@@ -22,7 +22,7 @@ extension TraitDecl: SyntaxNodeContainer {
 
 extension TraitDecl: CustomStringConvertible {
   public var description: String {
-    "trait \(name) {}"
+    "trait \(identifier) {}"
   }
 }
 

@@ -3,14 +3,14 @@
 //
 
 public struct CompilerPass<Input, Output> {
-  public let transform: (Input) -> Output
+  public let transform: (Input) throws -> Output
 
-  public init(transform: @escaping (Input) -> Output) {
+  public init(transform: @escaping (Input) throws -> Output) {
     self.transform = transform
   }
 
-  public func callAsFunction(_ input: Input) -> Output {
-    transform(input)
+  public func callAsFunction(_ input: Input) throws -> Output {
+    try transform(input)
   }
 }
 
@@ -20,6 +20,6 @@ public func | <Input, Intermediate, Output>(
   rhs: CompilerPass<Intermediate, Output>
 ) -> CompilerPass<Input, Output> {
   .init {
-    rhs(lhs($0))
+    try rhs(lhs($0))
   }
 }

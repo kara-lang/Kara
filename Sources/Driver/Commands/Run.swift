@@ -26,6 +26,6 @@ struct Run: ParsableCommand {
     print(fileURL)
 
     let string = try String(contentsOf: fileURL)
-    print(driverPass(string))
+    try print(driverPass(string))
   }
 }

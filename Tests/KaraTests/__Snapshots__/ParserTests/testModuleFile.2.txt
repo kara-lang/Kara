@@ -9,7 +9,7 @@ ModuleFile(
             leadingTrivia: [],
             content: 0:0-0:3 ()
           ),
-          name: SyntaxNode(
+          identifier: SyntaxNode(
             leadingTrivia: [],
             content: 0:5-0:8 TypeIdentifier(value: "Bool")
           ),

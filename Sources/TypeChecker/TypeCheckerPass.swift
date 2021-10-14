@@ -56,9 +56,8 @@ extension ModuleFile {
   }
 }
 
-public let typeCheckerPass = CompilerPass { (module: ModuleFile) -> ModuleFile in
+public let typeCheckerPass = CompilerPass { (module: ModuleFile) throws -> ModuleFile in
   // FIXME: detailed diagnostics
-  // swiftlint:disable:next force_try
-  try! module.typeCheck()
+  try module.typeCheck()
   return module
 }

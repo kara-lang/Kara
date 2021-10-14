@@ -7,7 +7,7 @@ import Parsing
 public struct EnumDecl {
   public let modifiers: [SyntaxNode<DeclModifier>]
   public let enumKeyword: SyntaxNode<()>
-  public let name: SyntaxNode<TypeIdentifier>
+  public let identifier: SyntaxNode<TypeIdentifier>
   public let genericParameters: [TypeVariable]
   public let declarations: SyntaxNode<DeclBlock>
 }
@@ -25,9 +25,9 @@ extension EnumDecl: SyntaxNodeContainer {
 extension EnumDecl: CustomStringConvertible {
   public var description: String {
     if genericParameters.isEmpty {
-      return "enum \(name) {}"
+      return "enum \(identifier) {}"
     } else {
-      return "enum \(name)<\(genericParameters.map(\.debugDescription).joined(separator: ", "))> {}"
+      return "enum \(identifier)<\(genericParameters.map(\.debugDescription).joined(separator: ", "))> {}"
     }
   }
 }
@@ -39,5 +39,5 @@ let enumParser =
     .take(typeIdentifierParser)
     .take(declBlockParser)
     // FIXME: generic parameters
-    .map { EnumDecl(modifiers: $0, enumKeyword: $1, name: $2, genericParameters: [], declarations: $3) }
+    .map { EnumDecl(modifiers: $0, enumKeyword: $1, identifier: $2, genericParameters: [], declarations: $3) }
     .map(\.syntaxNode)

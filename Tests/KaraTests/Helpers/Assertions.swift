@@ -22,7 +22,7 @@ func assertJSSnapshot(
   testName: String = #function,
   line: UInt = #line
 ) {
-  assertSnapshot(matching: driverPass(source), as: .js, file: file, testName: testName, line: line)
+  try assertSnapshot(matching: driverPass(source), as: .js, file: file, testName: testName, line: line)
 }
 
 func assertSnapshot<T>(

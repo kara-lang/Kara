@@ -6,7 +6,7 @@ SyntaxNode(
       leadingTrivia: [],
       content: 0:0-0:5 ()
     ),
-    name: SyntaxNode(
+    identifier: SyntaxNode(
       leadingTrivia: [],
       content: 0:7-0:22 TypeIdentifier(value: "StoredProperties")
     ),
@@ -36,7 +36,7 @@ SyntaxNode(
                   ],
                   content: 1:2-1:7 ()
                 ),
-                name: SyntaxNode(
+                identifier: SyntaxNode(
                   leadingTrivia: [],
                   content: 1:9-1:14 TypeIdentifier(value: "Inner1")
                 ),
@@ -254,7 +254,7 @@ SyntaxNode(
                   ],
                   content: 8:2-8:7 ()
                 ),
-                name: SyntaxNode(
+                identifier: SyntaxNode(
                   leadingTrivia: [],
                   content: 8:9-8:14 TypeIdentifier(value: "Inner2")
                 ),

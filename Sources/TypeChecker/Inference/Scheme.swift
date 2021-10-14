@@ -36,6 +36,9 @@ extension FuncDecl {
 
 extension BindingDecl {
   var scheme: Scheme? {
-    nil
+    guard let typeAnnotation = typeAnnotation else {
+      return nil
+    }
+    return .init(typeAnnotation.signature.content.content)
   }
 }

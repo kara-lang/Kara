@@ -7,7 +7,7 @@ import Parsing
 public struct StructDecl {
   public let modifiers: [SyntaxNode<DeclModifier>]
   public let structKeyword: SyntaxNode<()>
-  public let name: SyntaxNode<TypeIdentifier>
+  public let identifier: SyntaxNode<TypeIdentifier>
   public let genericParameters: [TypeVariable]
   public let declarations: SyntaxNode<DeclBlock>
 }
@@ -25,9 +25,9 @@ extension StructDecl: SyntaxNodeContainer {
 extension StructDecl: CustomStringConvertible {
   public var description: String {
     if genericParameters.isEmpty {
-      return "struct \(name) {}"
+      return "struct \(identifier) {}"
     } else {
-      return "struct \(name)<\(genericParameters.map(\.debugDescription).joined(separator: ", "))> {}"
+      return "struct \(identifier)<\(genericParameters.map(\.debugDescription).joined(separator: ", "))> {}"
     }
   }
 }
@@ -39,5 +39,5 @@ let structParser =
     .take(typeIdentifierParser)
     .take(declBlockParser)
     // FIXME: generic parameters
-    .map { StructDecl(modifiers: $0, structKeyword: $1, name: $2, genericParameters: [], declarations: $3) }
+    .map { StructDecl(modifiers: $0, structKeyword: $1, identifier: $2, genericParameters: [], declarations: $3) }
     .map(\.syntaxNode)

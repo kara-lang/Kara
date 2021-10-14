@@ -51,7 +51,7 @@ struct DeclEnvironment {
       identifiers[identifier] = scheme
 
     case let .struct(s):
-      let typeIdentifier = s.name.content.content
+      let typeIdentifier = s.identifier.content.content
 
       guard types[typeIdentifier] == nil else {
         throw TypeError.typeDeclAlreadyExists(typeIdentifier)
@@ -59,7 +59,7 @@ struct DeclEnvironment {
       types[typeIdentifier] = try s.environment
 
     case let .enum(e):
-      let typeIdentifier = e.name.content.content
+      let typeIdentifier = e.identifier.content.content
       guard types[typeIdentifier] == nil else {
         throw TypeError.typeDeclAlreadyExists(typeIdentifier)
       }

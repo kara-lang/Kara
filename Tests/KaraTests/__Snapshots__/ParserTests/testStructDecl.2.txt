@@ -6,7 +6,7 @@ SyntaxNode(
       leadingTrivia: [],
       content: 0:0-0:5 ()
     ),
-    name: SyntaxNode(
+    identifier: SyntaxNode(
       leadingTrivia: [],
       content: 0:8-0:10 TypeIdentifier(value: "Bar")
     ),
