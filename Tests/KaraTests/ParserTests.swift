@@ -202,6 +202,10 @@ final class ParserTests: XCTestCase {
     assertSnapshot(exprParser.parse("Int32"))
   }
 
+  func testStructLiteral() {
+    assertSnapshot(exprParser.parse(#"S [a: 5, b: true, c: "c"]"#))
+  }
+
   func testModuleFile() {
     assertSnapshot(
       moduleFileParser.parse(
