@@ -88,6 +88,8 @@ extension Type: Equatable {
       return v1 == v2
     case let (.arrow(i1, o1), .arrow(i2, o2)):
       return i1 == i2 && o1 == o2
+    case let (.tuple(t1), .tuple(t2)):
+      return t1 == t2
     default:
       return false
     }

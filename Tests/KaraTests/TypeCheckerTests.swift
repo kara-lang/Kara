@@ -57,4 +57,45 @@ final class TypeCheckerTests: XCTestCase {
       TypeError.typeDeclAlreadyExists("E")
     )
   }
+
+  func testFuncReturnType() {
+    assertError(
+      try driverPass(
+        """
+        func f() -> String { 42 }
+        """
+      ),
+      TypeError.returnTypeMismatch(expected: .string, actual: .int32)
+    )
+
+    assertError(
+      try driverPass(
+        """
+        func f() { 42 }
+        """
+      ),
+      TypeError.returnTypeMismatch(expected: .unit, actual: .int32)
+    )
+  }
+
+  func testTopLevelAnnotation() {
+    assertError(
+      try driverPass(
+        """
+        let x = 45
+        """
+      ),
+      TypeError.topLevelAnnotationMissing("x")
+    )
+
+    assertError(
+      try driverPass(
+        """
+        let x: Int32 = 45
+        let y = true
+        """
+      ),
+      TypeError.topLevelAnnotationMissing("y")
+    )
+  }
 }
