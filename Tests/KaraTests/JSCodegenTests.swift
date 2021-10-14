@@ -41,4 +41,16 @@ final class JSCodegenTests: XCTestCase {
       """
     )
   }
+
+  func testStructLiteral() throws {
+    assertJSSnapshot(
+      """
+      struct S { let a: Int }
+
+      func f() -> S {
+          S [a: 42]
+      }
+      """
+    )
+  }
 }

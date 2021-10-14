@@ -87,13 +87,13 @@ extension Identifier {
 
 extension StructLiteral.Element {
   var jsCodegen: String {
-    "\(property.jsCodegen)): \(value.jsCodegen))"
+    "\(property.jsCodegen): \(value.jsCodegen)"
   }
 }
 
 extension StructLiteral {
   var jsCodegen: String {
-    "{ \(elements.elementsContent.map(\.jsCodegen).joined(separator: ", ")) }"
+    "({ \(elements.elementsContent.map(\.jsCodegen).joined(separator: ", ")) })"
   }
 }
 
