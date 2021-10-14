@@ -2,24 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "LiteSupport",
-        "repositoryURL": "https://github.com/MaxDesiatov/Lite.git",
-        "state": {
-          "branch": "basic-tsc",
-          "revision": "6468e62bd7f109ba7318389534287d88dd7322a3",
-          "version": null
-        }
-      },
-      {
-        "package": "Rainbow",
-        "repositoryURL": "https://github.com/onevcat/Rainbow.git",
-        "state": {
-          "branch": null,
-          "revision": "626c3d4b6b55354b4af3aa309f998fae9b31a3d9",
-          "version": "3.2.0"
-        }
-      },
-      {
         "package": "swift-argument-parser",
         "repositoryURL": "https://github.com/apple/swift-argument-parser.git",
         "state": {
@@ -62,15 +44,6 @@
           "branch": null,
           "revision": "f8a9c997c3c1dab4e216a8ec9014e23144cbab37",
           "version": "1.9.0"
-        }
-      },
-      {
-        "package": "swift-tools-support-core",
-        "repositoryURL": "https://github.com/apple/swift-tools-support-core.git",
-        "state": {
-          "branch": "main",
-          "revision": "492fe8dbf50c6f906444dbc227d3edb35ab0f4a7",
-          "version": null
         }
       },
       {
