@@ -158,7 +158,13 @@ extension Expr {
 
 extension BindingDecl {
   var jsCodegen: String {
-    // FIXME: separate identifier codegen
-    "const \(identifier.jsCodegen) = \(value.jsCodegen))"
+    var result = "const \(identifier.jsCodegen)"
+    if let value = value {
+      result.append(" = \(value.expr.jsCodegen));")
+    } else {
+      result.append(";")
+    }
+
+    return result
   }
 }

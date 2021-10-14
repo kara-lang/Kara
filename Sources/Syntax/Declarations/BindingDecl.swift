@@ -10,11 +10,15 @@ public struct BindingDecl {
     public let signature: SyntaxNode<Type>
   }
 
+  public struct Value {
+    public let equalsSign: SyntaxNode<()>
+    public let expr: SyntaxNode<Expr>
+  }
+
   public let bindingKeyword: SyntaxNode<()>
   public let identifier: SyntaxNode<Identifier>
   public let typeAnnotation: TypeAnnotation?
-  public let equalsSign: SyntaxNode<()>
-  public var value: SyntaxNode<Expr>
+  public let value: Value?
 }
 
 extension BindingDecl: SyntaxNodeContainer {
@@ -23,7 +27,7 @@ extension BindingDecl: SyntaxNodeContainer {
   }
 
   var end: SyntaxNode<()> {
-    value.map { _ in }
+    value?.expr.map { _ in } ?? identifier.map { _ in }
   }
 }
 
@@ -36,7 +40,12 @@ let bindingParser = SyntaxNodeParser(Terminal("let"))
         .map(BindingDecl.TypeAnnotation.init)
     )
   )
-  .take(SyntaxNodeParser(Terminal("=")))
-  .take(exprParser)
+  .take(
+    Optional.parser(
+      of: SyntaxNodeParser(Terminal("="))
+        .take(exprParser)
+        .map(BindingDecl.Value.init)
+    )
+  )
   .map(BindingDecl.init)
   .map(\.syntaxNode)

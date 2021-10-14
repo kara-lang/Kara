@@ -17,7 +17,7 @@ final class ParserTests: XCTestCase {
     XCTAssertNoDifference(literalParser.parse("3.14"), 3.14)
   }
 
-  func testStructs() throws {
+  func testStructDecl() throws {
     assertSnapshot(structParser.parse("struct Foo {}"))
     assertSnapshot(structParser.parse("struct  Bar{}"))
 
@@ -36,6 +36,14 @@ final class ParserTests: XCTestCase {
     """))
 
     XCTAssertNil(structParser.parse("structBlorg{}").output)
+
+    assertSnapshot(structParser.parse("""
+    struct StoredProperties {
+      let a: Int    // `a` comment
+      let b: Bool   // `b` comment
+      let c: String // `c` comment
+    }
+    """))
   }
 
   func testIdentifiers() {
@@ -138,6 +146,15 @@ final class ParserTests: XCTestCase {
     assertSnapshot(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 ).description"))
   }
 
+  func testTypeExpr() {
+    assertSnapshot(exprParser.parse("Array"))
+    assertSnapshot(exprParser.parse("Int32"))
+  }
+
+  func testStructLiteral() {
+    assertSnapshot(exprParser.parse(#"S [a: 5, b: true, c: "c"]"#))
+  }
+
   func testTypeConstructor() {
     assertSnapshot(typeParser.parse("Array<Int>"))
     assertNotFullyConsumed(typeParser.parse("Set<Double").rest)
@@ -195,15 +212,6 @@ final class ParserTests: XCTestCase {
         #"public interop(JS, "fff") func f(x y: Bool) -> String"#
       )
     )
-  }
-
-  func testTypeExpr() {
-    assertSnapshot(exprParser.parse("Array"))
-    assertSnapshot(exprParser.parse("Int32"))
-  }
-
-  func testStructLiteral() {
-    assertSnapshot(exprParser.parse(#"S [a: 5, b: true, c: "c"]"#))
   }
 
   func testModuleFile() {
