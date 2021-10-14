@@ -39,6 +39,17 @@ final class TypeCheckerTests: XCTestCase {
     assertError(
       try driverPass(
         """
+        struct S {
+        struct Inner {}
+        struct Inner { let i: Int }
+        }
+        """
+      ),
+      TypeError.typeDeclAlreadyExists("Inner")
+    )
+    assertError(
+      try driverPass(
+        """
         enum E {}
         enum E { func f() {} }
         """
