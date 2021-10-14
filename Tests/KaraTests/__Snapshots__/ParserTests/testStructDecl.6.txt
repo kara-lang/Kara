@@ -1,0 +1,399 @@
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-14:0 StructDecl(
+    modifiers: [],
+    structKeyword: SyntaxNode(
+      leadingTrivia: [],
+      content: 0:0-0:5 ()
+    ),
+    name: SyntaxNode(
+      leadingTrivia: [],
+      content: 0:7-0:22 TypeIdentifier(value: "StoredProperties")
+    ),
+    genericParameters: [],
+    declarations: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
+      content: 0:24-14:0 DeclBlock(
+        openBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:24-0:24 ()
+        ),
+        elements: [
+          [0]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n  ")
+            ],
+            content: 1:2-3:2 Declaration.struct(
+              StructDecl(
+                modifiers: [],
+                structKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("\n  ")
+                  ],
+                  content: 1:2-1:7 ()
+                ),
+                name: SyntaxNode(
+                  leadingTrivia: [],
+                  content: 1:9-1:14 TypeIdentifier(value: "Inner1")
+                ),
+                genericParameters: [],
+                declarations: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 1:16-3:2 DeclBlock(
+                    openBrace: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 1:16-1:16 ()
+                    ),
+                    elements: [
+                      [0]: SyntaxNode(
+                        leadingTrivia: [
+                          [0]: Whitespace("\n    ")
+                        ],
+                        content: 2:4-2:8 Declaration.binding(
+                          BindingDecl(
+                            bindingKeyword: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace("\n    ")
+                              ],
+                              content: 2:4-2:6 ()
+                            ),
+                            identifier: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace(" ")
+                              ],
+                              content: 2:8-2:8 Identifier(value: "a")
+                            ),
+                            typeAnnotation: BindingDecl.TypeAnnotation(
+                              colon: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 2:9-2:9 ()
+                              ),
+                              signature: SyntaxNode(
+                                leadingTrivia: [
+                                  [0]: Whitespace(" ")
+                                ],
+                                content: 2:11-2:16 Type.constructor(
+                                  TypeIdentifier(value: "Double"),
+                                  []
+                                )
+                              )
+                            ),
+                            value: nil
+                          )
+                        )
+                      )
+                    ],
+                    closeBrace: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 3:2-3:2 ()
+                    )
+                  )
+                )
+              )
+            )
+          ),
+          [1]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n  ")
+            ],
+            content: 4:2-4:6 Declaration.binding(
+              BindingDecl(
+                bindingKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("\n  ")
+                  ],
+                  content: 4:2-4:4 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 4:6-4:6 Identifier(value: "a")
+                ),
+                typeAnnotation: BindingDecl.TypeAnnotation(
+                  colon: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 4:7-4:7 ()
+                  ),
+                  signature: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 4:9-4:11 Type.constructor(
+                      TypeIdentifier(value: "Int"),
+                      []
+                    )
+                  )
+                ),
+                value: nil
+              )
+            )
+          ),
+          [2]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Comment(
+                kind: Comment.Kind.singleLine,
+                isDocComment: false,
+                content: " `a` comment"
+              ),
+              [1]: Whitespace("\n  ")
+            ],
+            content: 5:2-5:6 Declaration.binding(
+              BindingDecl(
+                bindingKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Comment(
+                      kind: Comment.Kind.singleLine,
+                      isDocComment: false,
+                      content: " `a` comment"
+                    ),
+                    [1]: Whitespace("\n  ")
+                  ],
+                  content: 5:2-5:4 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 5:6-5:6 Identifier(value: "b")
+                ),
+                typeAnnotation: BindingDecl.TypeAnnotation(
+                  colon: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 5:7-5:7 ()
+                  ),
+                  signature: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 5:9-5:12 Type.constructor(
+                      TypeIdentifier(value: "Bool"),
+                      []
+                    )
+                  )
+                ),
+                value: nil
+              )
+            )
+          ),
+          [3]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Comment(
+                kind: Comment.Kind.singleLine,
+                isDocComment: false,
+                content: " `b` comment"
+              ),
+              [1]: Whitespace("\n  ")
+            ],
+            content: 6:2-6:6 Declaration.binding(
+              BindingDecl(
+                bindingKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Comment(
+                      kind: Comment.Kind.singleLine,
+                      isDocComment: false,
+                      content: " `b` comment"
+                    ),
+                    [1]: Whitespace("\n  ")
+                  ],
+                  content: 6:2-6:4 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 6:6-6:6 Identifier(value: "c")
+                ),
+                typeAnnotation: BindingDecl.TypeAnnotation(
+                  colon: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 6:7-6:7 ()
+                  ),
+                  signature: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 6:9-6:14 Type.constructor(
+                      TypeIdentifier(value: "String"),
+                      []
+                    )
+                  )
+                ),
+                value: nil
+              )
+            )
+          ),
+          [4]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Comment(
+                kind: Comment.Kind.singleLine,
+                isDocComment: false,
+                content: " `c` comment"
+              ),
+              [1]: Whitespace("\n\n  ")
+            ],
+            content: 8:2-10:2 Declaration.struct(
+              StructDecl(
+                modifiers: [],
+                structKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Comment(
+                      kind: Comment.Kind.singleLine,
+                      isDocComment: false,
+                      content: " `c` comment"
+                    ),
+                    [1]: Whitespace("\n\n  ")
+                  ],
+                  content: 8:2-8:7 ()
+                ),
+                name: SyntaxNode(
+                  leadingTrivia: [],
+                  content: 8:9-8:14 TypeIdentifier(value: "Inner2")
+                ),
+                genericParameters: [],
+                declarations: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 8:16-10:2 DeclBlock(
+                    openBrace: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 8:16-8:16 ()
+                    ),
+                    elements: [
+                      [0]: SyntaxNode(
+                        leadingTrivia: [
+                          [0]: Whitespace("\n    ")
+                        ],
+                        content: 9:4-9:8 Declaration.binding(
+                          BindingDecl(
+                            bindingKeyword: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace("\n    ")
+                              ],
+                              content: 9:4-9:6 ()
+                            ),
+                            identifier: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace(" ")
+                              ],
+                              content: 9:8-9:8 Identifier(value: "a")
+                            ),
+                            typeAnnotation: BindingDecl.TypeAnnotation(
+                              colon: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 9:9-9:9 ()
+                              ),
+                              signature: SyntaxNode(
+                                leadingTrivia: [
+                                  [0]: Whitespace(" ")
+                                ],
+                                content: 9:11-9:15 Type.constructor(
+                                  TypeIdentifier(value: "Float"),
+                                  []
+                                )
+                              )
+                            ),
+                            value: nil
+                          )
+                        )
+                      )
+                    ],
+                    closeBrace: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 10:2-10:2 ()
+                    )
+                  )
+                )
+              )
+            )
+          ),
+          [5]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n\n  ")
+            ],
+            content: 12:2-12:11 Declaration.binding(
+              BindingDecl(
+                bindingKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("\n\n  ")
+                  ],
+                  content: 12:2-12:4 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 12:6-12:11 Identifier(value: "inner1")
+                ),
+                typeAnnotation: BindingDecl.TypeAnnotation(
+                  colon: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 12:12-12:12 ()
+                  ),
+                  signature: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 12:14-12:19 Type.constructor(
+                      TypeIdentifier(value: "Inner1"),
+                      []
+                    )
+                  )
+                ),
+                value: nil
+              )
+            )
+          ),
+          [6]: SyntaxNode(
+            leadingTrivia: [],
+            content: 13:2-13:11 Declaration.binding(
+              BindingDecl(
+                bindingKeyword: SyntaxNode(
+                  leadingTrivia: [],
+                  content: 13:2-13:4 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 13:6-13:11 Identifier(value: "inner2")
+                ),
+                typeAnnotation: BindingDecl.TypeAnnotation(
+                  colon: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 13:12-13:12 ()
+                  ),
+                  signature: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 13:14-13:19 Type.constructor(
+                      TypeIdentifier(value: "Inner2"),
+                      []
+                    )
+                  )
+                ),
+                value: nil
+              )
+            )
+          )
+        ],
+        closeBrace: SyntaxNode(
+          leadingTrivia: [],
+          content: 14:0-14:0 ()
+        )
+      )
+    )
+  )
+)

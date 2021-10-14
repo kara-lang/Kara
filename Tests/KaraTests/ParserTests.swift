@@ -44,6 +44,24 @@ final class ParserTests: XCTestCase {
       let c: String // `c` comment
     }
     """))
+
+    assertSnapshot(structParser.parse("""
+    struct StoredProperties {
+      struct Inner1 {
+        let a: Double
+      }
+      let a: Int    // `a` comment
+      let b: Bool   // `b` comment
+      let c: String // `c` comment
+
+      struct Inner2 {
+        let a: Float
+      }
+
+      let inner1: Inner1
+      let inner2: Inner2
+    }
+    """))
   }
 
   func testIdentifiers() {
