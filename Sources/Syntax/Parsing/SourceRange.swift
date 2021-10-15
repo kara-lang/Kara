@@ -5,7 +5,7 @@
 import CustomDump
 import Parsing
 
-public struct SourceLocation: Equatable {
+public struct SourceLocation: Hashable {
   init(column: Int, line: Int) {
     self.column = column
     self.line = line
@@ -13,6 +13,13 @@ public struct SourceLocation: Equatable {
 
   let column: Int
   let line: Int
+}
+
+/// Workaround for `()` not being `Hashable`.
+public struct Empty: Hashable {}
+
+extension Empty: CustomDumpStringConvertible {
+  public var customDumpDescription: String { "()" }
 }
 
 public struct SourceRange<Content> {
@@ -26,9 +33,15 @@ public struct SourceRange<Content> {
   }
 }
 
-extension SourceRange: Equatable where Content == () {
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    lhs.start == rhs.start && lhs.end == rhs.end
+extension SourceRange: Equatable where Content: Equatable {}
+
+extension SourceRange: Hashable where Content: Hashable {}
+
+extension SourceRange where Content == Empty {
+  init(start: SourceLocation, end: SourceLocation) {
+    self.start = start
+    self.end = end
+    content = Empty()
   }
 }
 

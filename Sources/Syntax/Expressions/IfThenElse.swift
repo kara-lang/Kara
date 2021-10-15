@@ -5,7 +5,7 @@
 import Parsing
 
 public struct IfThenElse {
-  public let ifKeyword: SyntaxNode<()>
+  public let ifKeyword: SyntaxNode<Empty>
   public let condition: SyntaxNode<Expr>
   public let thenBlock: ExprBlock
 
@@ -14,7 +14,7 @@ public struct IfThenElse {
 }
 
 public struct ElseBranch {
-  public let elseKeyword: SyntaxNode<()>
+  public let elseKeyword: SyntaxNode<Empty>
   public let elseBlock: ExprBlock
 }
 

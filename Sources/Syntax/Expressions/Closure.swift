@@ -12,7 +12,7 @@ public struct Closure {
 
   // FIXME: use a form of `DelimitedSequence` here?
   public let parameters: [Parameter]
-  public let inKeyword: SyntaxNode<()>?
+  public let inKeyword: SyntaxNode<Empty>?
   public let body: SyntaxNode<Expr>?
 }
 
@@ -61,7 +61,7 @@ let closureParser =
         .skip(statefulWhitespace(isRequired: true))
         .take(SyntaxNodeParser(Terminal("in")))
         .skip(statefulWhitespace(isRequired: true))
-        .map { head, tail, inKeyword -> ([Closure.Parameter], SyntaxNode<()>) in
+        .map { head, tail, inKeyword -> ([Closure.Parameter], SyntaxNode<Empty>) in
           guard let tail = tail else {
             return (
               head

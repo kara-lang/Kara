@@ -8,12 +8,12 @@ public struct FuncDecl {
   public struct Parameter {
     public let externalName: SyntaxNode<Identifier>?
     public let internalName: SyntaxNode<Identifier>
-    public let colon: SyntaxNode<()>
+    public let colon: SyntaxNode<Empty>
     public let type: SyntaxNode<Type>
   }
 
   public let modifiers: [SyntaxNode<DeclModifier>]
-  public let funcKeyword: SyntaxNode<()>
+  public let funcKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<Identifier>
   public let genericParameters: [TypeVariable]
   public let parameters: DelimitedSequence<Parameter>
@@ -23,12 +23,12 @@ public struct FuncDecl {
 }
 
 extension FuncDecl: SyntaxNodeContainer {
-  var start: SyntaxNode<()> {
-    modifiers.first?.map { _ in } ?? funcKeyword
+  var start: SyntaxNode<Empty> {
+    modifiers.first?.map { _ in Empty() } ?? funcKeyword
   }
 
-  var end: SyntaxNode<()> {
-    body?.closeBrace ?? returns?.map { _ in } ?? parameters.end
+  var end: SyntaxNode<Empty> {
+    body?.closeBrace ?? returns?.map { _ in Empty() } ?? parameters.end
   }
 }
 

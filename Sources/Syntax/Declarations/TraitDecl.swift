@@ -5,17 +5,17 @@
 import Parsing
 
 public struct TraitDecl {
-  public let traitKeyword: SyntaxNode<()>
+  public let traitKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<TypeIdentifier>
   public let declarations: SyntaxNode<DeclBlock>
 }
 
 extension TraitDecl: SyntaxNodeContainer {
-  var start: SyntaxNode<()> {
+  var start: SyntaxNode<Empty> {
     traitKeyword
   }
 
-  var end: SyntaxNode<()> {
+  var end: SyntaxNode<Empty> {
     declarations.end
   }
 }

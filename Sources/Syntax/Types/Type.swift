@@ -96,6 +96,10 @@ extension Type: Equatable {
   }
 }
 
+extension Type: Hashable {
+  public func hash(into hasher: inout Hasher) {}
+}
+
 extension Type: CustomStringConvertible {
   public var description: String {
     switch self {

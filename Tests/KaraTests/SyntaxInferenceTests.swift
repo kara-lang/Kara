@@ -9,15 +9,14 @@ import XCTest
 
 extension String {
   func inferParsedExpr(
-    environment: BindingEnvironment = [:],
-    members: TypeEnvironment = [:]
+    environment: DeclEnvironment
   ) throws -> Type {
     var state = ParsingState(source: self)
     guard let expr = exprParser.parse(&state) else {
       throw ParsingError.unknown(startIndex..<endIndex)
     }
 
-    return try expr.content.content.infer(DeclEnvironment(identifiers: environment, types: members))
+    return try expr.content.content.infer(environment)
   }
 }
 
@@ -35,23 +34,23 @@ func --> (argument: Type, returned: Type) -> Type {
 
 final class SyntaxInferenceTests: XCTestCase {
   func testApplication() throws {
-    let e: BindingEnvironment = [
+    let e = DeclEnvironment(functions: [
       "increment": .init(.int32 --> .int32),
       "stringify": .init(.int32 --> .string),
-    ]
+    ])
 
     try XCTAssertNoDifference("increment(0)".inferParsedExpr(environment: e), .int32)
     try XCTAssertNoDifference("stringify(0)".inferParsedExpr(environment: e), .string)
-    XCTAssertThrowsError(try "increment(false)".inferParsedExpr())
+    XCTAssertThrowsError(try "increment(false)".inferParsedExpr(environment: DeclEnvironment()))
     XCTAssertThrowsError(try "increment(false)".inferParsedExpr(environment: e))
   }
 
   func testClosure() throws {
-    let e: BindingEnvironment = [
+    let e = DeclEnvironment(functions: [
       "increment": .init(.int32 --> .int32),
       "stringify": .init(.int32 --> .string),
       "decode": .init(.string --> .int32),
-    ]
+    ])
 
     XCTAssertNoDifference(
       try
@@ -80,11 +79,11 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testClosureWithMultipleArguments() throws {
-    let e: BindingEnvironment = [
+    let e = DeclEnvironment(functions: [
       "sum": .init([.int32, .int32] --> .int32),
       "stringify": .init([.int32, .int32] --> .string),
       "decode": .init([.string, .string] --> .int32),
-    ]
+    ])
 
     XCTAssertNoDifference(
       try
@@ -106,11 +105,11 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testClosureWithMultipleArgumentsDifferentTypes() throws {
-    let e: BindingEnvironment = [
+    let e = DeclEnvironment(functions: [
       "concatenate": .init([.int32, .string] --> .string),
       "sum": .init([.int32, .int32] --> .int32),
       "decode": .init([.string, .int32] --> .int32),
-    ]
+    ])
 
     XCTAssertNoDifference(
       try
@@ -127,54 +126,54 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testMember() throws {
-    let m: TypeEnvironment = [
-      "String": [
+    let e = DeclEnvironment(types: [
+      "String": .init(bindings: [
         "appending": .init(.string --> .string),
         "count": .init(.int32),
-      ],
-    ]
+      ]),
+    ])
 
     XCTAssertNoDifference(
-      try #""Hello, ".appending("World!")"#.inferParsedExpr(members: m),
+      try #""Hello, ".appending("World!")"#.inferParsedExpr(environment: e),
       .string
     )
     XCTAssertNoDifference(
-      try #""Test".count"#.inferParsedExpr(members: m),
+      try #""Test".count"#.inferParsedExpr(environment: e),
       .int32
     )
     assertError(
-      try #""Test".description"#.inferParsedExpr(members: m),
+      try #""Test".description"#.inferParsedExpr(environment: e),
       TypeError.unknownMember("String", "description")
     )
   }
 
   func testMemberOfMember() throws {
-    let m: TypeEnvironment = [
-      "String": [
+    let e = DeclEnvironment(types: [
+      "String": .init(bindings: [
         "count": .init(.int32),
-      ],
-      "Int32": [
+      ]),
+      "Int32": .init(bindings: [
         "magnitude": .init(.int32),
-      ],
-    ]
+      ]),
+    ])
 
     XCTAssertNoDifference(
-      try #""Test".count.magnitude"#.inferParsedExpr(members: m),
+      try #""Test".count.magnitude"#.inferParsedExpr(environment: e),
       .int32
     )
     assertError(
-      try #""Test".magnitude.count"#.inferParsedExpr(members: m),
+      try #""Test".magnitude.count"#.inferParsedExpr(environment: e),
       TypeError.unknownMember("String", "magnitude")
     )
   }
 
   func testIfThenElse() throws {
     let m: TypeEnvironment = [
-      "Int32": [
+      "Int32": .init(bindings: [
         "isInteger": .init(.bool),
         "isIntegerFunc": .init([] --> .bool),
         "toDouble": .init([] --> .double),
-      ],
+      ]),
     ]
 
     let e: BindingEnvironment = [
@@ -185,11 +184,11 @@ final class SyntaxInferenceTests: XCTestCase {
     ]
 
     XCTAssertNoDifference(
-      try #"if true { "true" } else { "false" } "#.inferParsedExpr(members: m),
+      try #"if true { "true" } else { "false" } "#.inferParsedExpr(environment: .init(types: m)),
       .string
     )
     XCTAssertNoDifference(
-      try #"if foo { bar } else { baz }  "#.inferParsedExpr(environment: e, members: m),
+      try #"if foo { bar } else { baz }  "#.inferParsedExpr(environment: .init(bindings: e, types: m)),
       .double
     )
     XCTAssertNoDifference(
@@ -200,7 +199,7 @@ final class SyntaxInferenceTests: XCTestCase {
         } else {
           "is not integer"
         }
-        """#.inferParsedExpr(environment: e, members: m),
+        """#.inferParsedExpr(environment: .init(bindings: e, types: m)),
       .string
     )
     XCTAssertNoDifference(
@@ -211,7 +210,7 @@ final class SyntaxInferenceTests: XCTestCase {
         } else {
           "is not integer"
         }
-        """#.inferParsedExpr(environment: e, members: m),
+        """#.inferParsedExpr(environment: .init(bindings: e, types: m)),
       .string
     )
     assertError(
@@ -222,7 +221,7 @@ final class SyntaxInferenceTests: XCTestCase {
         } else {
           "is not integer"
         }
-        """#.inferParsedExpr(members: m),
+        """#.inferParsedExpr(environment: .init(types: m)),
       TypeError.unificationFailure(.double, .bool)
     )
     assertError(
@@ -233,7 +232,7 @@ final class SyntaxInferenceTests: XCTestCase {
         } else {
           "is not integer"
         }
-        """#.inferParsedExpr(members: m),
+        """#.inferParsedExpr(environment: .init(types: m)),
       TypeError.unificationFailure(.int32, .bool)
     )
   }

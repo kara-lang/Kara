@@ -5,7 +5,7 @@
 import CustomDump
 import Parsing
 
-public struct Comment {
+public struct Comment: Hashable {
   enum Kind {
     case singleLine
     case multipleLines

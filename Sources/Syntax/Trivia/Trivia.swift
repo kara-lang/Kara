@@ -5,9 +5,9 @@
 import CustomDump
 import Parsing
 
-public enum Trivia {
+public enum Trivia: Hashable {
   case comment(Comment)
-  case whitespace(UTF8SubSequence)
+  case whitespace(String)
 }
 
 extension Trivia: CustomDumpStringConvertible {
@@ -39,7 +39,7 @@ let triviaParser = Many(
     .map { $0.map(Trivia.comment) }
     .orElse(
       statefulWhitespace(isRequired: true)
-        .map { $0.map(Trivia.whitespace) }
+        .map { $0.map { Trivia.whitespace(String(Substring($0))) } }
     )
 )
 

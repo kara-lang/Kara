@@ -6,7 +6,7 @@ import Parsing
 
 public struct MemberAccess {
   public let base: SyntaxNode<Expr>
-  public let dot: SyntaxNode<()>
+  public let dot: SyntaxNode<Empty>
   public let member: SyntaxNode<Identifier>
 }
 

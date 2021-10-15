@@ -5,29 +5,29 @@
 import Parsing
 
 public struct BindingDecl {
-  public struct TypeAnnotation {
-    public let colon: SyntaxNode<()>
+  public struct TypeAnnotation: Hashable {
+    public let colon: SyntaxNode<Empty>
     public let signature: SyntaxNode<Type>
   }
 
   public struct Value {
-    public let equalsSign: SyntaxNode<()>
+    public let equalsSign: SyntaxNode<Empty>
     public let expr: SyntaxNode<Expr>
   }
 
-  public let bindingKeyword: SyntaxNode<()>
+  public let bindingKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<Identifier>
   public let typeAnnotation: TypeAnnotation?
   public let value: Value?
 }
 
 extension BindingDecl: SyntaxNodeContainer {
-  var start: SyntaxNode<()> {
+  var start: SyntaxNode<Empty> {
     bindingKeyword
   }
 
-  var end: SyntaxNode<()> {
-    value?.expr.map { _ in } ?? identifier.map { _ in }
+  var end: SyntaxNode<Empty> {
+    value?.expr.map { _ in Empty() } ?? identifier.map { _ in Empty() }
   }
 }
 

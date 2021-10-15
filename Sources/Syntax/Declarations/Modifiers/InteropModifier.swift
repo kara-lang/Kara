@@ -9,12 +9,12 @@ public struct InteropModifier {
     case swift = "Swift"
   }
 
-  let interopKeyword: SyntaxNode<()>
-  let openParen: SyntaxNode<()>
+  let interopKeyword: SyntaxNode<Empty>
+  let openParen: SyntaxNode<Empty>
   public let language: SyntaxNode<Language>
-  let comma: SyntaxNode<()>
+  let comma: SyntaxNode<Empty>
   public let externalName: SyntaxNode<String>
-  let closeParen: SyntaxNode<()>
+  let closeParen: SyntaxNode<Empty>
 }
 
 let interopModifierParser = SyntaxNodeParser(Terminal("interop"))

@@ -46,16 +46,16 @@ struct ConstraintSystem {
   /// infer the type of `inferred` expression. Is used to infer
   /// type of an expression evaluated in a closure.
   private mutating func infer<T>(
-    inExtended environment: T,
+    withExtendedBindings bindings: T,
     _ inferred: Expr
   ) throws -> Type where T: Sequence, T.Element == (Identifier, Scheme) {
     // preserve old environment to be restored after inference in extended
     // environment has finished
-    let old = self.environment
+    let old = environment
 
     defer { self.environment = old }
 
-    self.environment.insert(environment)
+    environment.insert(bindings: bindings)
 
     return try infer(inferred)
   }
@@ -75,7 +75,7 @@ struct ConstraintSystem {
     _ member: Identifier,
     in typeID: TypeIdentifier
   ) throws -> Type {
-    guard let environment = environment.types[typeID]?.identifiers else {
+    guard let environment = environment.types[typeID] else {
       throw TypeError.unknownType(typeID)
     }
 
@@ -88,10 +88,10 @@ struct ConstraintSystem {
 
   private mutating func lookup(
     _ id: Identifier,
-    in bindingEnvironment: BindingEnvironment,
+    in environment: DeclEnvironment,
     orThrow error: TypeError
   ) throws -> Type {
-    guard let scheme = bindingEnvironment[id] else {
+    guard let scheme = environment.bindings[id] ?? environment.functions[id] else {
       throw error
     }
 
@@ -111,14 +111,14 @@ struct ConstraintSystem {
       return literal.defaultType
 
     case let .identifier(id):
-      return try lookup(id, in: environment.identifiers, orThrow: .unbound(id))
+      return try lookup(id, in: environment, orThrow: .unbound(id))
 
     case let .closure(c):
       let ids = c.parameters.map(\.identifier.content.content)
       let parameters = ids.map { _ in fresh() }
       return try .arrow(
         parameters,
-        infer(inExtended: zip(ids, parameters.map { Scheme($0) }), c.body?.content.content ?? .unit)
+        infer(withExtendedBindings: zip(ids, parameters.map { Scheme($0) }), c.body?.content.content ?? .unit)
       )
 
     case let .application(app):

@@ -6,18 +6,18 @@ import Parsing
 
 public struct StructDecl {
   public let modifiers: [SyntaxNode<DeclModifier>]
-  public let structKeyword: SyntaxNode<()>
+  public let structKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<TypeIdentifier>
   public let genericParameters: [TypeVariable]
   public let declarations: SyntaxNode<DeclBlock>
 }
 
 extension StructDecl: SyntaxNodeContainer {
-  var start: SyntaxNode<()> {
-    modifiers.first?.map { _ in } ?? structKeyword
+  var start: SyntaxNode<Empty> {
+    modifiers.first?.map { _ in Empty() } ?? structKeyword
   }
 
-  var end: SyntaxNode<()> {
+  var end: SyntaxNode<Empty> {
     declarations.end
   }
 }

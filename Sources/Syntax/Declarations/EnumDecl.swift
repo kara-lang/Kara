@@ -6,18 +6,18 @@ import Parsing
 
 public struct EnumDecl {
   public let modifiers: [SyntaxNode<DeclModifier>]
-  public let enumKeyword: SyntaxNode<()>
+  public let enumKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<TypeIdentifier>
   public let genericParameters: [TypeVariable]
   public let declarations: SyntaxNode<DeclBlock>
 }
 
 extension EnumDecl: SyntaxNodeContainer {
-  var start: SyntaxNode<()> {
-    modifiers.first?.map { _ in } ?? enumKeyword
+  var start: SyntaxNode<Empty> {
+    modifiers.first?.map { _ in Empty() } ?? enumKeyword
   }
 
-  var end: SyntaxNode<()> {
+  var end: SyntaxNode<Empty> {
     declarations.end
   }
 }

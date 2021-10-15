@@ -7,7 +7,7 @@ import Parsing
 @dynamicMemberLookup
 public struct SyntaxNode<Content> {
   let leadingTrivia: [Trivia]
-  public var content: SourceRange<Content>
+  public let content: SourceRange<Content>
 
   func map<NewContent>(_ transform: (Content) -> NewContent) -> SyntaxNode<NewContent> {
     .init(leadingTrivia: leadingTrivia, content: content.map(transform))
@@ -17,6 +17,9 @@ public struct SyntaxNode<Content> {
     content.content[keyPath: keyPath]
   }
 }
+
+extension SyntaxNode: Equatable where Content: Equatable {}
+extension SyntaxNode: Hashable where Content: Hashable {}
 
 extension SyntaxNode: CustomDebugStringConvertible {
   public var debugDescription: String {
@@ -45,8 +48,8 @@ struct SyntaxNodeParser<Inner, Content>: Parser
 }
 
 protocol SyntaxNodeContainer {
-  var start: SyntaxNode<()> { get }
-  var end: SyntaxNode<()> { get }
+  var start: SyntaxNode<Empty> { get }
+  var end: SyntaxNode<Empty> { get }
 }
 
 extension SyntaxNodeContainer {

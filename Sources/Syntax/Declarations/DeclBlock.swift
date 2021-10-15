@@ -5,17 +5,17 @@
 import Parsing
 
 public struct DeclBlock {
-  public let openBrace: SyntaxNode<()>
+  public let openBrace: SyntaxNode<Empty>
   public let elements: [SyntaxNode<Declaration>]
-  public let closeBrace: SyntaxNode<()>
+  public let closeBrace: SyntaxNode<Empty>
 }
 
 extension DeclBlock: SyntaxNodeContainer {
-  var start: SyntaxNode<()> {
+  var start: SyntaxNode<Empty> {
     openBrace
   }
 
-  var end: SyntaxNode<()> {
+  var end: SyntaxNode<Empty> {
     closeBrace
   }
 }

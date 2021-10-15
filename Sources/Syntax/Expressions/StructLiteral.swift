@@ -7,26 +7,26 @@ import Parsing
 public struct StructLiteral: SyntaxNodeContainer {
   public struct Element: SyntaxNodeContainer {
     public let property: SyntaxNode<Identifier>
-    public let colon: SyntaxNode<()>
+    public let colon: SyntaxNode<Empty>
     public let value: SyntaxNode<Expr>
 
-    public var start: SyntaxNode<()> {
-      property.map { _ in }
+    public var start: SyntaxNode<Empty> {
+      property.map { _ in Empty() }
     }
 
-    public var end: SyntaxNode<()> {
-      value.map { _ in }
+    public var end: SyntaxNode<Empty> {
+      value.map { _ in Empty() }
     }
   }
 
   public let type: SyntaxNode<Type>
   public let elements: DelimitedSequence<Element>
 
-  public var start: SyntaxNode<()> {
-    type.map { _ in }
+  public var start: SyntaxNode<Empty> {
+    type.map { _ in Empty() }
   }
 
-  public var end: SyntaxNode<()> {
+  public var end: SyntaxNode<Empty> {
     elements.end
   }
 }

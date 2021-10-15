@@ -11,8 +11,8 @@ struct Terminal: Parser {
 
   let string: String
 
-  func parse(_ state: inout ParsingState) -> SourceRange<()>? {
-    StartsWith(string.utf8).stateful().parse(&state)
+  func parse(_ state: inout ParsingState) -> SourceRange<Empty>? {
+    StartsWith<UTF8SubSequence>(string.utf8).map { _ in Empty() }.stateful().parse(&state)
   }
 }
 

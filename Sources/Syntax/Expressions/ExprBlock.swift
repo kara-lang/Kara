@@ -10,12 +10,12 @@ public struct ExprBlock {
     case binding(BindingDecl)
   }
 
-  public let openBrace: SyntaxNode<()>
+  public let openBrace: SyntaxNode<Empty>
   public var elements: [SyntaxNode<Element>]
-  public let closeBrace: SyntaxNode<()>
+  public let closeBrace: SyntaxNode<Empty>
 
-  public var sourceRange: SourceRange<()> {
-    .init(start: openBrace.content.start, end: closeBrace.content.end, content: ())
+  public var sourceRange: SourceRange<Empty> {
+    .init(start: openBrace.content.start, end: closeBrace.content.end)
   }
 }
 

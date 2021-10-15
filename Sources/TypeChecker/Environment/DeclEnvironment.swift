@@ -4,27 +4,43 @@
 
 import Syntax
 
-/** Environment that maps a given `Identifier` to its `Scheme` type signature. */
+/** Environment that maps a given binding `Identifier` to its `Type` signature. */
 typealias BindingEnvironment = [Identifier: Scheme]
 
 /** Mapping from a type identifier to an environment with its members. */
 typealias TypeEnvironment = [TypeIdentifier: DeclEnvironment]
 
+typealias StructLiteralEnvironment = [TypeIdentifier: Set<StructLiteralField>]
+
+struct StructLiteralField: Hashable {
+  let identifier: SourceRange<Identifier>
+  let typeAnnotation: BindingDecl.TypeAnnotation
+}
+
 struct DeclEnvironment {
-  init(identifiers: BindingEnvironment, types: TypeEnvironment) {
-    self.identifiers = identifiers
+  init(
+    bindings: BindingEnvironment = [:],
+    functions: BindingEnvironment = [:],
+    types: TypeEnvironment = [:],
+    structLiterals: StructLiteralEnvironment = [:]
+  ) {
+    self.bindings = bindings
+    self.functions = functions
     self.types = types
+    self.structLiterals = structLiterals
   }
 
-  init() {
-    self.init(identifiers: [:], types: [:])
-  }
+  /// Environment of bindings available in this declaration.
+  private(set) var bindings: BindingEnvironment
 
-  /// Environment of top-level bindings in this module.
-  private(set) var identifiers: BindingEnvironment
+  /// Environment of functions available in this declaration.
+  private(set) var functions: BindingEnvironment
 
-  /// Environment of top-level types in this module.
+  /// Environment of types available in this declaration.
   private(set) var types: TypeEnvironment
+
+  /// Environment of struct literals available in this declaration.
+  private(set) var structLiterals: StructLiteralEnvironment
 
   /// Inserts a given declaration type (and members if appropriate) into this environment.
   /// - Parameter declaration: `Declaration` value to use for inserting intto the environment
@@ -32,11 +48,11 @@ struct DeclEnvironment {
     switch declaration {
     case let .function(f):
       let identifier = f.identifier.content.content
-      guard identifiers[identifier] == nil else {
+      guard functions[identifier] == nil else {
         throw TypeError.funcDeclAlreadyExists(identifier)
       }
 
-      identifiers[identifier] = f.scheme
+      functions[identifier] = f.scheme
 
     case let .binding(b):
       let identifier = b.identifier.content.content
@@ -44,11 +60,11 @@ struct DeclEnvironment {
         throw TypeError.topLevelAnnotationMissing(identifier)
       }
 
-      guard identifiers[identifier] == nil else {
+      guard bindings[identifier] == nil else {
         throw TypeError.bindingDeclAlreadyExists(identifier)
       }
 
-      identifiers[identifier] = scheme
+      bindings[identifier] = scheme
 
     case let .struct(s):
       let typeIdentifier = s.identifier.content.content
@@ -56,7 +72,8 @@ struct DeclEnvironment {
       guard types[typeIdentifier] == nil else {
         throw TypeError.typeDeclAlreadyExists(typeIdentifier)
       }
-      types[typeIdentifier] = try s.environment
+      let environment = try s.environment
+      types[typeIdentifier] = environment
 
     case let .enum(e):
       let typeIdentifier = e.identifier.content.content
@@ -74,12 +91,12 @@ struct DeclEnvironment {
   /// Inserts a given function parameter into this environment.
   /// - Parameter parameter: `FuncDecl.Parameter` value to use for inserting intto the environment
   mutating func insert(_ parameter: FuncDecl.Parameter) {
-    identifiers[parameter.internalName.content.content] = .init(parameter.type.content.content)
+    bindings[parameter.internalName.content.content] = .init(parameter.type.content.content)
   }
 
-  mutating func insert<T>(_ sequence: T) where T: Sequence, T.Element == (Identifier, Scheme) {
+  mutating func insert<T>(bindings sequence: T) where T: Sequence, T.Element == (Identifier, Scheme) {
     for (id, scheme) in sequence {
-      identifiers[id] = scheme
+      bindings[id] = scheme
     }
   }
 
@@ -102,12 +119,6 @@ struct DeclEnvironment {
     case let .tuple(elements):
       try elements.forEach { try verifyContains($0) }
     }
-  }
-}
-
-extension DeclEnvironment: ExpressibleByDictionaryLiteral {
-  init(dictionaryLiteral elements: (Identifier, Scheme)...) {
-    self.init(identifiers: BindingEnvironment(uniqueKeysWithValues: elements), types: [:])
   }
 }
 
