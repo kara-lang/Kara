@@ -84,13 +84,19 @@ extension Type: Equatable {
     switch (lhs, rhs) {
     case let (.constructor(id1, t1), .constructor(id2, t2)):
       return id1 == id2 && t1 == t2
+    case (.constructor, _):
+      return false
     case let (.variable(v1), .variable(v2)):
       return v1 == v2
+    case (.variable, _):
+      return false
     case let (.arrow(i1, o1), .arrow(i2, o2)):
       return i1 == i2 && o1 == o2
+    case (.arrow, _):
+      return false
     case let (.tuple(t1), .tuple(t2)):
       return t1 == t2
-    default:
+    case (.tuple, _):
       return false
     }
   }
