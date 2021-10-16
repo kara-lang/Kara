@@ -6,14 +6,15 @@ import Syntax
 
 enum TypeError: Error, Equatable {
   case ambiguous(Identifier)
-  case arrowMember(Identifier)
+  case invalidFunctionMember(MemberAccess.Member)
+  case invalidStaticMember(MemberAccess.Member)
   case infiniteType(TypeVariable, Type)
   case noOverloadFound(Identifier, Type)
-  case tupleIndexOutOfRange(total: Int, addressed: Int)
+  case tupleIndexOutOfRange([Type], addressed: Int)
   case unificationFailure(Type, Type)
   case unknownType(TypeIdentifier)
   case unknownMember(TypeIdentifier, Identifier)
-  case unknownTupleMember(Identifier)
+  case unknownTupleMember(MemberAccess.Member)
   case unbound(Identifier)
   case tupleUnificationFailure(Identifier, Identifier)
   case noExpressionsInBlock(SourceRange<Empty>)

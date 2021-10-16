@@ -53,4 +53,18 @@ final class JSCodegenTests: XCTestCase {
       """
     )
   }
+
+  func testTuple() throws {
+    assertJSSnapshot(
+      """
+      func f() -> (Int32, String, Bool) {
+          (42, "foo", false)
+      }
+
+      func f1() -> Int32 {
+          f().0
+      }
+      """
+    )
+  }
 }

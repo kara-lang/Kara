@@ -50,12 +50,24 @@ struct Solver {
       ).solve()
 
     case let .member(type, member, memberType):
-      guard case let .constructor(typeID, _) = type else {
+      let assumedType: Type
+
+      switch (type, member) {
+      case let (.constructor(typeID, _), .identifier(identifier)):
+        // generate new constraints for member lookup
+        assumedType = try system.lookup(identifier, in: typeID)
+
+      case let (.tuple(types), .tupleElement(index)):
+        guard (0..<types.count).contains(index) else {
+          throw TypeError.tupleIndexOutOfRange(types, addressed: index)
+        }
+        // generate new constraints for tuple element lookup
+        assumedType = types[index]
+
+      default:
+        // FIXME: throw meaningful error
         fatalError("unhandled member constraint")
       }
-
-      // generate new constraints for member lookup
-      let assumedType = try system.lookup(member, in: typeID)
 
       if case .constructor = assumedType {
         system.prepend(.equal(memberType, assumedType))

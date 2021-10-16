@@ -11,7 +11,7 @@ enum Constraint {
   /** Member constraint representing members of type declarations: functions and
    properties.
    */
-  case member(Type, member: Identifier, memberType: Type)
+  case member(Type, member: MemberAccess.Member, memberType: Type)
 }
 
 struct ConstraintSystem {
@@ -146,33 +146,40 @@ struct ConstraintSystem {
       return result
 
     case let .member(memberAccess):
+      let member = memberAccess.member.content.content
+
       switch try infer(memberAccess.base.content.content) {
       case .arrow:
-        throw TypeError.arrowMember(memberAccess.member.content.content)
+        // Function values don't have members.
+        throw TypeError.invalidFunctionMember(member)
 
       case let .constructor(typeID, _):
-        return try lookup(memberAccess.member.content.content, in: typeID)
+        // Static member access.
+        guard case let .identifier(identifier) = member else {
+          throw TypeError.invalidStaticMember(member)
+        }
+        return try lookup(identifier, in: typeID)
 
       case let .variable(v):
         let memberType = fresh()
         constraints.append(
-          .member(.variable(v), member: memberAccess.member.content.content, memberType: memberType)
+          .member(.variable(v), member: member, memberType: memberType)
         )
         return memberType
 
       case let .tuple(elements):
-        if let idx = Int(memberAccess.member.content.content.value) {
-          guard (0..<elements.count).contains(idx) else {
-            throw TypeError.tupleIndexOutOfRange(
-              total: elements.count,
-              addressed: idx
-            )
-          }
-
-          return elements[idx]
-        } else {
-          throw TypeError.unknownTupleMember(memberAccess.member.content.content)
+        guard case let .tupleElement(index) = member else {
+          throw TypeError.unknownTupleMember(member)
         }
+
+        guard (0..<elements.count).contains(index) else {
+          throw TypeError.tupleIndexOutOfRange(
+            elements,
+            addressed: index
+          )
+        }
+
+        return elements[index]
       }
 
     case let .tuple(tuple):

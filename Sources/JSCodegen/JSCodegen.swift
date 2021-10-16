@@ -114,7 +114,7 @@ extension Expr {
       return id.jsCodegen
     case let .application(a):
       return """
-      \(a.function.jsCodegen))\
+      \(a.function.jsCodegen)\
       (\(a.arguments.elementsContent.map(\.jsCodegen).joined(separator: ",")))
       """
     case let .closure(c):
@@ -140,7 +140,12 @@ extension Expr {
          \(elseBlock.jsCodegen))
         """
     case let .member(m):
-      return "\(m.base.jsCodegen).\(m.member.jsCodegen)"
+      switch m.member.content.content {
+      case let .identifier(identifier):
+        return "\(m.base.jsCodegen).\(identifier.jsCodegen)"
+      case let .tupleElement(index):
+        return "\(m.base.jsCodegen)[\(index)]"
+      }
     case let .tuple(t):
       return "[\(t.elementsContent.map(\.jsCodegen).joined(separator: ","))]"
     case let .block(b):

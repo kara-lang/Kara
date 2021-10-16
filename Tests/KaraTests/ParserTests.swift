@@ -158,6 +158,11 @@ final class ParserTests: XCTestCase {
     assertSnapshot(exprParser.parse("( 1, 2, 3 ).description"))
   }
 
+  func testTupleMembers() {
+    assertSnapshot(exprParser.parse("a.1"))
+    assertSnapshot(exprParser.parse("f().42"))
+  }
+
   func testApplication() {
     assertSnapshot(exprParser.parse("{x,y,z in x}(1,2,3)"))
     assertSnapshot(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 )"))

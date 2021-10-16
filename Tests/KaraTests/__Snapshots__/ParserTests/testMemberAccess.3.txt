@@ -16,7 +16,9 @@ SyntaxNode(
       ),
       member: SyntaxNode(
         leadingTrivia: [],
-        content: 1:1-1:11 Identifier(value: "description")
+        content: 1:1-1:11 MemberAccess.Member.identifier(
+          Identifier(value: "description")
+        )
       )
     )
   )

@@ -1,11 +1,11 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-0:12 Expr.member(
+  content: 0:0-0:2 Expr.member(
     MemberAccess(
       base: SyntaxNode(
         leadingTrivia: [],
-        content: 0:0-0:0 Expr.literal(
-          Literal.int32(5)
+        content: 0:0-0:0 Expr.identifier(
+          Identifier(value: "a")
         )
       ),
       dot: SyntaxNode(
@@ -14,9 +14,7 @@ SyntaxNode(
       ),
       member: SyntaxNode(
         leadingTrivia: [],
-        content: 0:2-0:12 MemberAccess.Member.identifier(
-          Identifier(value: "description")
-        )
+        content: 0:2-0:2 MemberAccess.Member.tupleElement(1)
       )
     )
   )

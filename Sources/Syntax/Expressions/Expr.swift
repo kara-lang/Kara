@@ -31,7 +31,7 @@ extension Expr: ExpressibleByIntegerLiteral {
 }
 
 enum ExprSyntaxTail {
-  case memberAccess(dot: SyntaxNode<Empty>, SyntaxNode<Identifier>)
+  case memberAccess(dot: SyntaxNode<Empty>, SyntaxNode<MemberAccess.Member>)
   case applicationArguments(DelimitedSequence<Expr>)
 }
 
