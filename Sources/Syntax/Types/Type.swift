@@ -97,7 +97,20 @@ extension Type: Equatable {
 }
 
 extension Type: Hashable {
-  public func hash(into hasher: inout Hasher) {}
+  public func hash(into hasher: inout Hasher) {
+    switch self {
+    case let .constructor(id, args):
+      hasher.combine(id)
+      hasher.combine(args)
+    case let .variable(v):
+      hasher.combine(v)
+    case let .arrow(head, tail):
+      hasher.combine(head)
+      hasher.combine(tail)
+    case let .tuple(elements):
+      hasher.combine(elements)
+    }
+  }
 }
 
 extension Type: CustomStringConvertible {
