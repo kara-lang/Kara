@@ -24,5 +24,5 @@ enum TypeError: Error, Equatable {
   case bindingDeclAlreadyExists(Identifier)
   case multipleInteropModifiers
   case funcDeclBodyMissing(Identifier)
-  case returnTypeMismatch(expected: Type, actual: Type)
+  case typeMismatch(Identifier, expected: Type, actual: Type)
 }

@@ -5,7 +5,7 @@
 import Parsing
 
 public struct TypeIdentifier: Hashable {
-  let value: String
+  public let value: String
 }
 
 extension TypeIdentifier: ExpressibleByStringLiteral {

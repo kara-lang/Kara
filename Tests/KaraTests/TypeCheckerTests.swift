@@ -65,7 +65,7 @@ final class TypeCheckerTests: XCTestCase {
         func f() -> String { 42 }
         """
       ),
-      TypeError.returnTypeMismatch(expected: .string, actual: .int32)
+      TypeError.typeMismatch("f", expected: .string, actual: .int32)
     )
 
     assertError(
@@ -74,7 +74,7 @@ final class TypeCheckerTests: XCTestCase {
         func f() { 42 }
         """
       ),
-      TypeError.returnTypeMismatch(expected: .unit, actual: .int32)
+      TypeError.typeMismatch("f", expected: .unit, actual: .int32)
     )
   }
 

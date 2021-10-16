@@ -18,14 +18,13 @@ extension Declaration {
   var jsCodegen: String {
     switch self {
     case let .function(f):
-      return f.jsCodegen
+      return f.jsCodegen(isMember: false)
 
     case let .binding(b):
       return b.jsCodegen
 
-    case .struct:
-      // FIXME: handle structs with functions
-      return ""
+    case let .struct(s):
+      return s.jsCodegen
 
     case .enum:
       // FIXME: handle enum cases and enums with functions
@@ -38,19 +37,65 @@ extension Declaration {
 }
 
 extension FuncDecl {
-  var jsCodegen: String {
+  func jsCodegen(isMember: Bool) -> String {
     guard let body = body else {
       // FIXME: Assert that interop modifier is present. Maybe we shouldn't reach this by checking for interop
       // modifier presence earlier?
-      return ""
+      fatalError()
     }
 
-    return """
-    const \(identifier.jsCodegen) =\
-     (\(
-       parameters.elementsContent.map(\.internalName.jsCodegen).joined(separator: ", ")
-     )) => \(body.jsCodegen);
-    """
+    if isMember {
+      return """
+      \(identifier.jsCodegen)(\(
+        parameters.elementsContent.map(\.internalName.jsCodegen).joined(separator: ", ")
+      )) { return \(body.jsCodegen) };
+      """
+    } else {
+      return """
+      const \(identifier.jsCodegen) =\
+       (\(
+         parameters.elementsContent.map(\.internalName.jsCodegen).joined(separator: ", ")
+       )) => \(body.jsCodegen);
+      """
+    }
+  }
+}
+
+extension StructDecl {
+  var jsCodegen: String {
+    var functions = [String]()
+    var bindingIdentifiers = [String]()
+    var bindingAssignments = [String]()
+
+    for declaration in declarations.elements.map(\.content.content) {
+      switch declaration {
+      case let .function(f):
+        functions.append(f.jsCodegen(isMember: true))
+
+      case let .binding(b):
+        let identifier = b.identifier.jsCodegen
+        bindingIdentifiers.append(identifier)
+        bindingAssignments.append("this.\(identifier) = \(identifier)")
+
+      default:
+        continue
+      }
+    }
+
+    if functions.isEmpty {
+      return ""
+    } else {
+      return
+        """
+        class \(identifier.jsCodegen) {
+          constructor(\(bindingIdentifiers.joined(separator: ", "))) {
+            \(bindingAssignments.joined(separator: ";\n"))
+          }
+
+          \(functions.joined(separator: "\n"))
+        }
+        """
+    }
   }
 }
 
@@ -86,6 +131,13 @@ extension Identifier {
   var jsCodegen: String {
     // FIXME: check for other keywords and predefined identifiers
     value == "undefined" ? "undefined_" : value
+  }
+}
+
+extension TypeIdentifier {
+  var jsCodegen: String {
+    // FIXME: check for JS built-ins to avoid shadowing
+    value
   }
 }
 

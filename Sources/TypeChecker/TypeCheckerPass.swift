@@ -22,7 +22,7 @@ extension FuncDecl {
     let expectedType = returns?.content.content ?? .unit
 
     guard expectedType == inferredType else {
-      throw TypeError.returnTypeMismatch(expected: expectedType, actual: inferredType)
+      throw TypeError.typeMismatch(identifier.content.content, expected: expectedType, actual: inferredType)
     }
   }
 }
@@ -41,7 +41,7 @@ extension BindingDecl {
     let expectedType = typeAnnotation!.signature.content.content
 
     guard inferredType == expectedType else {
-      throw TypeError.returnTypeMismatch(expected: expectedType, actual: inferredType)
+      throw TypeError.typeMismatch(identifier.content.content, expected: expectedType, actual: inferredType)
     }
   }
 }

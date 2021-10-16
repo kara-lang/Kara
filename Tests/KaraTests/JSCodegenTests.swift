@@ -7,7 +7,7 @@ import SnapshotTesting
 import XCTest
 
 final class JSCodegenTests: XCTestCase {
-  func testFuncDecl() throws {
+  func testFuncDecl() {
     // FIXME: `Bool` and `String` declarations should be picked up from stdlib
     assertJSSnapshot(
       """
@@ -25,7 +25,7 @@ final class JSCodegenTests: XCTestCase {
     )
   }
 
-  func testTypeFuncDecl() throws {
+  func testTypeFuncDecl() {
     // FIXME: `Bool` declaration should be picked up from stdlib
     assertJSSnapshot(
       """
@@ -42,7 +42,24 @@ final class JSCodegenTests: XCTestCase {
     )
   }
 
-  func testStructLiteral() throws {
+  func testStructDecl() {
+    // FIXME: `Int` declaration should be picked up from stdlib
+
+    assertJSSnapshot(
+      """
+      struct Int {}
+
+      struct Size {
+          let width: Int
+          let height: Int
+
+          func multiply(x: Int, y: Int) -> Int { x }
+      }
+      """
+    )
+  }
+
+  func testStructLiteral() {
     assertJSSnapshot(
       """
       struct S { let a: Int }
@@ -54,7 +71,7 @@ final class JSCodegenTests: XCTestCase {
     )
   }
 
-  func testTuple() throws {
+  func testTuple() {
     assertJSSnapshot(
       """
       func f() -> (Int32, String, Bool) {
