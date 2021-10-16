@@ -48,7 +48,7 @@ struct ConstraintSystem {
   private mutating func infer<T>(
     withExtendedBindings bindings: T,
     _ inferred: Expr
-  ) throws -> Type where T: Sequence, T.Element == (Identifier, Scheme) {
+  ) throws -> Type where T: Sequence, T.Element == (Identifier, (Expr?, Scheme)) {
     // preserve old environment to be restored after inference in extended
     // environment has finished
     let old = environment
@@ -91,7 +91,7 @@ struct ConstraintSystem {
     in environment: DeclEnvironment,
     orThrow error: TypeError
   ) throws -> Type {
-    guard let scheme = environment.bindings[id] ?? environment.functions[id] else {
+    guard let scheme = environment.bindings[id]?.scheme ?? environment.functions[id]?.scheme else {
       throw error
     }
 
@@ -118,7 +118,7 @@ struct ConstraintSystem {
       let parameters = ids.map { _ in fresh() }
       return try .arrow(
         parameters,
-        infer(withExtendedBindings: zip(ids, parameters.map { Scheme($0) }), c.body?.content.content ?? .unit)
+        infer(withExtendedBindings: zip(ids, parameters.map { (nil, Scheme($0)) }), c.body?.content.content ?? .unit)
       )
 
     case let .application(app):

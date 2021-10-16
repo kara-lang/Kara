@@ -94,11 +94,11 @@ extension Array: Substitutable where Element: Substitutable {
 
 extension BindingEnvironment: Substitutable {
   func apply(_ sub: Substitution) -> BindingEnvironment {
-    mapValues { $0.apply(sub) }
+    mapValues { ($0.value, $0.scheme.apply(sub)) }
   }
 
   var freeTypeVariables: Set<TypeVariable> {
-    Array(values).freeTypeVariables
+    values.map(\.scheme).freeTypeVariables
   }
 }
 
@@ -119,5 +119,23 @@ extension Constraint: Substitutable {
     case let .member(type, _, memberType):
       return type.freeTypeVariables.union(memberType.freeTypeVariables)
     }
+  }
+}
+
+extension Expr: Substitutable {
+  var freeTypeVariables: Set<TypeVariable> {
+    guard case let .type(type) = self else {
+      return Set()
+    }
+
+    return type.freeTypeVariables
+  }
+
+  func apply(_ sub: Substitution) -> Expr {
+    guard case let .type(type) = self else {
+      return self
+    }
+
+    return .type(type.apply(sub))
   }
 }

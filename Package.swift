@@ -42,10 +42,6 @@ let package = Package(
       ]
     ),
     .target(
-      name: "Interpreter",
-      dependencies: ["Syntax"]
-    ),
-    .target(
       name: "TypeChecker",
       dependencies: ["Syntax"]
     ),

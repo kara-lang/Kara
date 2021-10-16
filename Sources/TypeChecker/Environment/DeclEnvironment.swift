@@ -4,8 +4,11 @@
 
 import Syntax
 
-/** Environment that maps a given binding `Identifier` to its `Type` signature. */
-typealias BindingEnvironment = [Identifier: Scheme]
+/** Environment that maps a given binding `Identifier` to its declaration and `Scheme` signature. */
+typealias BindingEnvironment = [Identifier: (value: Expr?, scheme: Scheme)]
+
+/** Environment that maps a given function `Identifier` to its declaration and `Scheme` signature. */
+typealias FunctionEnvironment = [Identifier: (body: ExprBlock?, scheme: Scheme)]
 
 /** Mapping from a type identifier to an environment with its members. */
 typealias TypeEnvironment = [TypeIdentifier: DeclEnvironment]
@@ -20,7 +23,7 @@ struct StructLiteralField: Hashable {
 struct DeclEnvironment {
   init(
     bindings: BindingEnvironment = [:],
-    functions: BindingEnvironment = [:],
+    functions: FunctionEnvironment = [:],
     types: TypeEnvironment = [:],
     structLiterals: StructLiteralEnvironment = [:]
   ) {
@@ -34,7 +37,7 @@ struct DeclEnvironment {
   private(set) var bindings: BindingEnvironment
 
   /// Environment of functions available in this declaration.
-  private(set) var functions: BindingEnvironment
+  private(set) var functions: FunctionEnvironment
 
   /// Environment of types available in this declaration.
   private(set) var types: TypeEnvironment
@@ -52,7 +55,7 @@ struct DeclEnvironment {
         throw TypeError.funcDeclAlreadyExists(identifier)
       }
 
-      functions[identifier] = f.scheme
+      functions[identifier] = (f.body, f.scheme)
 
     case let .binding(b):
       let identifier = b.identifier.content.content
@@ -64,7 +67,7 @@ struct DeclEnvironment {
         throw TypeError.bindingDeclAlreadyExists(identifier)
       }
 
-      bindings[identifier] = scheme
+      bindings[identifier] = (b.value?.expr.content.content, scheme)
 
     case let .struct(s):
       let typeIdentifier = s.identifier.content.content
@@ -91,12 +94,12 @@ struct DeclEnvironment {
   /// Inserts a given function parameter into this environment.
   /// - Parameter parameter: `FuncDecl.Parameter` value to use for inserting intto the environment
   mutating func insert(_ parameter: FuncDecl.Parameter) {
-    bindings[parameter.internalName.content.content] = .init(parameter.type.content.content)
+    bindings[parameter.internalName.content.content] = (nil, .init(parameter.type.content.content))
   }
 
-  mutating func insert<T>(bindings sequence: T) where T: Sequence, T.Element == (Identifier, Scheme) {
-    for (id, scheme) in sequence {
-      bindings[id] = scheme
+  mutating func insert<T>(bindings sequence: T) where T: Sequence, T.Element == (Identifier, (Expr?, Scheme)) {
+    for (id, (value, scheme)) in sequence {
+      bindings[id] = (value, scheme)
     }
   }
 

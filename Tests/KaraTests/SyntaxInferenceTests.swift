@@ -35,8 +35,8 @@ func --> (argument: Type, returned: Type) -> Type {
 final class SyntaxInferenceTests: XCTestCase {
   func testApplication() throws {
     let e = DeclEnvironment(functions: [
-      "increment": .init(.int32 --> .int32),
-      "stringify": .init(.int32 --> .string),
+      "increment": (nil, .init(.int32 --> .int32)),
+      "stringify": (nil, .init(.int32 --> .string)),
     ])
 
     try XCTAssertNoDifference("increment(0)".inferParsedExpr(environment: e), .int32)
@@ -47,9 +47,9 @@ final class SyntaxInferenceTests: XCTestCase {
 
   func testClosure() throws {
     let e = DeclEnvironment(functions: [
-      "increment": .init(.int32 --> .int32),
-      "stringify": .init(.int32 --> .string),
-      "decode": .init(.string --> .int32),
+      "increment": (nil, .init(.int32 --> .int32)),
+      "stringify": (nil, .init(.int32 --> .string)),
+      "decode": (nil, .init(.string --> .int32)),
     ])
 
     XCTAssertNoDifference(
@@ -80,9 +80,9 @@ final class SyntaxInferenceTests: XCTestCase {
 
   func testClosureWithMultipleArguments() throws {
     let e = DeclEnvironment(functions: [
-      "sum": .init([.int32, .int32] --> .int32),
-      "stringify": .init([.int32, .int32] --> .string),
-      "decode": .init([.string, .string] --> .int32),
+      "sum": (nil, .init([.int32, .int32] --> .int32)),
+      "stringify": (nil, .init([.int32, .int32] --> .string)),
+      "decode": (nil, .init([.string, .string] --> .int32)),
     ])
 
     XCTAssertNoDifference(
@@ -106,9 +106,9 @@ final class SyntaxInferenceTests: XCTestCase {
 
   func testClosureWithMultipleArgumentsDifferentTypes() throws {
     let e = DeclEnvironment(functions: [
-      "concatenate": .init([.int32, .string] --> .string),
-      "sum": .init([.int32, .int32] --> .int32),
-      "decode": .init([.string, .int32] --> .int32),
+      "concatenate": (nil, .init([.int32, .string] --> .string)),
+      "sum": (nil, .init([.int32, .int32] --> .int32)),
+      "decode": (nil, .init([.string, .int32] --> .int32)),
     ])
 
     XCTAssertNoDifference(
@@ -128,8 +128,8 @@ final class SyntaxInferenceTests: XCTestCase {
   func testMember() throws {
     let e = DeclEnvironment(types: [
       "String": .init(bindings: [
-        "appending": .init(.string --> .string),
-        "count": .init(.int32),
+        "appending": (nil, .init(.string --> .string)),
+        "count": (nil, .init(.int32)),
       ]),
     ])
 
@@ -150,10 +150,10 @@ final class SyntaxInferenceTests: XCTestCase {
   func testMemberOfMember() throws {
     let e = DeclEnvironment(types: [
       "String": .init(bindings: [
-        "count": .init(.int32),
+        "count": (nil, .init(.int32)),
       ]),
       "Int32": .init(bindings: [
-        "magnitude": .init(.int32),
+        "magnitude": (nil, .init(.int32)),
       ]),
     ])
 
@@ -170,17 +170,17 @@ final class SyntaxInferenceTests: XCTestCase {
   func testIfThenElse() throws {
     let m: TypeEnvironment = [
       "Int32": .init(bindings: [
-        "isInteger": .init(.bool),
-        "isIntegerFunc": .init([] --> .bool),
-        "toDouble": .init([] --> .double),
+        "isInteger": (nil, .init(.bool)),
+        "isIntegerFunc": (nil, .init([] --> .bool)),
+        "toDouble": (nil, .init([] --> .double)),
       ]),
     ]
 
     let e: BindingEnvironment = [
-      "foo": .init(.bool),
-      "bar": .init(.double),
-      "baz": .init(.double),
-      "fizz": .init(.int32),
+      "foo": (nil, .init(.bool)),
+      "bar": (nil, .init(.double)),
+      "baz": (nil, .init(.double)),
+      "fizz": (nil, .init(.int32)),
     ]
 
     XCTAssertNoDifference(
