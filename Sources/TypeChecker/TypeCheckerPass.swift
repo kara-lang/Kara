@@ -18,18 +18,31 @@ extension FuncDecl {
       functionEnvironment.insert(parameter)
     }
 
-    let inferredReturnType = try Expr.block(body).infer(functionEnvironment)
-    let expectedReturnType = returns?.content.content ?? .unit
+    let inferredType = try Expr.block(body).infer(functionEnvironment)
+    let expectedType = returns?.content.content ?? .unit
 
-    guard expectedReturnType == inferredReturnType else {
-      throw TypeError.returnTypeMismatch(expected: expectedReturnType, actual: inferredReturnType)
+    guard expectedType == inferredType else {
+      throw TypeError.returnTypeMismatch(expected: expectedType, actual: inferredType)
     }
   }
 }
 
 extension StructDecl {
   func typeCheck(_ environment: DeclEnvironment) throws {
-    try declarations.content.content.elements.map(\.content.content).forEach { try $0.typeCheck(environment) }
+    try declarations.elements.map(\.content.content).forEach { try $0.typeCheck(environment) }
+  }
+}
+
+extension BindingDecl {
+  func typeCheck(_ environment: DeclEnvironment) throws {
+    guard let value = value else { return }
+
+    let inferredType = try value.expr.content.content.infer(environment)
+    let expectedType = typeAnnotation!.signature.content.content
+
+    guard inferredType == expectedType else {
+      throw TypeError.returnTypeMismatch(expected: expectedType, actual: inferredType)
+    }
   }
 }
 
@@ -41,6 +54,9 @@ extension Declaration {
 
     case let .struct(s):
       try s.typeCheck(environment)
+
+    case let .binding(b):
+      try b.typeCheck(environment)
 
     default:
       return

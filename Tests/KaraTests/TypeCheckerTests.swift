@@ -98,4 +98,27 @@ final class TypeCheckerTests: XCTestCase {
       TypeError.topLevelAnnotationMissing("y")
     )
   }
+
+  func testTupleMembers() {
+    assertError(
+      try driverPass(
+        """
+        struct S {}
+
+        let s: S = S[]
+        let first: Int = s.0
+        """
+      ),
+      TypeError.invalidStaticMember(.tupleElement(0))
+    )
+
+    assertError(
+      try driverPass(
+        """
+        let first: Int32 = (42, false).5
+        """
+      ),
+      TypeError.tupleIndexOutOfRange([.int32, .bool], addressed: 5)
+    )
+  }
 }

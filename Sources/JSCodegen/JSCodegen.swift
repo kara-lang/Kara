@@ -19,6 +19,10 @@ extension Declaration {
     switch self {
     case let .function(f):
       return f.jsCodegen
+
+    case let .binding(b):
+      return b.jsCodegen
+
     case .struct:
       // FIXME: handle structs with functions
       return ""
