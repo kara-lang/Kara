@@ -6,6 +6,7 @@ import CustomDump
 @testable import Driver
 import SnapshotTesting
 @testable import Syntax
+@testable import TypeChecker
 import XCTest
 
 public extension Snapshotting where Format == String {
@@ -83,4 +84,14 @@ func assertNotFullyConsumed(
   guard state.index != state.source.utf8.endIndex else {
     return XCTFail("Parser input unexpectedly fully consumed", file: file, line: line)
   }
+}
+
+func assertEval(_ source: ParsingState, _ normalForm: NormalForm, file: StaticString = #file, line: UInt = #line) {
+  let e = DeclEnvironment()
+  try XCTAssertNoDifference(
+    exprParser.parse(source).output?.content.content.eval(e),
+    normalForm,
+    file: file,
+    line: line
+  )
 }

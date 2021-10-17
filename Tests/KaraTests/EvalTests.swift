@@ -3,13 +3,15 @@
 //
 
 import CustomDump
-import Syntax
+@testable import Syntax
 @testable import TypeChecker
 import XCTest
 
 final class EvalTests: XCTestCase {
   func testEval() throws {
-    let e = DeclEnvironment()
-    try XCTAssertNoDifference(Expr.literal(5).eval(e), .literal(5))
+    assertEval("5", .literal(5))
+    assertEval("true", .literal(true))
+    assertEval("{ x in x }(42)", .literal(42))
+    assertEval("{ x, y in y }(0, 42)", .literal(42))
   }
 }
