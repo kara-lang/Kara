@@ -10,6 +10,10 @@ SyntaxNode(
               leadingTrivia: [],
               content: 0:0-0:11 Expr.closure(
                 Closure(
+                  openBrace: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 0:0-0:0 ()
+                  ),
                   parameters: [
                     [0]: Closure.Parameter(
                       identifier: SyntaxNode(
@@ -42,6 +46,10 @@ SyntaxNode(
                     content: 0:10-0:10 Expr.identifier(
                       Identifier(value: "x")
                     )
+                  ),
+                  closeBrace: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 0:11-0:11 ()
                   )
                 )
               )

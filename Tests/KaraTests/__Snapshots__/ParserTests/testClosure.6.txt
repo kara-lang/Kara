@@ -2,6 +2,10 @@ SyntaxNode(
   leadingTrivia: [],
   content: 0:0-0:5 Expr.closure(
     Closure(
+      openBrace: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 ()
+      ),
       parameters: [],
       inKeyword: nil,
       body: SyntaxNode(
@@ -9,6 +13,10 @@ SyntaxNode(
         content: 0:1-0:4 Expr.identifier(
           Identifier(value: "xin1")
         )
+      ),
+      closeBrace: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:5-0:5 ()
       )
     )
   )

@@ -2,6 +2,10 @@ SyntaxNode(
   leadingTrivia: [],
   content: 0:0-0:15 Expr.closure(
     Closure(
+      openBrace: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 ()
+      ),
       parameters: [
         [0]: Closure.Parameter(
           identifier: SyntaxNode(
@@ -34,6 +38,12 @@ SyntaxNode(
         content: 0:13-0:13 Expr.literal(
           Literal.int32(1)
         )
+      ),
+      closeBrace: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
+        content: 0:15-0:15 ()
       )
     )
   )

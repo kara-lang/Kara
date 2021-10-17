@@ -10,15 +10,30 @@ public struct Closure {
     public let typeAnnotation: SyntaxNode<Type>?
   }
 
+  public let openBrace: SyntaxNode<Empty>
   // FIXME: use a form of `DelimitedSequence` here?
   public let parameters: [Parameter]
   public let inKeyword: SyntaxNode<Empty>?
   public let body: SyntaxNode<Expr>?
+
+  public let closeBrace: SyntaxNode<Empty>
 }
 
 extension Closure.Parameter {
   init(identifier: SyntaxNode<Identifier>) {
     self.init(identifier: identifier, typeAnnotation: nil)
+  }
+}
+
+extension Closure: SyntaxNodeContainer {
+  var start: SyntaxNode<Empty> { openBrace }
+  var end: SyntaxNode<Empty> { closeBrace }
+}
+
+// FIXME: it's an awful hack, but it should work
+extension Closure: Equatable {
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    lhs.start == rhs.start && lhs.end == rhs.end
   }
 }
 
@@ -46,6 +61,7 @@ extension Closure: CustomStringConvertible {
 
 let closureParser =
   openBraceParser
+    // FIXME: should use `SyntaxNodeParser` here to support comments
     .takeSkippingWhitespace(
       Optional.parser(
         // Parses closures of form `{ a, b, c, in }`, note the trailing comma
@@ -85,19 +101,13 @@ let closureParser =
         }
       )
     )
-    .skip(statefulWhitespace())
     .take(closeBraceParser)
     .map { openBrace, params, body, closeBrace in
-      SyntaxNode(
-        leadingTrivia: openBrace.leadingTrivia,
-        content: SourceRange(
-          start: openBrace.content.start,
-          end: closeBrace.content.end,
-          content: Closure(
-            parameters: params?.0 ?? [],
-            inKeyword: params?.1,
-            body: body
-          )
-        )
-      )
+      Closure(
+        openBrace: openBrace,
+        parameters: params?.0 ?? [],
+        inKeyword: params?.1,
+        body: body,
+        closeBrace: closeBrace
+      ).syntaxNode
     }

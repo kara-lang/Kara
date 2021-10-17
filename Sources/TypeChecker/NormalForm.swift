@@ -4,7 +4,7 @@
 
 import Syntax
 
-enum NormalForm {
+enum NormalForm: Equatable {
   case identifier(Identifier)
   case closure(Closure)
   case literal(Literal)

@@ -2,9 +2,17 @@ SyntaxNode(
   leadingTrivia: [],
   content: 0:0-0:1 Expr.closure(
     Closure(
+      openBrace: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 ()
+      ),
       parameters: [],
       inKeyword: nil,
-      body: nil
+      body: nil,
+      closeBrace: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:1-0:1 ()
+      )
     )
   )
 )
