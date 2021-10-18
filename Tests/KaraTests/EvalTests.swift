@@ -13,5 +13,6 @@ final class EvalTests: XCTestCase {
     assertEval("true", .literal(true))
     assertEval("{ x in x }(42)", .literal(42))
     assertEval("{ x, y in y }(0, 42)", .literal(42))
+    assertEval("{ x, y, z in if z { x } else { y }}(0, 42, false)", .literal(42))
   }
 }

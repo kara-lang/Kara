@@ -6,6 +6,7 @@ import Syntax
 
 enum NormalForm: Equatable {
   case identifier(Identifier)
+  // FIXME: use a different closure type separate from the `Syntax` type
   case closure(Closure)
   case literal(Literal)
   indirect case ifThenElse(condition: Identifier, then: NormalForm, else: NormalForm)
@@ -81,12 +82,12 @@ extension Expr {
     case let .ifThenElse(i):
       switch try i.condition.content.content.eval(environment) {
       case let .literal(.bool(condition)):
-        return condition ? i.thenBlock.eval(environment) : (
+        return try condition ? i.thenBlock.eval(environment) : (
           i.elseBranch?.elseBlock.eval(environment) ?? .tuple([])
         )
 
       case let .identifier(id):
-        return .ifThenElse(
+        return try .ifThenElse(
           condition: id,
           then: i.thenBlock.eval(environment),
           else: i.elseBranch?.elseBlock.eval(environment) ?? .tuple([])
@@ -103,7 +104,7 @@ extension Expr {
       return try .tuple(t.elementsContent.map { try $0.eval(environment) })
 
     case let .block(b):
-      return b.eval(environment)
+      return try b.eval(environment)
 
     case let .structLiteral(s):
       // FIXME: should we unify `TypeIdentifier` and `Identifier`?
@@ -126,7 +127,22 @@ extension Expr {
 }
 
 extension ExprBlock {
-  func eval(_ environment: DeclEnvironment) -> NormalForm {
+  func eval(_ environment: DeclEnvironment) throws -> NormalForm {
+    var modifiedEnvironment = environment
+
+    for (i, element) in elements.enumerated() {
+      switch element.content.content {
+      case let .expr(e) where i == elements.count - 1:
+        return try e.eval(environment)
+
+      case let .binding(b):
+        try modifiedEnvironment.insert(.binding(b))
+
+      default:
+        fatalError()
+      }
+    }
+
     fatalError()
   }
 }
