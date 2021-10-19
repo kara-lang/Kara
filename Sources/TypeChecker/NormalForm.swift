@@ -11,7 +11,7 @@ enum NormalForm: Equatable {
   case literal(Literal)
   indirect case ifThenElse(condition: Identifier, then: NormalForm, else: NormalForm)
   case tuple([NormalForm])
-  case dataConstructor(Identifier, [NormalForm])
+  case structLiteral(Identifier, [Identifier: NormalForm])
   case typeConstructor(TypeIdentifier, [NormalForm])
   indirect case arrow([NormalForm], NormalForm)
 }
@@ -49,13 +49,10 @@ extension Expr {
       let arguments = a.arguments.elementsContent
 
       switch try a.function.content.content.eval(environment) {
-      case let .identifier(i):
-        return try .dataConstructor(i, arguments.map { try $0.eval(environment) })
-
       case let .closure(c):
         guard
           let body = c.body?.content.content,
-          // FIXME: cache this inference call
+          // FIXME: cache or avoid this inference call
           case let .arrow(typesOfArguments, _) = try Expr.closure(c).infer(environment)
         else {
           return .tuple([])
@@ -97,8 +94,8 @@ extension Expr {
         fatalError()
       }
 
-    case .member:
-      fatalError()
+    case let .member(m):
+      return try m.eval(environment)
 
     case let .tuple(t):
       return try .tuple(t.elementsContent.map { try $0.eval(environment) })
@@ -107,14 +104,18 @@ extension Expr {
       return try b.eval(environment)
 
     case let .structLiteral(s):
-      // FIXME: should we unify `TypeIdentifier` and `Identifier`?
+      // FIXME: should we get rid of `TypeIdentifier` and use `Identifier` everywhere instead?
       guard case let .typeConstructor(i, _) = s.type.content.content.eval(environment) else {
         fatalError()
       }
 
-      return try .dataConstructor(
+      return try .structLiteral(
         Identifier(stringLiteral: i.value),
-        s.elements.elementsContent.map { try $0.value.content.content.eval(environment) }
+        .init(
+          uniqueKeysWithValues: s.elements.elementsContent.map {
+            try ($0.property.content.content, $0.value.content.content.eval(environment))
+          }
+        )
       )
 
     case let .type(t):
@@ -144,5 +145,21 @@ extension ExprBlock {
     }
 
     fatalError()
+  }
+}
+
+extension MemberAccess {
+  func eval(_ environment: DeclEnvironment) throws -> NormalForm {
+    let base = try base.content.content.eval(environment)
+    switch (base, member.content.content) {
+    case let (.tuple(elements), .tupleElement(i)):
+      return elements[i]
+
+    case let (.structLiteral(_, args), .identifier(member)):
+      return args[member]!
+
+    default:
+      fatalError()
+    }
   }
 }
