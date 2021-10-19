@@ -72,4 +72,5 @@ func allCounts(vector: [String; n]) -> [Nat; n] {
         .empty
     case let .cons(str, rest):
         .cons(str.count, allCounts(rest))
+    }
 }
