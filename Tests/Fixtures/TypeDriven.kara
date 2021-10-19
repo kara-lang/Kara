@@ -61,9 +61,9 @@ enum Nat {
     case addOne(Nat)
 }
 
-enum Vector(count: Nat, Element) {
-    case empty -> Vector(.zero, Element)
-    case cons(Element, Vec(count, Element)) -> Vector(.addOne(count), Element)
+enum Vector(Count: Nat, Element) {
+    case empty: Vector(.zero, Element)
+    case cons(Element, Vector(Count, Element)) -> Vector(.addOne(Count), Element)
 }
 
 func allCounts(vector: [String; n]) -> [Nat; n] {
