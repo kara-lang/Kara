@@ -73,7 +73,7 @@ struct ConstraintSystem {
 
   mutating func lookup(
     _ member: Identifier,
-    in typeID: TypeIdentifier
+    in typeID: Identifier
   ) throws -> Type {
     guard let environment = environment.types[typeID] else {
       throw TypeError.unknownType(typeID)
@@ -92,7 +92,10 @@ struct ConstraintSystem {
     orThrow error: TypeError
   ) throws -> Type {
     guard let scheme = environment.bindings[id]?.scheme ?? environment.functions[id]?.scheme else {
-      throw error
+      guard environment.types[id] != nil else {
+        throw error
+      }
+      return .type
     }
 
     return instantiate(scheme)

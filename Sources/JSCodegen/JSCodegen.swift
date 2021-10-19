@@ -134,13 +134,6 @@ extension Identifier {
   }
 }
 
-extension TypeIdentifier {
-  var jsCodegen: String {
-    // FIXME: check for JS built-ins to avoid shadowing
-    value
-  }
-}
-
 extension StructLiteral.Element {
   var jsCodegen: String {
     "\(property.jsCodegen): \(value.jsCodegen)"

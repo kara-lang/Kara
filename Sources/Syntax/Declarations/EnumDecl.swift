@@ -7,7 +7,7 @@ import Parsing
 public struct EnumDecl {
   public let modifiers: [SyntaxNode<DeclModifier>]
   public let enumKeyword: SyntaxNode<Empty>
-  public let identifier: SyntaxNode<TypeIdentifier>
+  public let identifier: SyntaxNode<Identifier>
   public let genericParameters: [TypeVariable]
   public let declarations: SyntaxNode<DeclBlock>
 }
@@ -36,7 +36,7 @@ let enumParser =
   Many(declModifierParser)
     .take(SyntaxNodeParser(Terminal("enum")))
     .skip(statefulWhitespace(isRequired: true))
-    .take(typeIdentifierParser)
+    .take(identifierParser)
     .take(declBlockParser)
     // FIXME: generic parameters
     .map { EnumDecl(modifiers: $0, enumKeyword: $1, identifier: $2, genericParameters: [], declarations: $3) }

@@ -176,6 +176,8 @@ final class ParserTests: XCTestCase {
 
   func testStructLiteral() {
     assertSnapshot(exprParser.parse(#"S [a: 5, b: true, c: "c"]"#))
+    assertSnapshot(exprParser.parse(#"S []"#))
+    assertSnapshot(exprParser.parse(#"S[]"#))
   }
 
   func testTypeConstructor() {

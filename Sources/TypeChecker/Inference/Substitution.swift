@@ -122,20 +122,12 @@ extension Constraint: Substitutable {
   }
 }
 
-extension Expr: Substitutable {
+extension NormalForm: Substitutable {
   var freeTypeVariables: Set<TypeVariable> {
-    guard case let .type(type) = self else {
-      return Set()
-    }
-
-    return type.freeTypeVariables
+    Set()
   }
 
-  func apply(_ sub: Substitution) -> Expr {
-    guard case let .type(type) = self else {
-      return self
-    }
-
-    return .type(type.apply(sub))
+  func apply(_: Substitution) -> NormalForm {
+    self
   }
 }

@@ -1,10 +1,10 @@
 SyntaxNode(
   leadingTrivia: [],
   content: 0:0-0:9 Type.constructor(
-    TypeIdentifier(value: "Array"),
+    Identifier(value: "Array"),
     [
       [0]: Type.constructor(
-        TypeIdentifier(value: "Int"),
+        Identifier(value: "Int"),
         []
       )
     ]

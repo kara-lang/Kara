@@ -9,7 +9,9 @@ SyntaxNode(
       parameters: [],
       inKeyword: nil,
       body: SyntaxNode(
-        leadingTrivia: [],
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
         content: 0:2-0:2 Expr.literal(
           Literal.int32(1)
         )

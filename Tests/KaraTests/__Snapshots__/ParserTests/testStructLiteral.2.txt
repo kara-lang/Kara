@@ -1,0 +1,27 @@
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:3 Expr.structLiteral(
+    StructLiteral(
+      type: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 Type.constructor(
+          Identifier(value: "S"),
+          []
+        )
+      ),
+      elements: DelimitedSequence(
+        start: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:2-0:2 ()
+        ),
+        elements: [],
+        end: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:3-0:3 ()
+        )
+      )
+    )
+  )
+)

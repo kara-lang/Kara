@@ -1,9 +1,6 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-0:4 Expr.type(
-    Type.constructor(
-      TypeIdentifier(value: "Int32"),
-      []
-    )
+  content: 0:0-0:4 Expr.identifier(
+    Identifier(value: "Int32")
   )
 )

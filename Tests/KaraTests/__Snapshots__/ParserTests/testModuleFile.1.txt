@@ -11,7 +11,7 @@ ModuleFile(
           ),
           identifier: SyntaxNode(
             leadingTrivia: [],
-            content: 0:7-0:12 TypeIdentifier(value: "String")
+            content: 0:7-0:12 Identifier(value: "String")
           ),
           genericParameters: [],
           declarations: SyntaxNode(
@@ -79,7 +79,7 @@ ModuleFile(
                         [0]: Whitespace(" ")
                       ],
                       content: 2:18-2:21 Type.constructor(
-                        TypeIdentifier(value: "Bool"),
+                        Identifier(value: "Bool"),
                         []
                       )
                     )
@@ -98,13 +98,15 @@ ModuleFile(
               [0]: Whitespace(" ")
             ],
             content: 2:27-2:32 Type.constructor(
-              TypeIdentifier(value: "String"),
+              Identifier(value: "String"),
               []
             )
           ),
           body: ExprBlock(
             openBrace: SyntaxNode(
-              leadingTrivia: [],
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
               content: 2:34-2:34 ()
             ),
             elements: [

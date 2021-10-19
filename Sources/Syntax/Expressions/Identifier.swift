@@ -18,17 +18,19 @@ extension Identifier: CustomStringConvertible {
   public var description: String { value }
 }
 
-/// Identifiers can only start with a lowercase letter or an underscore.
+/// Identifiers can only start with a letter or an underscore, digits are not allowed.
 let identifierHead = [
   UInt8(ascii: "_"),
-] + Array(UInt8(ascii: "a")...UInt8(ascii: "z"))
+] + Array(UInt8(ascii: "A")...UInt8(ascii: "Z")) + Array(UInt8(ascii: "a")...UInt8(ascii: "z"))
 
-let identifierTail = identifierHead + Array(UInt8(ascii: "A")...UInt8(ascii: "Z")) +
+let identifierTail = identifierHead +
   Array(UInt8(ascii: "0")...UInt8(ascii: "9"))
 
 let identifierSequenceParser =
   First<UTF8SubSequence>().filter { identifierHead.contains($0) }
-    .take(Prefix { identifierTail.contains($0) })
+    .take(Prefix {
+      identifierTail.contains($0)
+    })
     .compactMap { String(bytes: [$0] + Array($1), encoding: .utf8) }
 
 let identifierParser = SyntaxNodeParser(

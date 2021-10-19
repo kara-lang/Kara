@@ -6,7 +6,7 @@ import Parsing
 
 public struct TraitDecl {
   public let traitKeyword: SyntaxNode<Empty>
-  public let identifier: SyntaxNode<TypeIdentifier>
+  public let identifier: SyntaxNode<Identifier>
   public let declarations: SyntaxNode<DeclBlock>
 }
 
@@ -27,7 +27,7 @@ extension TraitDecl: CustomStringConvertible {
 }
 
 let traitParser = SyntaxNodeParser(Terminal("trait"))
-  .take(typeIdentifierParser)
+  .take(identifierParser)
   .take(declBlockParser)
   .map(TraitDecl.init)
   .map(\.syntaxNode)

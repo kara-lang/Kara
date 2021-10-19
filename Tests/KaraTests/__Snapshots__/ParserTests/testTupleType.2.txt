@@ -3,19 +3,19 @@ SyntaxNode(
   content: 0:0-0:27 Type.tuple(
     [
       [0]: Type.constructor(
-        TypeIdentifier(value: "Int"),
+        Identifier(value: "Int"),
         []
       ),
       [1]: Type.constructor(
-        TypeIdentifier(value: "Double"),
+        Identifier(value: "Double"),
         []
       ),
       [2]: Type.constructor(
-        TypeIdentifier(value: "Bool"),
+        Identifier(value: "Bool"),
         []
       ),
       [3]: Type.constructor(
-        TypeIdentifier(value: "String"),
+        Identifier(value: "String"),
         []
       )
     ]

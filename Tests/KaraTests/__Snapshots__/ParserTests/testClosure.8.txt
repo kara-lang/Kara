@@ -9,7 +9,9 @@ SyntaxNode(
       parameters: [
         [0]: Closure.Parameter(
           identifier: SyntaxNode(
-            leadingTrivia: [],
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
             content: 0:2-0:2 Identifier(value: "x")
           ),
           typeAnnotation: nil

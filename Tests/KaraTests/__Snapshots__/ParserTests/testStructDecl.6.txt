@@ -8,7 +8,7 @@ SyntaxNode(
     ),
     identifier: SyntaxNode(
       leadingTrivia: [],
-      content: 0:7-0:22 TypeIdentifier(value: "StoredProperties")
+      content: 0:7-0:22 Identifier(value: "StoredProperties")
     ),
     genericParameters: [],
     declarations: SyntaxNode(
@@ -38,7 +38,7 @@ SyntaxNode(
                 ),
                 identifier: SyntaxNode(
                   leadingTrivia: [],
-                  content: 1:9-1:14 TypeIdentifier(value: "Inner1")
+                  content: 1:9-1:14 Identifier(value: "Inner1")
                 ),
                 genericParameters: [],
                 declarations: SyntaxNode(
@@ -81,7 +81,7 @@ SyntaxNode(
                                   [0]: Whitespace(" ")
                                 ],
                                 content: 2:11-2:16 Type.constructor(
-                                  TypeIdentifier(value: "Double"),
+                                  Identifier(value: "Double"),
                                   []
                                 )
                               )
@@ -92,7 +92,9 @@ SyntaxNode(
                       )
                     ],
                     closeBrace: SyntaxNode(
-                      leadingTrivia: [],
+                      leadingTrivia: [
+                        [0]: Whitespace("\n  ")
+                      ],
                       content: 3:2-3:2 ()
                     )
                   )
@@ -128,7 +130,7 @@ SyntaxNode(
                       [0]: Whitespace(" ")
                     ],
                     content: 4:9-4:11 Type.constructor(
-                      TypeIdentifier(value: "Int"),
+                      Identifier(value: "Int"),
                       []
                     )
                   )
@@ -139,23 +141,25 @@ SyntaxNode(
           ),
           [2]: SyntaxNode(
             leadingTrivia: [
-              [0]: Comment(
+              [0]: Whitespace("    "),
+              [1]: Comment(
                 kind: Comment.Kind.singleLine,
                 isDocComment: false,
                 content: " `a` comment"
               ),
-              [1]: Whitespace("\n  ")
+              [2]: Whitespace("\n  ")
             ],
             content: 5:2-5:6 Declaration.binding(
               BindingDecl(
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [
-                    [0]: Comment(
+                    [0]: Whitespace("    "),
+                    [1]: Comment(
                       kind: Comment.Kind.singleLine,
                       isDocComment: false,
                       content: " `a` comment"
                     ),
-                    [1]: Whitespace("\n  ")
+                    [2]: Whitespace("\n  ")
                   ],
                   content: 5:2-5:4 ()
                 ),
@@ -175,7 +179,7 @@ SyntaxNode(
                       [0]: Whitespace(" ")
                     ],
                     content: 5:9-5:12 Type.constructor(
-                      TypeIdentifier(value: "Bool"),
+                      Identifier(value: "Bool"),
                       []
                     )
                   )
@@ -186,23 +190,25 @@ SyntaxNode(
           ),
           [3]: SyntaxNode(
             leadingTrivia: [
-              [0]: Comment(
+              [0]: Whitespace("   "),
+              [1]: Comment(
                 kind: Comment.Kind.singleLine,
                 isDocComment: false,
                 content: " `b` comment"
               ),
-              [1]: Whitespace("\n  ")
+              [2]: Whitespace("\n  ")
             ],
             content: 6:2-6:6 Declaration.binding(
               BindingDecl(
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [
-                    [0]: Comment(
+                    [0]: Whitespace("   "),
+                    [1]: Comment(
                       kind: Comment.Kind.singleLine,
                       isDocComment: false,
                       content: " `b` comment"
                     ),
-                    [1]: Whitespace("\n  ")
+                    [2]: Whitespace("\n  ")
                   ],
                   content: 6:2-6:4 ()
                 ),
@@ -222,7 +228,7 @@ SyntaxNode(
                       [0]: Whitespace(" ")
                     ],
                     content: 6:9-6:14 Type.constructor(
-                      TypeIdentifier(value: "String"),
+                      Identifier(value: "String"),
                       []
                     )
                   )
@@ -233,30 +239,32 @@ SyntaxNode(
           ),
           [4]: SyntaxNode(
             leadingTrivia: [
-              [0]: Comment(
+              [0]: Whitespace(" "),
+              [1]: Comment(
                 kind: Comment.Kind.singleLine,
                 isDocComment: false,
                 content: " `c` comment"
               ),
-              [1]: Whitespace("\n\n  ")
+              [2]: Whitespace("\n\n  ")
             ],
             content: 8:2-10:2 Declaration.struct(
               StructDecl(
                 modifiers: [],
                 structKeyword: SyntaxNode(
                   leadingTrivia: [
-                    [0]: Comment(
+                    [0]: Whitespace(" "),
+                    [1]: Comment(
                       kind: Comment.Kind.singleLine,
                       isDocComment: false,
                       content: " `c` comment"
                     ),
-                    [1]: Whitespace("\n\n  ")
+                    [2]: Whitespace("\n\n  ")
                   ],
                   content: 8:2-8:7 ()
                 ),
                 identifier: SyntaxNode(
                   leadingTrivia: [],
-                  content: 8:9-8:14 TypeIdentifier(value: "Inner2")
+                  content: 8:9-8:14 Identifier(value: "Inner2")
                 ),
                 genericParameters: [],
                 declarations: SyntaxNode(
@@ -299,7 +307,7 @@ SyntaxNode(
                                   [0]: Whitespace(" ")
                                 ],
                                 content: 9:11-9:15 Type.constructor(
-                                  TypeIdentifier(value: "Float"),
+                                  Identifier(value: "Float"),
                                   []
                                 )
                               )
@@ -310,7 +318,9 @@ SyntaxNode(
                       )
                     ],
                     closeBrace: SyntaxNode(
-                      leadingTrivia: [],
+                      leadingTrivia: [
+                        [0]: Whitespace("\n  ")
+                      ],
                       content: 10:2-10:2 ()
                     )
                   )
@@ -346,7 +356,7 @@ SyntaxNode(
                       [0]: Whitespace(" ")
                     ],
                     content: 12:14-12:19 Type.constructor(
-                      TypeIdentifier(value: "Inner1"),
+                      Identifier(value: "Inner1"),
                       []
                     )
                   )
@@ -356,11 +366,15 @@ SyntaxNode(
             )
           ),
           [6]: SyntaxNode(
-            leadingTrivia: [],
+            leadingTrivia: [
+              [0]: Whitespace("\n  ")
+            ],
             content: 13:2-13:11 Declaration.binding(
               BindingDecl(
                 bindingKeyword: SyntaxNode(
-                  leadingTrivia: [],
+                  leadingTrivia: [
+                    [0]: Whitespace("\n  ")
+                  ],
                   content: 13:2-13:4 ()
                 ),
                 identifier: SyntaxNode(
@@ -379,7 +393,7 @@ SyntaxNode(
                       [0]: Whitespace(" ")
                     ],
                     content: 13:14-13:19 Type.constructor(
-                      TypeIdentifier(value: "Inner2"),
+                      Identifier(value: "Inner2"),
                       []
                     )
                   )
@@ -390,7 +404,9 @@ SyntaxNode(
           )
         ],
         closeBrace: SyntaxNode(
-          leadingTrivia: [],
+          leadingTrivia: [
+            [0]: Whitespace("\n")
+          ],
           content: 14:0-14:0 ()
         )
       )

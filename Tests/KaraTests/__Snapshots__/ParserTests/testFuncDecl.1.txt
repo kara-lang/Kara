@@ -37,7 +37,7 @@ SyntaxNode(
                   [0]: Whitespace(" ")
                 ],
                 content: 0:10-0:12 Type.constructor(
-                  TypeIdentifier(value: "Int"),
+                  Identifier(value: "Int"),
                   []
                 )
               )
@@ -56,13 +56,15 @@ SyntaxNode(
         [0]: Whitespace(" ")
       ],
       content: 0:18-0:20 Type.constructor(
-        TypeIdentifier(value: "Int"),
+        Identifier(value: "Int"),
         []
       )
     ),
     body: ExprBlock(
       openBrace: SyntaxNode(
-        leadingTrivia: [],
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
         content: 0:22-0:22 ()
       ),
       elements: [

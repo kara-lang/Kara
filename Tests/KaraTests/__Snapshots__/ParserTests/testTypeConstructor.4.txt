@@ -1,17 +1,17 @@
 SyntaxNode(
   leadingTrivia: [],
   content: 0:0-2:0 Type.constructor(
-    TypeIdentifier(value: "Dictionary"),
+    Identifier(value: "Dictionary"),
     [
       [0]: Type.constructor(
-        TypeIdentifier(value: "String"),
+        Identifier(value: "String"),
         []
       ),
       [1]: Type.constructor(
-        TypeIdentifier(value: "Array"),
+        Identifier(value: "Array"),
         [
           [0]: Type.constructor(
-            TypeIdentifier(value: "Bool"),
+            Identifier(value: "Bool"),
             []
           )
         ]

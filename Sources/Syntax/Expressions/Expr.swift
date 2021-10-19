@@ -38,10 +38,10 @@ enum ExprSyntaxTail {
 let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
   SyntaxNodeParser(literalParser.map(Expr.literal).stateful())
     .orElse(ifThenElseParser.map { $0.map(Expr.ifThenElse) })
+    .orElse(structLiteralParser.map { $0.map(Expr.structLiteral) })
     .orElse(identifierParser.map { $0.map(Expr.identifier) })
     .orElse(tupleExprParser.map { $0.syntaxNode.map(Expr.tuple) })
     .orElse(closureParser.map { $0.map(Expr.closure) })
-    .orElse(structLiteralParser.map { $0.map(Expr.structLiteral) })
     .orElse(typeParser.map { $0.map(Expr.type) })
 
     // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain

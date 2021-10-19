@@ -78,7 +78,7 @@ SyntaxNode(
                   [0]: Whitespace(" ")
                 ],
                 content: 0:31-0:34 Type.constructor(
-                  TypeIdentifier(value: "Bool"),
+                  Identifier(value: "Bool"),
                   []
                 )
               )
@@ -97,7 +97,7 @@ SyntaxNode(
         [0]: Whitespace(" ")
       ],
       content: 0:40-0:45 Type.constructor(
-        TypeIdentifier(value: "String"),
+        Identifier(value: "String"),
         []
       )
     ),

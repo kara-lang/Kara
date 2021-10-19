@@ -11,9 +11,9 @@ typealias BindingEnvironment = [Identifier: (value: Expr?, scheme: Scheme)]
 typealias FunctionEnvironment = [Identifier: (body: ExprBlock?, scheme: Scheme)]
 
 /** Mapping from a type identifier to an environment with its members. */
-typealias TypeEnvironment = [TypeIdentifier: DeclEnvironment]
+typealias TypeEnvironment = [Identifier: DeclEnvironment]
 
-typealias StructLiteralEnvironment = [TypeIdentifier: Set<StructLiteralField>]
+typealias StructLiteralEnvironment = [Identifier: Set<StructLiteralField>]
 
 struct StructLiteralField: Hashable {
   let identifier: SourceRange<Identifier>

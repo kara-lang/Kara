@@ -12,7 +12,7 @@ enum NormalForm: Equatable {
   indirect case ifThenElse(condition: Identifier, then: NormalForm, else: NormalForm)
   case tuple([NormalForm])
   case structLiteral(Identifier, [Identifier: NormalForm])
-  case typeConstructor(TypeIdentifier, [NormalForm])
+  case typeConstructor(Identifier, [NormalForm])
   indirect case arrow([NormalForm], NormalForm)
 }
 

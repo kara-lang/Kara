@@ -19,7 +19,7 @@ public struct InteropModifier {
 
 let interopModifierParser = SyntaxNodeParser(Terminal("interop"))
   .take(openParenParser)
-  .take(SyntaxNodeParser(typeIdentifierSequenceParser.stateful()))
+  .take(SyntaxNodeParser(identifierSequenceParser.stateful()))
   .take(SyntaxNodeParser(commaParser))
   .take(SyntaxNodeParser(singleQuotedStringParser.stateful()))
   .take(closeParenParser)

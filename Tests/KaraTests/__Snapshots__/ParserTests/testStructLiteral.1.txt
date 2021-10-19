@@ -5,13 +5,15 @@ SyntaxNode(
       type: SyntaxNode(
         leadingTrivia: [],
         content: 0:0-0:0 Type.constructor(
-          TypeIdentifier(value: "S"),
+          Identifier(value: "S"),
           []
         )
       ),
       elements: DelimitedSequence(
         start: SyntaxNode(
-          leadingTrivia: [],
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
           content: 0:2-0:2 ()
         ),
         elements: [

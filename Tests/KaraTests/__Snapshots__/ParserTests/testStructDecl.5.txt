@@ -8,7 +8,7 @@ SyntaxNode(
     ),
     identifier: SyntaxNode(
       leadingTrivia: [],
-      content: 0:7-0:22 TypeIdentifier(value: "StoredProperties")
+      content: 0:7-0:22 Identifier(value: "StoredProperties")
     ),
     genericParameters: [],
     declarations: SyntaxNode(
@@ -51,7 +51,7 @@ SyntaxNode(
                       [0]: Whitespace(" ")
                     ],
                     content: 1:9-1:11 Type.constructor(
-                      TypeIdentifier(value: "Int"),
+                      Identifier(value: "Int"),
                       []
                     )
                   )
@@ -62,23 +62,25 @@ SyntaxNode(
           ),
           [1]: SyntaxNode(
             leadingTrivia: [
-              [0]: Comment(
+              [0]: Whitespace("    "),
+              [1]: Comment(
                 kind: Comment.Kind.singleLine,
                 isDocComment: false,
                 content: " `a` comment"
               ),
-              [1]: Whitespace("\n  ")
+              [2]: Whitespace("\n  ")
             ],
             content: 2:2-2:6 Declaration.binding(
               BindingDecl(
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [
-                    [0]: Comment(
+                    [0]: Whitespace("    "),
+                    [1]: Comment(
                       kind: Comment.Kind.singleLine,
                       isDocComment: false,
                       content: " `a` comment"
                     ),
-                    [1]: Whitespace("\n  ")
+                    [2]: Whitespace("\n  ")
                   ],
                   content: 2:2-2:4 ()
                 ),
@@ -98,7 +100,7 @@ SyntaxNode(
                       [0]: Whitespace(" ")
                     ],
                     content: 2:9-2:12 Type.constructor(
-                      TypeIdentifier(value: "Bool"),
+                      Identifier(value: "Bool"),
                       []
                     )
                   )
@@ -109,23 +111,25 @@ SyntaxNode(
           ),
           [2]: SyntaxNode(
             leadingTrivia: [
-              [0]: Comment(
+              [0]: Whitespace("   "),
+              [1]: Comment(
                 kind: Comment.Kind.singleLine,
                 isDocComment: false,
                 content: " `b` comment"
               ),
-              [1]: Whitespace("\n  ")
+              [2]: Whitespace("\n  ")
             ],
             content: 3:2-3:6 Declaration.binding(
               BindingDecl(
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [
-                    [0]: Comment(
+                    [0]: Whitespace("   "),
+                    [1]: Comment(
                       kind: Comment.Kind.singleLine,
                       isDocComment: false,
                       content: " `b` comment"
                     ),
-                    [1]: Whitespace("\n  ")
+                    [2]: Whitespace("\n  ")
                   ],
                   content: 3:2-3:4 ()
                 ),
@@ -145,7 +149,7 @@ SyntaxNode(
                       [0]: Whitespace(" ")
                     ],
                     content: 3:9-3:14 Type.constructor(
-                      TypeIdentifier(value: "String"),
+                      Identifier(value: "String"),
                       []
                     )
                   )
@@ -157,12 +161,13 @@ SyntaxNode(
         ],
         closeBrace: SyntaxNode(
           leadingTrivia: [
-            [0]: Comment(
+            [0]: Whitespace(" "),
+            [1]: Comment(
               kind: Comment.Kind.singleLine,
               isDocComment: false,
               content: " `c` comment"
             ),
-            [1]: Whitespace("\n")
+            [2]: Whitespace("\n")
           ],
           content: 4:0-4:0 ()
         )

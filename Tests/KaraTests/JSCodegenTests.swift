@@ -26,10 +26,12 @@ final class JSCodegenTests: XCTestCase {
   }
 
   func testTypeFuncDecl() {
-    // FIXME: `Bool` declaration should be picked up from stdlib
+    // FIXME: `Bool`, `String`, and `Int` declarations should be picked up from stdlib
     assertJSSnapshot(
       """
       enum Bool {}
+      struct String {}
+      struct Int {}
 
       func stringOrInt(x: Bool) -> Type {
           if x {

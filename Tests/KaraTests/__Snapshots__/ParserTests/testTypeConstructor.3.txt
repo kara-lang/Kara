@@ -1,14 +1,14 @@
 SyntaxNode(
   leadingTrivia: [],
   content: 0:0-0:24 Type.constructor(
-    TypeIdentifier(value: "Result"),
+    Identifier(value: "Result"),
     [
       [0]: Type.constructor(
-        TypeIdentifier(value: "String"),
+        Identifier(value: "String"),
         []
       ),
       [1]: Type.constructor(
-        TypeIdentifier(value: "IOError"),
+        Identifier(value: "IOError"),
         []
       )
     ]

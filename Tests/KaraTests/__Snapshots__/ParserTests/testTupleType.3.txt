@@ -1,16 +1,16 @@
 SyntaxNode(
   leadingTrivia: [],
   content: 0:0-0:19 Type.constructor(
-    TypeIdentifier(value: "Array"),
+    Identifier(value: "Array"),
     [
       [0]: Type.tuple(
         [
           [0]: Type.constructor(
-            TypeIdentifier(value: "Int"),
+            Identifier(value: "Int"),
             []
           ),
           [1]: Type.constructor(
-            TypeIdentifier(value: "String"),
+            Identifier(value: "String"),
             []
           )
         ]

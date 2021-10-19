@@ -59,14 +59,24 @@ extension Closure: CustomStringConvertible {
   }
 }
 
+private extension Parser where Input == ParsingState {
+  // FIXME: uses of this should be replaced with `SyntaxNodeParser`
+  func skipWithWhitespace<P>(
+    _ parser: P
+  ) -> Parsers.SkipSecond<Parsers.SkipSecond<Self, LineCounter>, P> where P: Parser {
+    skip(statefulWhitespace())
+      .skip(parser)
+  }
+}
+
 let closureParser =
   openBraceParser
-    // FIXME: should use `SyntaxNodeParser` here to support comments
-    .takeSkippingWhitespace(
+    .take(
       Optional.parser(
         // Parses closures of form `{ a, b, c, in }`, note the trailing comma
         of: Many(
           identifierParser
+            // FIXME: use `SyntaxNodeParser` here instead
             .skipWithWhitespace(commaParser)
             .skip(statefulWhitespace())
         )

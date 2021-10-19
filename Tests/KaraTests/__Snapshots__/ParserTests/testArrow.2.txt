@@ -3,19 +3,19 @@ SyntaxNode(
   content: 0:0-0:22 Type.arrow(
     [
       [0]: Type.constructor(
-        TypeIdentifier(value: "Int"),
+        Identifier(value: "Int"),
         []
       )
     ],
     Type.arrow(
       [
         [0]: Type.constructor(
-          TypeIdentifier(value: "Double"),
+          Identifier(value: "Double"),
           []
         )
       ],
       Type.constructor(
-        TypeIdentifier(value: "String"),
+        Identifier(value: "String"),
         []
       )
     )

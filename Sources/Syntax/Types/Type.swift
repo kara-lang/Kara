@@ -39,7 +39,7 @@ public enum Type {
 
    The only available primitive kind in Kara is `Type`.
    */
-  case constructor(TypeIdentifier, [Type])
+  case constructor(Identifier, [Type])
 
   /** A free type variable that can be used as a temporary placeholder type
    during type inference, or as a type variable in a generic declaration as a
@@ -142,10 +142,6 @@ extension Type: CustomStringConvertible {
   }
 }
 
-private let typeConstructorParser = typeIdentifierSequenceParser
-  .map(TypeIdentifier.init(value:))
-  .stateful()
-
 let arrowParser = SyntaxNodeParser(Terminal("->"))
   .ignoreOutput()
   .take(Lazy { typeParser })
@@ -164,7 +160,7 @@ private let genericsParser = delimitedSequenceParser(
   atLeast: 1
 )
 // Fully consume the type tail, don't stop with generic arguments.
-.takeSkippingWhitespace(
+.take(
   Optional.parser(
     of: arrowParser
   )
@@ -179,7 +175,7 @@ private let genericsParser = delimitedSequenceParser(
 
 private enum TypeSyntaxHead {
   case tuple(DelimitedSequence<Type>)
-  case constructor(head: SyntaxNode<TypeIdentifier>)
+  case constructor(head: SyntaxNode<Identifier>)
 }
 
 private enum TypeSyntaxTail {
@@ -191,10 +187,10 @@ let typeParser: AnyParser<ParsingState, SyntaxNode<Type>> =
   tupleTypeParser
     .map { TypeSyntaxHead.tuple($0) }
     .orElse(
-      SyntaxNodeParser(typeConstructorParser)
+      identifierParser
         .map(TypeSyntaxHead.constructor)
     )
-    .takeSkippingWhitespace(
+    .take(
       Optional.parser(
         of: arrowParser
           .map(TypeSyntaxTail.arrow)

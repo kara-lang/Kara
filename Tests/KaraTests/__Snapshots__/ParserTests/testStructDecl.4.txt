@@ -8,7 +8,7 @@ SyntaxNode(
     ),
     identifier: SyntaxNode(
       leadingTrivia: [],
-      content: 0:7-0:9 TypeIdentifier(value: "Foo")
+      content: 0:7-0:9 Identifier(value: "Foo")
     ),
     genericParameters: [],
     declarations: SyntaxNode(
@@ -38,7 +38,7 @@ SyntaxNode(
                 ),
                 identifier: SyntaxNode(
                   leadingTrivia: [],
-                  content: 2:9-2:11 TypeIdentifier(value: "Bar")
+                  content: 2:9-2:11 Identifier(value: "Bar")
                 ),
                 genericParameters: [],
                 declarations: SyntaxNode(
