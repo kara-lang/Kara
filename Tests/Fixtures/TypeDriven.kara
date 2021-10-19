@@ -44,11 +44,15 @@ let x = blah().flatMap { y in
   }
 }
 
-func square(a: Int) -> Int = multiply(a, a)
+func square(a: Int) -> Int { multiply(a, a) }
 
-func factorial(Int) -> Int
-factorial(0) = 1
-factorial(n) = multiply(n, (n - 1))
+func factorial(i: Int) -> Int {
+    if i == 0 {
+        1
+    } else {
+        multiply(n, (n - 1))
+    }
+}
 
 func fill(count: Nat, e: Element) -> Vec(count, Element)
 
@@ -57,15 +61,15 @@ enum Nat {
     case addOne(Nat)
 }
 
-enum Vec(count: Nat, Element) {
-    case empty -> Vec(.zero, Element)
-    case cons(Element, Vec(count, Element)) -> Vec(.addOne(count), Element)
+enum Vector(count: Nat, Element) {
+    case empty -> Vector(.zero, Element)
+    case cons(Element, Vec(count, Element)) -> Vector(.addOne(count), Element)
 }
 
-func allCounts(vector: Vec(n, String)) -> Vec(n, m) {
+func allCounts(vector: [String; n]) -> [Nat; n] {
     switch vector {
-    case []:
-        []
+    case .empty:
+        .empty
     case let .cons(str, rest):
         .cons(str.count, allCounts(rest))
 }
