@@ -1,22 +1,23 @@
 protocol Monad {
-  associatedtype element
+  associatedtype Element
 
-  static func new(element) -> Self<element>
+  static func new(_: Element) -> Self(Element)
 
-  func flatMap(_: element -> Self<newElement>) -> Self<newElement>
+  func flatMap(_: Element -> Self(NewElement)) -> Self(NewElement)
 }
 
-enum Result<value, error> {
-  case success(_: value)
-  case failure(_: error)
+enum Result(Value, Error) {
+  case success(_: Value)
+  case failure(_: Error)
 }
 
 extension Result: Monad {
-    typealias element = value
+    typealias Element = Value
 
-    static func new(_ v: value) { .success(v) }
+    static func new(_ v: Value) { .success(v) }
 
-    func flatMap(binder) = switch self {
+    func flatMap(binder: Value -> Result(NewValue)) -> Result(NewValue) {
+        switch self {
         case .success(value):
             switch binder(value) {
                 case .success(newValue):
@@ -26,10 +27,11 @@ extension Result: Monad {
             }
         case .failure(error):
             .failure(error)
+        }
     }
 }
 
-let x: Result<Int, Error> = do {
+let x: Result(Int, Error) = do {
   let y = try blah()
   let z = try blah()
 
@@ -48,18 +50,22 @@ func factorial(Int) -> Int
 factorial(0) = 1
 factorial(n) = multiply(n, (n - 1))
 
-func fill<Element>(count: Nat, e: Element) -> Vec<count, Element>
+func fill(count: Nat, e: Element) -> Vec(count, Element)
 
 enum Nat {
     case zero
     case addOne(Nat)
 }
 
-enum Vec<count: Nat, element> {
-    case empty -> Vec<.zero, element>
-    case cons(element, Vec<count, element>) -> Vec<.addOne(count), element>
+enum Vec(count: Nat, Element) {
+    case empty -> Vec(.zero, Element)
+    case cons(Element, Vec(count, Element)) -> Vec(.addOne(count), Element)
 }
 
-func allCounts(Vec<n, String>) -> Vec<n, Nat>
-allCounts([]) = []
-allCounts(.cons(str, rest)) = .cons(str.count, allCounts(rest))
+func allCounts(vector: Vec(n, String)) -> Vec(n, m) {
+    switch vector {
+    case []:
+        []
+    case let .cons(str, rest):
+        .cons(str.count, allCounts(rest))
+}
