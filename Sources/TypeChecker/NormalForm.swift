@@ -185,7 +185,7 @@ extension ExprBlock {
 
 extension MemberAccess {
   func eval(_ environment: DeclEnvironment) throws -> NormalForm {
-    let base = try base.content.content.eval(environment)
+    let base = try self.base.content.content.eval(environment)
     switch (base, member.content.content) {
     case let (.tuple(elements), .tupleElement(i)):
       return elements[i]
