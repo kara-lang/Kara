@@ -65,6 +65,17 @@ final class TypeCheckerTests: XCTestCase {
         func f() -> String { 42 }
         """
       ),
+      TypeError.unbound("String")
+    )
+
+    assertError(
+      try driverPass(
+        """
+        struct String {}
+
+        func f() -> String { 42 }
+        """
+      ),
       TypeError.typeMismatch("f", expected: .string, actual: .int32)
     )
 
@@ -84,6 +95,25 @@ final class TypeCheckerTests: XCTestCase {
         """
       ),
       TypeError.exprIsNotType(SourceRange(start: .init(column: 12, line: 0), end: .init(column: 13, line: 0)))
+    )
+
+    assertError(
+      try driverPass(
+        """
+        enum Bool {}
+        struct String {}
+        let StringAlias1: Type = String
+
+        func f(condition: Bool) -> StringAlias2 {
+            if condition {
+                "true"
+            } else {
+                "false"
+            }
+        }
+        """
+      ),
+      TypeError.unbound("StringAlias2")
     )
   }
 

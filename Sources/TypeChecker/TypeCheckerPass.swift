@@ -66,7 +66,7 @@ extension Declaration {
 
 extension ModuleFile {
   func typeCheck() throws {
-    let environment = try environment
+    let environment = try extend(DeclEnvironment())
 
     try declarations.map(\.content.content).forEach { try $0.typeCheck(environment) }
   }

@@ -91,7 +91,12 @@ final class JSCodegenTests: XCTestCase {
 
   func testTuple() {
     assertJSSnapshot(
+      // FIXME: declaration should be picked up from stdlib
       """
+      struct Int32 {}
+      struct String {}
+      enum Bool {}
+
       func f() -> (Int32, String, Bool) {
           (42, "foo", false)
       }

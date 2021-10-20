@@ -5,7 +5,6 @@
 import Syntax
 
 enum NormalForm: Equatable {
-  case identifier(Identifier)
   // FIXME: use a different closure type separate from the `Syntax` type
   case closure(Closure)
   case literal(Literal)
@@ -17,8 +16,6 @@ enum NormalForm: Equatable {
 
   var type: Type? {
     switch self {
-    case let .identifier(i):
-      return .constructor(i, [])
     case let .tuple(elements):
       return elements.types.map(Type.tuple)
 
@@ -74,12 +71,21 @@ extension Expr {
   func eval(_ environment: DeclEnvironment) throws -> NormalForm {
     switch self {
     case let .identifier(i):
-      let evaluatedIdentifier = try (
+      let result = try (
         environment.bindings[i]?.value ??
           environment.functions[i]?.body.flatMap(Expr.block)
       )?.eval(environment)
 
-      return evaluatedIdentifier ?? .identifier(i)
+      if let result = result {
+        return result
+      } else if environment.types[i] != nil {
+        return .typeConstructor(i, [])
+      } else if i == "Type" {
+        return .typeConstructor("Type", [])
+      } else {
+        // FIXME: maybe "Type" should be present in `DeclEnvironment` instead of checking for it directly?
+        throw TypeError.unbound(i)
+      }
 
     case let .application(a):
       let arguments = a.arguments.elementsContent
@@ -117,13 +123,6 @@ extension Expr {
       case let .literal(.bool(condition)):
         return try condition ? i.thenBlock.eval(environment) : (
           i.elseBranch?.elseBlock.eval(environment) ?? .tuple([])
-        )
-
-      case let .identifier(id):
-        return try .ifThenElse(
-          condition: id,
-          then: i.thenBlock.eval(environment),
-          else: i.elseBranch?.elseBlock.eval(environment) ?? .tuple([])
         )
 
       default:

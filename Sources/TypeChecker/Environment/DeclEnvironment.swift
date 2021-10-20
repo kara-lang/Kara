@@ -75,7 +75,7 @@ struct DeclEnvironment {
       guard types[typeIdentifier] == nil else {
         throw TypeError.typeDeclAlreadyExists(typeIdentifier)
       }
-      let environment = try s.environment
+      let environment = try s.extend(self)
       types[typeIdentifier] = environment
 
     case let .enum(e):
@@ -83,7 +83,7 @@ struct DeclEnvironment {
       guard types[typeIdentifier] == nil else {
         throw TypeError.typeDeclAlreadyExists(typeIdentifier)
       }
-      types[typeIdentifier] = try e.environment
+      types[typeIdentifier] = try e.extend(self)
 
     case .trait:
       // FIXME: handle trait declarations
@@ -126,31 +126,25 @@ struct DeclEnvironment {
 }
 
 extension StructDecl {
-  var environment: DeclEnvironment {
-    get throws {
-      try declarations.elements.map(\.content.content).reduce(into: DeclEnvironment()) {
-        try $0.insert($1)
-      }
+  func extend(_ environment: DeclEnvironment) throws -> DeclEnvironment {
+    try declarations.elements.map(\.content.content).reduce(into: environment) {
+      try $0.insert($1)
     }
   }
 }
 
 extension EnumDecl {
-  var environment: DeclEnvironment {
-    get throws {
-      try declarations.elements.map(\.content.content).reduce(into: DeclEnvironment()) {
-        try $0.insert($1)
-      }
+  func extend(_ environment: DeclEnvironment) throws -> DeclEnvironment {
+    try declarations.elements.map(\.content.content).reduce(into: environment) {
+      try $0.insert($1)
     }
   }
 }
 
 extension ModuleFile {
-  var environment: DeclEnvironment {
-    get throws {
-      try declarations.map(\.content.content).reduce(into: DeclEnvironment()) {
-        try $0.insert($1)
-      }
+  func extend(_ environment: DeclEnvironment) throws -> DeclEnvironment {
+    try declarations.map(\.content.content).reduce(into: environment) {
+      try $0.insert($1)
     }
   }
 }
