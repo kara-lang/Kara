@@ -53,12 +53,12 @@ func assertError<T, E: Error & Equatable>(
     _ = try expression()
     XCTFail("Did not throw an error", file: file, line: line)
   } catch {
-    guard let error = error as? E else {
+    guard let actualError = error as? E else {
       XCTFail("Error value \(error) is of unexpected type", file: file, line: line)
       return
     }
 
-    XCTAssertNoDifference(error, expectedError, file: file, line: line)
+    XCTAssertNoDifference(actualError, expectedError, file: file, line: line)
   }
 }
 

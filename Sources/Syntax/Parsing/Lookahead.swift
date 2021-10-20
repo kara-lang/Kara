@@ -11,9 +11,8 @@ struct Lookahead<Inner: Parser>: Parser where Inner.Input: Collection {
 
   func parse(_ input: inout Inner.Input) -> Inner.Output? {
     let oldInput = input
-    let output = inner.parse(&input)
 
-    guard let output = output, isValid(input.prefix(amount)) else {
+    guard let output = inner.parse(&input), isValid(input.prefix(amount)) else {
       input = oldInput
       return nil
     }

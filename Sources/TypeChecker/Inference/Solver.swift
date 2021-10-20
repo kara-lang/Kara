@@ -35,7 +35,7 @@ struct Solver {
    the current solver.
    */
   func solve() throws -> Substitution {
-    var system = system
+    var system = self.system
     guard let constraint = system.removeFirst() else { return substitution }
 
     switch constraint {
