@@ -23,6 +23,22 @@ final class JSCodegenTests: XCTestCase {
       }
       """
     )
+
+    assertJSSnapshot(
+      """
+      enum Bool {}
+      struct String {}
+      let StringAlias: Type = String
+
+      func f(condition: Bool) -> StringAlias {
+          if condition {
+              "true"
+          } else {
+              "false"
+          }
+      }
+      """
+    )
   }
 
   func testTypeFuncDecl() {

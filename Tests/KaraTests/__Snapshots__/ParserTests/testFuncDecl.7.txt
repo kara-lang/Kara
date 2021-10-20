@@ -100,13 +100,25 @@ SyntaxNode(
         content: 0:42-0:42 ()
       )
     ),
-    returns: SyntaxNode(
+    arrow: SyntaxNode(
       leadingTrivia: [
         [0]: Whitespace(" ")
       ],
-      content: 0:47-0:52 Type.constructor(
-        Identifier(value: "String"),
-        []
+      content: 0:44-0:52 FuncDecl.Arrow(
+        arrowSymbol: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:44-0:45 ()
+        ),
+        returns: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:47-0:52 Expr.identifier(
+            Identifier(value: "String")
+          )
+        )
       )
     ),
     body: nil

@@ -25,4 +25,5 @@ enum TypeError: Error, Equatable {
   case multipleInteropModifiers
   case funcDeclBodyMissing(Identifier)
   case typeMismatch(Identifier, expected: Type, actual: Type)
+  case exprIsNotType(SourceRange<Empty>)
 }

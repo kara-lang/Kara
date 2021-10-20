@@ -26,9 +26,21 @@ struct Scheme {
 }
 
 extension FuncDecl {
-  var scheme: Scheme {
-    .init(
-      .arrow(parameters.elementsContent.map(\.type.content.content), returns?.content.content ?? .unit),
+  func returnType(_ environment: DeclEnvironment) throws -> Type {
+    if let expr = arrow?.returns {
+      if let type = try expr.content.content.eval(environment).type {
+        return type
+      } else {
+        throw TypeError.exprIsNotType(expr.range)
+      }
+    } else {
+      return .unit
+    }
+  }
+
+  func scheme(_ environment: DeclEnvironment) throws -> Scheme {
+    try .init(
+      .arrow(parameters.elementsContent.map(\.type.content.content), returnType(environment)),
       variables: genericParameters
     )
   }

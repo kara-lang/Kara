@@ -16,6 +16,10 @@ public struct SyntaxNode<Content> {
   public subscript<T>(dynamicMember keyPath: KeyPath<Content, T>) -> T {
     content.content[keyPath: keyPath]
   }
+
+  public var range: SourceRange<Empty> {
+    SourceRange(start: content.start, end: content.end)
+  }
 }
 
 extension SyntaxNode: Equatable where Content: Equatable {}

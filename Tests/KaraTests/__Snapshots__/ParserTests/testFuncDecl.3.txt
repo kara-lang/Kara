@@ -58,13 +58,25 @@ SyntaxNode(
         content: 0:21-0:21 ()
       )
     ),
-    returns: SyntaxNode(
+    arrow: SyntaxNode(
       leadingTrivia: [
         [0]: Whitespace(" ")
       ],
-      content: 0:26-0:28 Type.constructor(
-        Identifier(value: "Int"),
-        []
+      content: 0:23-0:28 FuncDecl.Arrow(
+        arrowSymbol: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:23-0:24 ()
+        ),
+        returns: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:26-0:28 Expr.identifier(
+            Identifier(value: "Int")
+          )
+        )
       )
     ),
     body: ExprBlock(

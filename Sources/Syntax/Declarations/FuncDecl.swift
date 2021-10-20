@@ -12,13 +12,21 @@ public struct FuncDecl {
     public let type: SyntaxNode<Type>
   }
 
+  public struct Arrow: SyntaxNodeContainer {
+    public let arrowSymbol: SyntaxNode<Empty>
+    public let returns: SyntaxNode<Expr>
+
+    var start: SyntaxNode<Empty> { arrowSymbol }
+    var end: SyntaxNode<Empty> { returns.map { _ in Empty() } }
+  }
+
   public let modifiers: [SyntaxNode<DeclModifier>]
   public let funcKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<Identifier>
   public let genericParameters: [TypeVariable]
   public let parameters: DelimitedSequence<Parameter>
 
-  public let returns: SyntaxNode<Type>?
+  public let arrow: SyntaxNode<Arrow>?
   public var body: ExprBlock?
 }
 
@@ -28,7 +36,7 @@ extension FuncDecl: SyntaxNodeContainer {
   }
 
   var end: SyntaxNode<Empty> {
-    body?.closeBrace ?? returns?.map { _ in Empty() } ?? parameters.end
+    body?.closeBrace ?? arrow?.map(\.returns).map { _ in Empty() } ?? parameters.end
   }
 }
 
@@ -64,7 +72,7 @@ let funcDeclParser =
         elementParser: functionParameterParser
       )
     )
-    .take(Optional.parser(of: arrowParser))
+    .take(Optional.parser(of: arrowTailParser.map(FuncDecl.Arrow.init).map(\.syntaxNode)))
     .take(Optional.parser(of: exprBlockParser))
     .map {
       FuncDecl(
@@ -74,7 +82,7 @@ let funcDeclParser =
         // FIXME: fix generic parameters parsing
         genericParameters: [],
         parameters: $3,
-        returns: $4,
+        arrow: $4,
         body: $5
       ).syntaxNode
     }

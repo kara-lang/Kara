@@ -214,7 +214,7 @@ extension BindingDecl {
   var jsCodegen: String {
     var result = "const \(identifier.jsCodegen)"
     if let value = value {
-      result.append(" = \(value.expr.jsCodegen));")
+      result.append(" = \(value.expr.jsCodegen);")
     } else {
       result.append(";")
     }

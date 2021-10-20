@@ -19,7 +19,7 @@ extension FuncDecl {
     }
 
     let inferredType = try Expr.block(body).infer(functionEnvironment)
-    let expectedType = returns?.content.content ?? .unit
+    let expectedType = try returnType(environment)
 
     guard expectedType == inferredType else {
       throw TypeError.typeMismatch(identifier.content.content, expected: expectedType, actual: inferredType)

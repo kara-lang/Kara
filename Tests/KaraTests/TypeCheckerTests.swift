@@ -76,6 +76,15 @@ final class TypeCheckerTests: XCTestCase {
       ),
       TypeError.typeMismatch("f", expected: .unit, actual: .int32)
     )
+
+    assertError(
+      try driverPass(
+        """
+        func f() -> 42 { 42 }
+        """
+      ),
+      TypeError.exprIsNotType(SourceRange(start: .init(column: 12, line: 0), end: .init(column: 13, line: 0)))
+    )
   }
 
   func testTopLevelAnnotation() {

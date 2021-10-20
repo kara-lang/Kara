@@ -55,7 +55,7 @@ struct DeclEnvironment {
         throw TypeError.funcDeclAlreadyExists(identifier)
       }
 
-      functions[identifier] = (f.body, f.scheme)
+      functions[identifier] = try (f.body, f.scheme(self))
 
     case let .binding(b):
       let identifier = b.identifier.content.content

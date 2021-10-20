@@ -93,13 +93,25 @@ ModuleFile(
               content: 2:22-2:22 ()
             )
           ),
-          returns: SyntaxNode(
+          arrow: SyntaxNode(
             leadingTrivia: [
               [0]: Whitespace(" ")
             ],
-            content: 2:27-2:29 Type.constructor(
-              Identifier(value: "Int"),
-              []
+            content: 2:24-2:29 FuncDecl.Arrow(
+              arrowSymbol: SyntaxNode(
+                leadingTrivia: [
+                  [0]: Whitespace(" ")
+                ],
+                content: 2:24-2:25 ()
+              ),
+              returns: SyntaxNode(
+                leadingTrivia: [
+                  [0]: Whitespace(" ")
+                ],
+                content: 2:27-2:29 Expr.identifier(
+                  Identifier(value: "Int")
+                )
+              )
             )
           ),
           body: ExprBlock(
