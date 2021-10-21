@@ -28,14 +28,21 @@ jobs:
         run: swift test
 
   ubuntu_build:
-    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        swift:
+          - "5.4"
+          - "5.5"
 
+    runs-on: ubuntu-20.04
+    container:
+        image: swift:${{ matrix.swift }}
     steps:
       - uses: actions/checkout@v2
       - name: Build
         run: swift build
       - name: Run tests
-        run: swift test
+        run: swift test --enable-test-discovery
 
   windows_build:
     strategy:
