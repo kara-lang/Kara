@@ -45,9 +45,9 @@ func assertSnapshot<T>(
 
 func assertError<T, E: Error & Equatable>(
   _ expression: @autoclosure () throws -> T,
+  _ expectedError: E,
   file: StaticString = #filePath,
-  line: UInt = #line,
-  _ expectedError: E
+  line: UInt = #line
 ) {
   do {
     _ = try expression()
@@ -97,4 +97,17 @@ func assertEval(_ source: ParsingState, _ normalForm: NormalForm, file: StaticSt
     file: file,
     line: line
   )
+}
+
+func assertEvalThrows<E: Error & Equatable>(
+  _ source: ParsingState,
+  _ error: E,
+  file: StaticString = #file,
+  line: UInt = #line
+) {
+  var source = source
+  let parsingResult = exprParser.parse(&source)
+  assertFullyConsumed(source)
+  let e = DeclEnvironment()
+  try assertError(parsingResult?.content.content.eval(e), error, file: file, line: line)
 }

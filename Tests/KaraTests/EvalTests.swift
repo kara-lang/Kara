@@ -15,7 +15,6 @@ final class EvalTests: XCTestCase {
     assertEval("{ x, y in y }(0, 42)", .literal(42))
     assertEval("{ x, y, z in if z { x } else { y }}(0, 42, false)", .literal(42))
     assertEval("(0, 42, false).1", .literal(42))
-    assertEval("S [a: 0, b: 42, c: false].b", .literal(42))
-    assertEval("S [a: 0, b: 42, c: false].c", .literal(false))
+    assertEvalThrows("S [a: 0, b: 42, c: false].b", TypeError.unbound("S"))
   }
 }
