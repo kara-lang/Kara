@@ -62,7 +62,6 @@ final class JSCodegenTests: XCTestCase {
 
   func testStructDecl() {
     // FIXME: `Int` declaration should be picked up from stdlib
-
     assertJSSnapshot(
       """
       struct Int {}
@@ -75,11 +74,28 @@ final class JSCodegenTests: XCTestCase {
       }
       """
     )
+
+    assertJSSnapshot(
+      """
+      struct Int {}
+      let IntAlias: Type = Int
+
+      struct Size {
+          let width: Int
+          let height: IntAlias
+
+          func multiply(x: IntAlias, y: Int) -> Int { x }
+      }
+      """
+    )
   }
 
   func testStructLiteral() {
+    // FIXME: `Int` declaration should be picked up from stdlib
+
     assertJSSnapshot(
       """
+      struct Int {}
       struct S { let a: Int }
 
       func f() -> S {

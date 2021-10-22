@@ -4,7 +4,7 @@
 
 import Syntax
 
-enum NormalForm: Equatable {
+enum NormalForm: Hashable {
   // FIXME: use a different closure type separate from the `Syntax` type
   case closure(Closure)
   case literal(Literal)

@@ -9,7 +9,7 @@ public struct FuncDecl {
     public let externalName: SyntaxNode<Identifier>?
     public let internalName: SyntaxNode<Identifier>
     public let colon: SyntaxNode<Empty>
-    public let type: SyntaxNode<Type>
+    public let type: SyntaxNode<Expr>
   }
 
   public struct Arrow: SyntaxNodeContainer {
@@ -43,7 +43,7 @@ extension FuncDecl: SyntaxNodeContainer {
 let functionParameterParser = identifierParser
   .take(Optional.parser(of: identifierParser))
   .take(colonParser)
-  .take(typeParser)
+  .take(exprParser)
   .map { firstName, secondName, colon, type in
     SyntaxNode(
       leadingTrivia: firstName.leadingTrivia,

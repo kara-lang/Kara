@@ -80,9 +80,8 @@ SyntaxNode(
                                 leadingTrivia: [
                                   [0]: Whitespace(" ")
                                 ],
-                                content: 2:11-2:16 Type.constructor(
-                                  Identifier(value: "Double"),
-                                  []
+                                content: 2:11-2:16 Expr.identifier(
+                                  Identifier(value: "Double")
                                 )
                               )
                             ),
@@ -129,9 +128,8 @@ SyntaxNode(
                     leadingTrivia: [
                       [0]: Whitespace(" ")
                     ],
-                    content: 4:9-4:11 Type.constructor(
-                      Identifier(value: "Int"),
-                      []
+                    content: 4:9-4:11 Expr.identifier(
+                      Identifier(value: "Int")
                     )
                   )
                 ),
@@ -178,9 +176,8 @@ SyntaxNode(
                     leadingTrivia: [
                       [0]: Whitespace(" ")
                     ],
-                    content: 5:9-5:12 Type.constructor(
-                      Identifier(value: "Bool"),
-                      []
+                    content: 5:9-5:12 Expr.identifier(
+                      Identifier(value: "Bool")
                     )
                   )
                 ),
@@ -227,9 +224,8 @@ SyntaxNode(
                     leadingTrivia: [
                       [0]: Whitespace(" ")
                     ],
-                    content: 6:9-6:14 Type.constructor(
-                      Identifier(value: "String"),
-                      []
+                    content: 6:9-6:14 Expr.identifier(
+                      Identifier(value: "String")
                     )
                   )
                 ),
@@ -306,9 +302,8 @@ SyntaxNode(
                                 leadingTrivia: [
                                   [0]: Whitespace(" ")
                                 ],
-                                content: 9:11-9:15 Type.constructor(
-                                  Identifier(value: "Float"),
-                                  []
+                                content: 9:11-9:15 Expr.identifier(
+                                  Identifier(value: "Float")
                                 )
                               )
                             ),
@@ -355,9 +350,8 @@ SyntaxNode(
                     leadingTrivia: [
                       [0]: Whitespace(" ")
                     ],
-                    content: 12:14-12:19 Type.constructor(
-                      Identifier(value: "Inner1"),
-                      []
+                    content: 12:14-12:19 Expr.identifier(
+                      Identifier(value: "Inner1")
                     )
                   )
                 ),
@@ -392,9 +386,8 @@ SyntaxNode(
                     leadingTrivia: [
                       [0]: Whitespace(" ")
                     ],
-                    content: 13:14-13:19 Type.constructor(
-                      Identifier(value: "Inner2"),
-                      []
+                    content: 13:14-13:19 Expr.identifier(
+                      Identifier(value: "Inner2")
                     )
                   )
                 ),

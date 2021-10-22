@@ -5,9 +5,9 @@
 import Parsing
 
 public struct BindingDecl {
-  public struct TypeAnnotation: Hashable {
+  public struct TypeAnnotation {
     public let colon: SyntaxNode<Empty>
-    public let signature: SyntaxNode<Type>
+    public let signature: SyntaxNode<Expr>
   }
 
   public struct Value {
@@ -36,7 +36,7 @@ let bindingParser = SyntaxNodeParser(Terminal("let"))
   .take(
     Optional.parser(
       of: colonParser
-        .take(typeParser)
+        .take(exprParser)
         .map(BindingDecl.TypeAnnotation.init)
     )
   )

@@ -17,7 +17,7 @@ typealias StructLiteralEnvironment = [Identifier: Set<StructLiteralField>]
 
 struct StructLiteralField: Hashable {
   let identifier: SourceRange<Identifier>
-  let typeAnnotation: BindingDecl.TypeAnnotation
+  let typeAnnotation: NormalForm
 }
 
 struct DeclEnvironment {
@@ -59,7 +59,7 @@ struct DeclEnvironment {
 
     case let .binding(b):
       let identifier = b.identifier.content.content
-      guard let scheme = b.scheme else {
+      guard let scheme = try b.scheme(self) else {
         throw TypeError.topLevelAnnotationMissing(identifier)
       }
 
@@ -89,12 +89,6 @@ struct DeclEnvironment {
       // FIXME: handle trait declarations
       return
     }
-  }
-
-  /// Inserts a given function parameter into this environment.
-  /// - Parameter parameter: `FuncDecl.Parameter` value to use for inserting intto the environment
-  mutating func insert(_ parameter: FuncDecl.Parameter) {
-    bindings[parameter.internalName.content.content] = (nil, .init(parameter.type.content.content))
   }
 
   mutating func insert<T>(bindings sequence: T) where T: Sequence, T.Element == (Identifier, (Expr?, Scheme)) {

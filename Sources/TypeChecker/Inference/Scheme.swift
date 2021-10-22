@@ -25,32 +25,39 @@ struct Scheme {
   }
 }
 
+extension SyntaxNode where Content == Expr {
+  func evalToType(_ environment: DeclEnvironment) throws -> Type {
+    if let type = try content.content.eval(environment).type {
+      return type
+    } else {
+      throw TypeError.exprIsNotType(range)
+    }
+  }
+}
+
 extension FuncDecl {
   func returnType(_ environment: DeclEnvironment) throws -> Type {
-    if let expr = arrow?.returns {
-      if let type = try expr.content.content.eval(environment).type {
-        return type
-      } else {
-        throw TypeError.exprIsNotType(expr.range)
-      }
-    } else {
-      return .unit
-    }
+    try arrow?.returns.evalToType(environment) ?? .unit
+  }
+
+  func parameterTypes(_ environment: DeclEnvironment) throws -> [Type] {
+    try parameters.elementsContent.map { try $0.type.evalToType(environment) }
   }
 
   func scheme(_ environment: DeclEnvironment) throws -> Scheme {
     try .init(
-      .arrow(parameters.elementsContent.map(\.type.content.content), returnType(environment)),
+      .arrow(parameterTypes(environment), returnType(environment)),
       variables: genericParameters
     )
   }
 }
 
 extension BindingDecl {
-  var scheme: Scheme? {
-    guard let typeAnnotation = typeAnnotation else {
-      return nil
-    }
-    return .init(typeAnnotation.signature.content.content)
+  func type(_ environment: DeclEnvironment) throws -> Type? {
+    try typeAnnotation?.signature.content.content.eval(environment).type
+  }
+
+  func scheme(_ environment: DeclEnvironment) throws -> Scheme? {
+    try type(environment).map { Scheme($0) }
   }
 }

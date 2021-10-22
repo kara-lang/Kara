@@ -12,6 +12,9 @@ final class TypeCheckerTests: XCTestCase {
     assertError(
       try driverPass(
         """
+        struct Int {}
+        enum Bool {}
+
         let x: Int = 5
         let x: Bool = false
         """
@@ -21,6 +24,8 @@ final class TypeCheckerTests: XCTestCase {
     assertError(
       try driverPass(
         """
+        struct Int {}
+
         func f() {}
         func f() -> Int { 5 }
         """
@@ -39,6 +44,8 @@ final class TypeCheckerTests: XCTestCase {
     assertError(
       try driverPass(
         """
+        struct Int {}
+
         struct S {
         struct Inner {}
         struct Inner { let i: Int }
@@ -130,6 +137,8 @@ final class TypeCheckerTests: XCTestCase {
     assertError(
       try driverPass(
         """
+        struct Int32 {}
+
         let x: Int32 = 45
         let y = true
         """
@@ -143,6 +152,7 @@ final class TypeCheckerTests: XCTestCase {
       try driverPass(
         """
         struct S {}
+        struct Int {}
 
         let s: S = S[]
         let first: Int = s.0
@@ -154,6 +164,8 @@ final class TypeCheckerTests: XCTestCase {
     assertError(
       try driverPass(
         """
+        struct Int32 {}
+
         let first: Int32 = (42, false).5
         """
       ),

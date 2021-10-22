@@ -4,7 +4,7 @@
 
 import Parsing
 
-public enum Literal: Equatable {
+public enum Literal: Hashable {
   case int32(Int32)
   case int64(Int64)
   case double(Double)

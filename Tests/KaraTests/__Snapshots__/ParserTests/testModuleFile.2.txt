@@ -78,9 +78,8 @@ ModuleFile(
                       leadingTrivia: [
                         [0]: Whitespace(" ")
                       ],
-                      content: 2:18-2:21 Type.constructor(
-                        Identifier(value: "Bool"),
-                        []
+                      content: 2:18-2:21 Expr.identifier(
+                        Identifier(value: "Bool")
                       )
                     )
                   )

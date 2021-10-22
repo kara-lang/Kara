@@ -12,11 +12,12 @@ extension FuncDecl {
     }
 
     var functionEnvironment = environment
-    for parameter in parameters.elementsContent {
-      try environment.verifyContains(parameter.type.content.content)
 
-      functionEnvironment.insert(parameter)
-    }
+    // FIXME: possibly duplicate call to `parameterTypes`,
+    // it's already called when inferring `Scheme` for this `FuncDecl` while collecting passed `DeclEnvironment`?
+    let parameterSchemes = try parameterTypes(environment).map { (Expr?.none, Scheme($0)) }
+    let parameters = parameters.elementsContent.map(\.internalName.content.content)
+    functionEnvironment.insert(bindings: zip(parameters, parameterSchemes))
 
     let inferredType = try Expr.block(body).infer(functionEnvironment)
     let expectedType = try returnType(environment)
@@ -38,7 +39,8 @@ extension BindingDecl {
     guard let value = value else { return }
 
     let inferredType = try value.expr.content.content.infer(environment)
-    let expectedType = typeAnnotation!.signature.content.content
+
+    guard let expectedType = try type(environment) else { return }
 
     guard inferredType == expectedType else {
       throw TypeError.typeMismatch(identifier.content.content, expected: expectedType, actual: inferredType)

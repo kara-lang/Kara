@@ -48,9 +48,8 @@ SyntaxNode(
                 leadingTrivia: [
                   [0]: Whitespace(" ")
                 ],
-                content: 0:19-0:22 Type.constructor(
-                  Identifier(value: "Bool"),
-                  []
+                content: 0:19-0:22 Expr.identifier(
+                  Identifier(value: "Bool")
                 )
               )
             )

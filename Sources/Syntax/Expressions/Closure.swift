@@ -37,6 +37,13 @@ extension Closure: Equatable {
   }
 }
 
+extension Closure: Hashable {
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(start)
+    hasher.combine(end)
+  }
+}
+
 extension Closure: CustomStringConvertible {
   public var description: String {
     let bodyString: String
