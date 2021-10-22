@@ -46,10 +46,6 @@ let package = Package(
       dependencies: ["Syntax"]
     ),
     .target(
-      name: "DependentTypes",
-      dependencies: ["Syntax"]
-    ),
-    .target(
       name: "JSCodegen",
       dependencies: ["Basic", "Syntax"]
     ),
