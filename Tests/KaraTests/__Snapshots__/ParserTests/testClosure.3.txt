@@ -8,12 +8,16 @@ SyntaxNode(
       ),
       parameters: [],
       inKeyword: nil,
-      body: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:1-0:1 Expr.literal(
-          Literal.int32(1)
+      body: [
+        [0]: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:1-0:1 ExprBlock.Element.expr(
+            Expr.literal(
+              Literal.int32(1)
+            )
+          )
         )
-      ),
+      ],
       closeBrace: SyntaxNode(
         leadingTrivia: [],
         content: 0:2-0:2 ()

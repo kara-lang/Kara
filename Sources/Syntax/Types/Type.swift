@@ -149,12 +149,14 @@ let arrowParser = SyntaxNodeParser(Terminal("->"))
 let tupleTypeParser = delimitedSequenceParser(
   startParser: openParenParser,
   endParser: closeParenParser,
+  separatorParser: commaParser,
   elementParser: Lazy { typeParser }
 )
 
 private let genericsParser = delimitedSequenceParser(
   startParser: openAngleBracketParser,
   endParser: closeAngleBracketParser,
+  separatorParser: commaParser,
   elementParser: Lazy { typeParser },
   // There's always at least one generic argument to a type constructor, otherwise it shouldn't be written as generic.
   atLeast: 1
@@ -187,7 +189,7 @@ let typeParser: AnyParser<ParsingState, SyntaxNode<Type>> =
   tupleTypeParser
     .map { TypeSyntaxHead.tuple($0) }
     .orElse(
-      identifierParser
+      identifierParser()
         .map(TypeSyntaxHead.constructor)
     )
     .take(

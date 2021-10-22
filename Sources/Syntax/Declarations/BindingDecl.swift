@@ -22,17 +22,12 @@ public struct BindingDecl {
 }
 
 extension BindingDecl: SyntaxNodeContainer {
-  var start: SyntaxNode<Empty> {
-    bindingKeyword
-  }
-
-  var end: SyntaxNode<Empty> {
-    value?.expr.map { _ in Empty() } ?? identifier.map { _ in Empty() }
-  }
+  public var start: SyntaxNode<Empty> { bindingKeyword }
+  public var end: SyntaxNode<Empty> { value?.expr.map { _ in Empty() } ?? identifier.map { _ in Empty() } }
 }
 
-let bindingParser = SyntaxNodeParser(Terminal("let"))
-  .take(identifierParser)
+let bindingParser = Keyword.let.parser
+  .take(identifierParser())
   .take(
     Optional.parser(
       of: colonParser

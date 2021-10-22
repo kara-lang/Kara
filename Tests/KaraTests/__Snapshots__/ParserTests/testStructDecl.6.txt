@@ -7,7 +7,9 @@ SyntaxNode(
       content: 0:0-0:5 ()
     ),
     identifier: SyntaxNode(
-      leadingTrivia: [],
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
       content: 0:7-0:22 Identifier(value: "StoredProperties")
     ),
     genericParameters: [],
@@ -37,7 +39,9 @@ SyntaxNode(
                   content: 1:2-1:7 ()
                 ),
                 identifier: SyntaxNode(
-                  leadingTrivia: [],
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
                   content: 1:9-1:14 Identifier(value: "Inner1")
                 ),
                 genericParameters: [],
@@ -259,7 +263,9 @@ SyntaxNode(
                   content: 8:2-8:7 ()
                 ),
                 identifier: SyntaxNode(
-                  leadingTrivia: [],
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
                   content: 8:9-8:14 Identifier(value: "Inner2")
                 ),
                 genericParameters: [],

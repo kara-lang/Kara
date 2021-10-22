@@ -7,7 +7,9 @@ SyntaxNode(
       content: 0:0-0:5 ()
     ),
     identifier: SyntaxNode(
-      leadingTrivia: [],
+      leadingTrivia: [
+        [0]: Whitespace("\n")
+      ],
       content: 1:0-1:2 Identifier(value: "Baz")
     ),
     genericParameters: [],

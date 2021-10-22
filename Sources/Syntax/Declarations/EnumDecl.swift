@@ -13,13 +13,8 @@ public struct EnumDecl {
 }
 
 extension EnumDecl: SyntaxNodeContainer {
-  var start: SyntaxNode<Empty> {
-    modifiers.first?.map { _ in Empty() } ?? enumKeyword
-  }
-
-  var end: SyntaxNode<Empty> {
-    declarations.end
-  }
+  public var start: SyntaxNode<Empty> { modifiers.first?.map { _ in Empty() } ?? enumKeyword }
+  public var end: SyntaxNode<Empty> { declarations.end }
 }
 
 extension EnumDecl: CustomStringConvertible {
@@ -35,8 +30,7 @@ extension EnumDecl: CustomStringConvertible {
 let enumParser =
   Many(declModifierParser)
     .take(SyntaxNodeParser(Terminal("enum")))
-    .skip(statefulWhitespace(isRequired: true))
-    .take(identifierParser)
+    .take(identifierParser(requiresLeadingTrivia: true))
     .take(declBlockParser)
     // FIXME: generic parameters
     .map { EnumDecl(modifiers: $0, enumKeyword: $1, identifier: $2, genericParameters: [], declarations: $3) }

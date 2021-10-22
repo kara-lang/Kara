@@ -11,13 +11,8 @@ public struct DeclBlock {
 }
 
 extension DeclBlock: SyntaxNodeContainer {
-  var start: SyntaxNode<Empty> {
-    openBrace
-  }
-
-  var end: SyntaxNode<Empty> {
-    closeBrace
-  }
+  public var start: SyntaxNode<Empty> { openBrace }
+  public var end: SyntaxNode<Empty> { closeBrace }
 }
 
 let declBlockParser = openBraceParser

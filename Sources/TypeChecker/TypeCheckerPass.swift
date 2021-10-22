@@ -16,7 +16,7 @@ extension FuncDecl {
     // FIXME: possibly duplicate call to `parameterTypes`,
     // it's already called when inferring `Scheme` for this `FuncDecl` while collecting passed `DeclEnvironment`?
     let parameterSchemes = try parameterTypes(environment).map { (Expr?.none, Scheme($0)) }
-    let parameters = parameters.elementsContent.map(\.internalName.content.content)
+    let parameters = self.parameters.elementsContent.map(\.internalName.content.content)
     functionEnvironment.insert(bindings: zip(parameters, parameterSchemes))
 
     let inferredType = try Expr.block(body).infer(functionEnvironment)

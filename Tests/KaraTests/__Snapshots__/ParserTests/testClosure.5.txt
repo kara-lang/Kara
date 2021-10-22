@@ -12,19 +12,28 @@ SyntaxNode(
             leadingTrivia: [],
             content: 0:1-0:1 Identifier(value: "x")
           ),
-          typeAnnotation: nil
+          typeAnnotation: nil,
+          comma: nil
         )
       ],
       inKeyword: SyntaxNode(
-        leadingTrivia: [],
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
         content: 0:3-0:4 ()
       ),
-      body: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:6-0:6 Expr.literal(
-          Literal.int32(1)
+      body: [
+        [0]: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:6-0:6 ExprBlock.Element.expr(
+            Expr.literal(
+              Literal.int32(1)
+            )
+          )
         )
-      ),
+      ],
       closeBrace: SyntaxNode(
         leadingTrivia: [],
         content: 0:7-0:7 ()

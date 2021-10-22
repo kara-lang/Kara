@@ -13,6 +13,7 @@ let applicationArgumentsParser =
   delimitedSequenceParser(
     startParser: openParenParser,
     endParser: closeParenParser,
+    separatorParser: commaParser,
     elementParser: Lazy { exprParser }
   )
   .map(ExprSyntaxTail.applicationArguments)

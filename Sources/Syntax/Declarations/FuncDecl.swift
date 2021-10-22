@@ -16,8 +16,8 @@ public struct FuncDecl {
     public let arrowSymbol: SyntaxNode<Empty>
     public let returns: SyntaxNode<Expr>
 
-    var start: SyntaxNode<Empty> { arrowSymbol }
-    var end: SyntaxNode<Empty> { returns.map { _ in Empty() } }
+    public var start: SyntaxNode<Empty> { arrowSymbol }
+    public var end: SyntaxNode<Empty> { returns.map { _ in Empty() } }
   }
 
   public let modifiers: [SyntaxNode<DeclModifier>]
@@ -31,17 +31,14 @@ public struct FuncDecl {
 }
 
 extension FuncDecl: SyntaxNodeContainer {
-  var start: SyntaxNode<Empty> {
-    modifiers.first?.map { _ in Empty() } ?? funcKeyword
-  }
-
-  var end: SyntaxNode<Empty> {
-    body?.closeBrace ?? arrow?.map(\.returns).map { _ in Empty() } ?? parameters.end
-  }
+  public var start: SyntaxNode<Empty> { modifiers.first?.map { _ in Empty() } ?? funcKeyword }
+  public var end: SyntaxNode<Empty> { body?.closeBrace ?? arrow?.map(\.returns).map { _ in
+    Empty()
+  } ?? parameters.end }
 }
 
-let functionParameterParser = identifierParser
-  .take(Optional.parser(of: identifierParser))
+let functionParameterParser = identifierParser()
+  .take(Optional.parser(of: identifierParser(requiresLeadingTrivia: true)))
   .take(colonParser)
   .take(exprParser)
   .map { firstName, secondName, colon, type in
@@ -63,12 +60,13 @@ let functionParameterParser = identifierParser
 
 let funcDeclParser =
   Many(declModifierParser)
-    .take(SyntaxNodeParser(Terminal("func")))
-    .take(identifierParser)
+    .take(Keyword.func.parser)
+    .take(identifierParser(requiresLeadingTrivia: true))
     .take(
       delimitedSequenceParser(
         startParser: openParenParser,
         endParser: closeParenParser,
+        separatorParser: commaParser,
         elementParser: functionParameterParser
       )
     )
@@ -83,6 +81,6 @@ let funcDeclParser =
         genericParameters: [],
         parameters: $3,
         arrow: $4,
-        body: $5
+        body: $5?.content.content
       ).syntaxNode
     }

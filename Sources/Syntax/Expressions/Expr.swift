@@ -33,13 +33,13 @@ extension Expr: ExpressibleByIntegerLiteral {
 enum ExprSyntaxTail {
   case memberAccess(dot: SyntaxNode<Empty>, SyntaxNode<MemberAccess.Member>)
   case applicationArguments(DelimitedSequence<Expr>)
+  case structLiteral(DelimitedSequence<StructLiteral.Element>)
 }
 
 let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
   SyntaxNodeParser(literalParser.map(Expr.literal).stateful())
     .orElse(ifThenElseParser.map { $0.map(Expr.ifThenElse) })
-    .orElse(structLiteralParser.map { $0.map(Expr.structLiteral) })
-    .orElse(identifierParser.map { $0.map(Expr.identifier) })
+    .orElse(identifierParser().map { $0.map(Expr.identifier) })
     .orElse(tupleExprParser.map { $0.syntaxNode.map(Expr.tuple) })
     .orElse(closureParser.map { $0.map(Expr.closure) })
     .orElse(typeParser.map { $0.map(Expr.type) })
@@ -47,7 +47,13 @@ let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
     // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain
     // derivations, specifically member access and function application. Expressing left recursion with combinators
     // directly, without breaking up derivations into head and tail components, leads to infinite loops.
-    .take(Many(memberAccessParser.orElse(applicationArgumentsParser)))
+    .take(
+      Many(
+        memberAccessParser
+          .orElse(applicationArgumentsParser)
+          .orElse(structLiteralParser)
+      )
+    )
     .map { (expr: SyntaxNode<Expr>, tail: [ExprSyntaxTail]) -> SyntaxNode<Expr> in
       tail.reduce(expr) { reducedExpr, tailElement in
         switch tailElement {
@@ -69,6 +75,8 @@ let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
               content: .application(.init(function: reducedExpr, arguments: arguments))
             )
           )
+        case let .structLiteral(elements):
+          return StructLiteral(type: reducedExpr, elements: elements).syntaxNode.map(Expr.structLiteral)
         }
       }
     }

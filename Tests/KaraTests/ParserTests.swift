@@ -9,6 +9,14 @@ import SnapshotTesting
 import XCTest
 
 final class ParserTests: XCTestCase {
+  func testNewline() {
+    XCTAssertNil(newlineParser.parse("").output)
+    XCTAssertNil(newlineParser.parse("foo").output)
+    let parser = newlineParser.map { Substring($0.content) }
+    XCTAssertEqual(parser.parse("\n").output, "\n")
+    XCTAssertEqual(parser.parse("\r\n").output, "\r\n")
+  }
+
   func testLiterals() throws {
     XCTAssertNoDifference(literalParser.parse("123"), 123)
     XCTAssertNoDifference(literalParser.parse("true"), true)
@@ -65,12 +73,13 @@ final class ParserTests: XCTestCase {
   }
 
   func testIdentifiers() {
-    XCTAssertNil(identifierParser.parse("123abc").output)
-    assertSnapshot(identifierParser.parse("abc123"))
-    assertSnapshot(identifierParser.parse("_abc123"))
-    assertSnapshot(identifierParser.parse("/* hello! */abc123"))
+    XCTAssertNil(identifierParser().parse("123abc").output)
+    assertSnapshot(identifierParser().parse("abc123"))
+    XCTAssertNil(identifierParser(requiresLeadingTrivia: true).parse("abc123").output)
+    assertSnapshot(identifierParser().parse("_abc123"))
+    assertSnapshot(identifierParser().parse("/* hello! */abc123"))
     assertSnapshot(
-      identifierParser.parse(
+      identifierParser().parse(
         """
         // test
         _abc123
@@ -135,6 +144,16 @@ final class ParserTests: XCTestCase {
     assertSnapshot(exprParser.parse("{ x, y, z in 1 }"))
     assertSnapshot(exprParser.parse("{ x,y,z in 1 }"))
     assertSnapshot(exprParser.parse("{x,y,z in 1}"))
+    assertSnapshot(
+      exprParser.parse(
+        """
+        {x,y,z in
+            let a = sum(x, y, z)
+            a
+        }
+        """
+      )
+    )
 
     XCTAssertNil(exprParser.parse("{ x in y in 1 }").output)
     XCTAssertNil(exprParser.parse("{x in1}").output)
@@ -235,6 +254,16 @@ final class ParserTests: XCTestCase {
     assertSnapshot(
       funcDeclParser.parse(
         #"public interop(JS, "fff") func f(x y: Bool) -> String"#
+      )
+    )
+    assertSnapshot(
+      funcDeclParser.parse(
+        """
+        func f(x: Int) -> Int {
+          struct S {}
+          x
+        }
+        """
       )
     )
   }

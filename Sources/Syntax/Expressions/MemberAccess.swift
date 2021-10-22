@@ -20,7 +20,7 @@ let memberAccessParser =
     Terminal(".")
   )
   .take(
-    identifierParser.map { $0.map(MemberAccess.Member.identifier) }
+    identifierParser().map { $0.map(MemberAccess.Member.identifier) }
       .orElse(SyntaxNodeParser(Int.parser().stateful()).map { $0.map(MemberAccess.Member.tupleElement) })
   )
   .map(ExprSyntaxTail.memberAccess)

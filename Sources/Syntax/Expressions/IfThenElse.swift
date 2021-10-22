@@ -18,16 +18,16 @@ public struct ElseBranch {
   public let elseBlock: ExprBlock
 }
 
-private let elseBranchParser = SyntaxNodeParser(Terminal("else"))
+private let elseBranchParser = Keyword.else.parser
   .take(Lazy { exprBlockParser })
   .map {
     ElseBranch(
       elseKeyword: $0,
-      elseBlock: $1
+      elseBlock: $1.content.content
     )
   }
 
-let ifThenElseParser = SyntaxNodeParser(Terminal("if"))
+let ifThenElseParser = Keyword.if.parser
   .take(Lazy { exprParser })
   .take(Lazy { exprBlockParser })
   .take(Optional.parser(of: elseBranchParser))
@@ -41,7 +41,7 @@ let ifThenElseParser = SyntaxNodeParser(Terminal("if"))
         content: IfThenElse(
           ifKeyword: ifKeyword,
           condition: condition,
-          thenBlock: thenBlock,
+          thenBlock: thenBlock.content.content,
           elseBranch: elseBranch
         )
       )

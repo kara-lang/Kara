@@ -72,3 +72,5 @@ struct LineCounter: Parser {
     }
   }
 }
+
+let newlineParser = LineCounter(isRequired: true, lookaheadAmount: 0, lookahead: { _ in false })

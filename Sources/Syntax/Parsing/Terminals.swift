@@ -37,4 +37,4 @@ let closeSquareBracketParser = SyntaxNodeParser(Terminal("]"))
 
 let colonParser = SyntaxNodeParser(Terminal(":"))
 
-let commaParser = Terminal(",")
+let commaParser = SyntaxNodeParser(Terminal(","))

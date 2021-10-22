@@ -13,13 +13,8 @@ public struct StructDecl {
 }
 
 extension StructDecl: SyntaxNodeContainer {
-  var start: SyntaxNode<Empty> {
-    modifiers.first?.map { _ in Empty() } ?? structKeyword
-  }
-
-  var end: SyntaxNode<Empty> {
-    declarations.end
-  }
+  public var start: SyntaxNode<Empty> { modifiers.first?.map { _ in Empty() } ?? structKeyword }
+  public var end: SyntaxNode<Empty> { declarations.end }
 }
 
 extension StructDecl: CustomStringConvertible {
@@ -34,9 +29,8 @@ extension StructDecl: CustomStringConvertible {
 
 let structParser =
   Many(declModifierParser)
-    .take(SyntaxNodeParser(Terminal("struct")))
-    .skip(statefulWhitespace(isRequired: true))
-    .take(identifierParser)
+    .take(Keyword.struct.parser)
+    .take(identifierParser(requiresLeadingTrivia: true))
     .take(declBlockParser)
     // FIXME: generic parameters
     .map { StructDecl(modifiers: $0, structKeyword: $1, identifier: $2, genericParameters: [], declarations: $3) }

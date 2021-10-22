@@ -37,26 +37,28 @@ extension SyntaxNode: CustomDebugStringConvertible {
 struct SyntaxNodeParser<Inner, Content>: Parser
   where Inner: Parser, Inner.Input == ParsingState, Inner.Output == SourceRange<Content>
 {
-  init(_ inner: Inner) {
+  let inner: Inner
+  let requiresLeadingTrivia: Bool
+
+  init(_ inner: Inner, requiresLeadingTrivia: Bool = false) {
     self.inner = inner
+    self.requiresLeadingTrivia = requiresLeadingTrivia
   }
 
-  let inner: Inner
-
   func parse(_ input: inout ParsingState) -> SyntaxNode<Content>? {
-    triviaParser
+    triviaParser(requiresLeadingTrivia: requiresLeadingTrivia)
       .take(inner)
       .map { SyntaxNode(leadingTrivia: $0.map(\.content), content: $1) }
       .parse(&input)
   }
 }
 
-protocol SyntaxNodeContainer {
+public protocol SyntaxNodeContainer {
   var start: SyntaxNode<Empty> { get }
   var end: SyntaxNode<Empty> { get }
 }
 
-extension SyntaxNodeContainer {
+public extension SyntaxNodeContainer {
   /// Helper for wrapping this sequence in its own syntax node.
   var syntaxNode: SyntaxNode<Self> {
     .init(

@@ -8,7 +8,7 @@ SyntaxNode(
       ),
       parameters: [],
       inKeyword: nil,
-      body: nil,
+      body: [],
       closeBrace: SyntaxNode(
         leadingTrivia: [],
         content: 0:1-0:1 ()

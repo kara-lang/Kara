@@ -16,17 +16,6 @@ public struct Comment: Hashable {
   let content: String
 }
 
-extension Comment: CustomStringConvertible {
-  public var description: String {
-    switch kind {
-    case .singleLine:
-      return "//\(isDocComment ? "/" : "")\(content)"
-    case .multipleLines:
-      return "/*\(isDocComment ? "*" : "")\(content)*/"
-    }
-  }
-}
-
 let singleLineCommentParser = Terminal("//")
   .take(Prefix { !newlineCodeUnits.contains($0) }.stateful())
   .map { delimiter, content -> SourceRange<Comment> in

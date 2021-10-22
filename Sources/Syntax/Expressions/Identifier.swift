@@ -33,8 +33,23 @@ let identifierSequenceParser =
     })
     .compactMap { String(bytes: [$0] + Array($1), encoding: .utf8) }
 
-let identifierParser = SyntaxNodeParser(
-  identifierSequenceParser
-    .map { Identifier(value: $0) }
-    .stateful()
-)
+typealias IdentifierParser = SyntaxNodeParser<
+  StatefulParser<Parsers.CompactMap<
+    Parsers.CompactMap<Parsers.Take2<Parsers.Filter<First<UTF8SubSequence>>, Prefix<UTF8SubSequence>>, String>,
+    Identifier
+  >>,
+  Identifier
+>
+
+func identifierParser(requiresLeadingTrivia: Bool = false) -> IdentifierParser {
+  SyntaxNodeParser(
+    identifierSequenceParser
+      .compactMap { rawIdentifier -> Identifier? in
+        guard !Keyword.allCases.map(\.rawValue).contains(rawIdentifier) else { return nil }
+
+        return Identifier(value: rawIdentifier)
+      }
+      .stateful(),
+    requiresLeadingTrivia: requiresLeadingTrivia
+  )
+}

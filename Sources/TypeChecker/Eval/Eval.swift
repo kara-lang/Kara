@@ -1,53 +1,8 @@
 //
-//  Created by Max Desiatov on 16/10/2021.
+//  Created by Max Desiatov on 22/10/2021.
 //
 
 import Syntax
-
-enum NormalForm: Hashable {
-  // FIXME: use a different closure type separate from the `Syntax` type
-  case closure(Closure)
-  case literal(Literal)
-  indirect case ifThenElse(condition: Identifier, then: NormalForm, else: NormalForm)
-  case tuple([NormalForm])
-  case structLiteral(Identifier, [Identifier: NormalForm])
-  case typeConstructor(Identifier, [NormalForm])
-  indirect case arrow([NormalForm], NormalForm)
-
-  var type: Type? {
-    switch self {
-    case let .tuple(elements):
-      return elements.types.map(Type.tuple)
-
-    case let .typeConstructor(id, args):
-      return args.types.map { .constructor(id, $0) }
-
-    case let .arrow(head, tail):
-      guard let headTypes = head.types, let tailType = tail.type else {
-        return nil
-      }
-
-      return .arrow(headTypes, tailType)
-
-    case .closure, .literal, .ifThenElse, .structLiteral:
-      return nil
-    }
-  }
-}
-
-extension Array where Element == NormalForm {
-  var types: [Type]? {
-    var elementTypes = [Type]()
-    for element in self {
-      guard let type = element.type else {
-        return nil
-      }
-      elementTypes.append(type)
-    }
-
-    return elementTypes
-  }
-}
 
 extension Type {
   func eval(_ environment: DeclEnvironment) -> NormalForm {
@@ -93,7 +48,6 @@ extension Expr {
       switch try a.function.content.content.eval(environment) {
       case let .closure(c):
         guard
-          let body = c.body?.content.content,
           // FIXME: cache or avoid this inference call
           case let .arrow(typesOfArguments, _) = try Expr.closure(c).infer(environment)
         else {
@@ -106,7 +60,7 @@ extension Expr {
         let parameterIdentifiers: [Identifier] = c.parameters.map(\.identifier.content.content)
         let sequence = Array(zip(parameterIdentifiers, argumentsWithTypes))
         modifiedEnvironment.insert(bindings: sequence)
-        return try body.eval(modifiedEnvironment)
+        return try c.exprBlock.eval(modifiedEnvironment)
 
       default:
         fatalError()
@@ -140,7 +94,7 @@ extension Expr {
 
     case let .structLiteral(s):
       // FIXME: should we get rid of `TypeIdentifier` and use `Identifier` everywhere instead?
-      guard case let .typeConstructor(i, _) = s.type.content.content.eval(environment) else {
+      guard case let .typeConstructor(i, _) = try s.type.content.content.eval(environment) else {
         fatalError()
       }
 
@@ -169,10 +123,10 @@ extension ExprBlock {
     for (i, element) in elements.enumerated() {
       switch element.content.content {
       case let .expr(e) where i == elements.count - 1:
-        return try e.eval(environment)
+        return try e.eval(modifiedEnvironment)
 
-      case let .binding(b):
-        try modifiedEnvironment.insert(.binding(b))
+      case let .declaration(d):
+        try modifiedEnvironment.insert(d)
 
       default:
         fatalError()

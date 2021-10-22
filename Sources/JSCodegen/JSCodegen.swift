@@ -104,8 +104,8 @@ extension ExprBlock.Element {
     switch self {
     case let .expr(e):
       return e.jsCodegen
-    case let .binding(b):
-      return b.jsCodegen
+    case let .declaration(d):
+      return d.jsCodegen
     }
   }
 }
@@ -114,7 +114,7 @@ extension ExprBlock {
   var jsCodegen: String {
     switch elements.count {
     case 0:
-      fatalError()
+      return "{}"
     case 1:
       return elements[0].jsCodegen
     default:
@@ -170,7 +170,7 @@ extension Expr {
       return
         """
         (\(c.parameters.map(\.identifier.jsCodegen).joined(separator: ","))) =>
-        \(c.body?.jsCodegen ?? Expr.unit.jsCodegen);
+        \(c.exprBlock.jsCodegen);
         """
     case let .ifThenElse(ifThenElse):
       guard let elseBlock = ifThenElse.elseBranch?.elseBlock else {

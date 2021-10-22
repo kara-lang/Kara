@@ -5,29 +5,36 @@
 import Parsing
 
 public struct Closure {
+  public typealias Body = [SyntaxNode<ExprBlock.Element>]
+
   public struct Parameter {
     public let identifier: SyntaxNode<Identifier>
+    // FIXME: parse type annotations
     public let typeAnnotation: SyntaxNode<Type>?
+    public let comma: SyntaxNode<Empty>?
   }
 
   public let openBrace: SyntaxNode<Empty>
-  // FIXME: use a form of `DelimitedSequence` here?
   public let parameters: [Parameter]
   public let inKeyword: SyntaxNode<Empty>?
-  public let body: SyntaxNode<Expr>?
+  public let body: Body
 
   public let closeBrace: SyntaxNode<Empty>
+
+  public var exprBlock: ExprBlock {
+    .init(openBrace: openBrace, elements: body, closeBrace: closeBrace)
+  }
 }
 
 extension Closure.Parameter {
-  init(identifier: SyntaxNode<Identifier>) {
-    self.init(identifier: identifier, typeAnnotation: nil)
+  init(identifier: SyntaxNode<Identifier>, comma: SyntaxNode<Empty>?) {
+    self.init(identifier: identifier, typeAnnotation: nil, comma: comma)
   }
 }
 
 extension Closure: SyntaxNodeContainer {
-  var start: SyntaxNode<Empty> { openBrace }
-  var end: SyntaxNode<Empty> { closeBrace }
+  public var start: SyntaxNode<Empty> { openBrace }
+  public var end: SyntaxNode<Empty> { closeBrace }
 }
 
 // FIXME: it's an awful hack, but it should work
@@ -44,87 +51,61 @@ extension Closure: Hashable {
   }
 }
 
-extension Closure: CustomStringConvertible {
-  public var description: String {
-    let bodyString: String
-    if let body = body?.content.content {
-      bodyString = String(describing: body)
-    } else {
-      bodyString = ""
-    }
-
-    if parameters.isEmpty {
-      return "{ \(bodyString) }"
-    } else {
-      return """
-      { \(
-        parameters.map(\.identifier.content.content.value)
-          .joined(separator: ", ")
-      ) in \(bodyString) }
-      """
-    }
+let nonParametricClosureParser = exprBlockParser
+  .map {
+    Closure(
+      openBrace: $0.openBrace,
+      parameters: [],
+      inKeyword: nil,
+      body: $0.elements,
+      closeBrace: $0.closeBrace
+    ).syntaxNode
   }
-}
 
-private extension Parser where Input == ParsingState {
-  // FIXME: uses of this should be replaced with `SyntaxNodeParser`
-  func skipWithWhitespace<P>(
-    _ parser: P
-  ) -> Parsers.SkipSecond<Parsers.SkipSecond<Self, LineCounter>, P> where P: Parser {
-    skip(statefulWhitespace())
-      .skip(parser)
-  }
-}
-
-let closureParser =
-  openBraceParser
-    .take(
-      Optional.parser(
-        // Parses closures of form `{ a, b, c, in }`, note the trailing comma
-        of: Many(
-          identifierParser
-            // FIXME: use `SyntaxNodeParser` here instead
-            .skipWithWhitespace(commaParser)
-            .skip(statefulWhitespace())
-        )
-        // Optional tail component without the comma to parse closures of form `{ a, b, c in }`
-        .take(
-          Optional.parser(of: identifierParser)
-        )
-        .skip(statefulWhitespace(isRequired: true))
-        .take(SyntaxNodeParser(Terminal("in")))
-        .skip(statefulWhitespace(isRequired: true))
-        .map { head, tail, inKeyword -> ([Closure.Parameter], SyntaxNode<Empty>) in
-          guard let tail = tail else {
-            return (
-              head
-                .map { Closure.Parameter(identifier: $0) },
-              inKeyword
-            )
-          }
-
-          return (
-            (head + [tail])
-              .map { Closure.Parameter(identifier: $0) },
-            inKeyword
-          )
-        }
-      )
+let parametricClosureParser = openBraceParser
+  // Parses closures of form `{ a, b, c, in }`, note the trailing comma
+  .take(
+    Many(
+      identifierParser()
+        .take(commaParser)
     )
-    .take(
-      Optional.parser(
-        of: Lazy {
-          exprParser
+  )
+  // Optional tail component without the comma to parse closures of form `{ a, b, c in }`
+  .take(
+    Optional.parser(of: identifierParser())
+  )
+  .take(Keyword.in.parser)
+  .take(
+    Optional.parser(
+      of: triviaParser(requiresLeadingTrivia: true)
+        .take(exprBlockElementsParser)
+        .map { trivia, elements -> Closure.Body in
+          [.init(leadingTrivia: trivia.map(\.content), content: elements[0].content)] + elements.dropFirst()
         }
-      )
     )
-    .take(closeBraceParser)
-    .map { openBrace, params, body, closeBrace in
-      Closure(
-        openBrace: openBrace,
-        parameters: params?.0 ?? [],
-        inKeyword: params?.1,
-        body: body,
-        closeBrace: closeBrace
-      ).syntaxNode
+  )
+  .take(closeBraceParser)
+  .map { openBrace, head, tail, inKeyword, body, closeBrace -> SyntaxNode<Closure> in
+    let parameters: [Closure.Parameter]
+    if let tail = tail {
+      let headWithOptionalCommas = head.map { id, comma -> (SyntaxNode<Identifier>, SyntaxNode<Empty>?) in
+        (id, comma)
+      }
+
+      parameters = (headWithOptionalCommas + [(tail, nil)])
+        .map { Closure.Parameter(identifier: $0.0, comma: $0.1) }
+    } else {
+      parameters = head.map { Closure.Parameter(identifier: $0.0, comma: $0.1) }
     }
+
+    return Closure(
+      openBrace: openBrace,
+      parameters: parameters,
+      inKeyword: inKeyword,
+      body: body ?? [],
+      closeBrace: closeBrace
+    ).syntaxNode
+  }
+
+let closureParser = parametricClosureParser
+  .orElse(nonParametricClosureParser)

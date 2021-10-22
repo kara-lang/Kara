@@ -11,13 +11,9 @@ public struct TraitDecl {
 }
 
 extension TraitDecl: SyntaxNodeContainer {
-  var start: SyntaxNode<Empty> {
-    traitKeyword
-  }
+  public var start: SyntaxNode<Empty> { traitKeyword }
 
-  var end: SyntaxNode<Empty> {
-    declarations.end
-  }
+  public var end: SyntaxNode<Empty> { declarations.end }
 }
 
 extension TraitDecl: CustomStringConvertible {
@@ -26,8 +22,8 @@ extension TraitDecl: CustomStringConvertible {
   }
 }
 
-let traitParser = SyntaxNodeParser(Terminal("trait"))
-  .take(identifierParser)
+let traitParser = Keyword.trait.parser
+  .take(identifierParser(requiresLeadingTrivia: true))
   .take(declBlockParser)
   .map(TraitDecl.init)
   .map(\.syntaxNode)

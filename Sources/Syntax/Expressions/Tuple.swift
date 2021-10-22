@@ -7,5 +7,6 @@ import Parsing
 let tupleExprParser = delimitedSequenceParser(
   startParser: openParenParser,
   endParser: closeParenParser,
+  separatorParser: commaParser,
   elementParser: Lazy { exprParser }
 )

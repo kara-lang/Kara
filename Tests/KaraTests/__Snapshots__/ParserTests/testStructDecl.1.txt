@@ -7,7 +7,9 @@ SyntaxNode(
       content: 0:0-0:5 ()
     ),
     identifier: SyntaxNode(
-      leadingTrivia: [],
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
       content: 0:7-0:9 Identifier(value: "Foo")
     ),
     genericParameters: [],

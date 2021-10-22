@@ -47,9 +47,9 @@ final class TriviaParsersTests: XCTestCase {
   }
 
   func testTrivia() {
-    assertSnapshot(triviaParser.parse("// Hello, world!"))
+    assertSnapshot(triviaParser(requiresLeadingTrivia: true).parse("// Hello, world!"))
 
-    assertSnapshot(triviaParser.parse("   // Hello, world!"))
+    assertSnapshot(triviaParser(requiresLeadingTrivia: true).parse("   // Hello, world!"))
   }
 
   func testStatefulWhitespace() {

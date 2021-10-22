@@ -20,7 +20,7 @@ public struct InteropModifier {
 let interopModifierParser = SyntaxNodeParser(Terminal("interop"))
   .take(openParenParser)
   .take(SyntaxNodeParser(identifierSequenceParser.stateful()))
-  .take(SyntaxNodeParser(commaParser))
+  .take(commaParser)
   .take(SyntaxNodeParser(singleQuotedStringParser.stateful()))
   .take(closeParenParser)
   .compactMap { interopKeyword, openParen, rawLanguage, comma, externalName, closeParen -> SyntaxNode<DeclModifier>? in

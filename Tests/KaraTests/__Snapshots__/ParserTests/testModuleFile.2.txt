@@ -10,7 +10,9 @@ ModuleFile(
             content: 0:0-0:3 ()
           ),
           identifier: SyntaxNode(
-            leadingTrivia: [],
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
             content: 0:5-0:8 Identifier(value: "Bool")
           ),
           genericParameters: [],

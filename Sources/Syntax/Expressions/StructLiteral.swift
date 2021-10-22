@@ -19,7 +19,7 @@ public struct StructLiteral: SyntaxNodeContainer {
     }
   }
 
-  public let type: SyntaxNode<Type>
+  public let type: SyntaxNode<Expr>
   public let elements: DelimitedSequence<Element>
 
   public var start: SyntaxNode<Empty> {
@@ -31,21 +31,17 @@ public struct StructLiteral: SyntaxNodeContainer {
   }
 }
 
-let structLiteralElementParser = identifierParser
+let structLiteralElementParser = identifierParser()
   .take(colonParser)
   .take(Lazy { exprParser })
   .map {
     StructLiteral.Element(property: $0, colon: $1, value: $2).syntaxNode
   }
 
-let structLiteralParser = typeParser
-  .take(
-    delimitedSequenceParser(
-      startParser: openSquareBracketParser,
-      endParser: closeSquareBracketParser,
-      elementParser: structLiteralElementParser
-    )
-  )
-  .map {
-    StructLiteral(type: $0, elements: $1).syntaxNode
-  }
+let structLiteralParser = delimitedSequenceParser(
+  startParser: openSquareBracketParser,
+  endParser: closeSquareBracketParser,
+  separatorParser: commaParser,
+  elementParser: structLiteralElementParser
+)
+.map(ExprSyntaxTail.structLiteral)

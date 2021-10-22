@@ -17,13 +17,13 @@ public struct DelimitedSequence<T>: SyntaxNodeContainer {
   }
 
   /// Syntax node for the starting delimiting token of the sequence.
-  let start: SyntaxNode<Empty>
+  public let start: SyntaxNode<Empty>
 
   /// An array of syntax nodes for every element of their sequence and its corresponding separator.
   let elements: [Element]
 
   /// Syntax node for the ending delimiting token of the ssquences.
-  let end: SyntaxNode<Empty>
+  public let end: SyntaxNode<Empty>
 
   /// Helper for retrieving an array of elements in the sequence without their syntax node information.
   public var elementsContent: [T] {
@@ -34,6 +34,7 @@ public struct DelimitedSequence<T>: SyntaxNodeContainer {
 func delimitedSequenceParser<T, P: Parser>(
   startParser: SyntaxNodeParser<Terminal, Empty>,
   endParser: SyntaxNodeParser<Terminal, Empty>,
+  separatorParser: SyntaxNodeParser<Terminal, Empty>,
   elementParser: P,
   atLeast minimum: Int = 0
 ) -> AnyParser<ParsingState, DelimitedSequence<T>> where P.Output == SyntaxNode<T>, P.Input == ParsingState {
@@ -41,7 +42,7 @@ func delimitedSequenceParser<T, P: Parser>(
     .take(
       Many(
         elementParser
-          .take(SyntaxNodeParser(commaParser))
+          .take(separatorParser)
       )
     )
     // Optional tail component to cover cases without a trailing comma

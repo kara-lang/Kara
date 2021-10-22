@@ -7,25 +7,26 @@ import Parsing
 public struct ExprBlock {
   public enum Element {
     case expr(Expr)
-    case binding(BindingDecl)
+    case declaration(Declaration)
   }
 
   public let openBrace: SyntaxNode<Empty>
   public var elements: [SyntaxNode<Element>]
   public let closeBrace: SyntaxNode<Empty>
-
-  public var sourceRange: SourceRange<Empty> {
-    .init(start: openBrace.content.start, end: closeBrace.content.end)
-  }
 }
 
+extension ExprBlock: SyntaxNodeContainer {
+  public var start: SyntaxNode<Empty> { openBrace }
+  public var end: SyntaxNode<Empty> { closeBrace }
+}
+
+let exprBlockElementsParser = Many(
+  Lazy { declarationParser }.map { $0.map(ExprBlock.Element.declaration) }
+    .orElse(Lazy { exprParser }.map { $0.map(ExprBlock.Element.expr) }),
+  separator: newlineParser
+)
+
 let exprBlockParser = openBraceParser
-  .take(
-    Many(
-      // FIXME: require separation by a newline
-      exprParser.map { $0.map(ExprBlock.Element.expr) }
-        .orElse(bindingParser.map { $0.map(ExprBlock.Element.binding) })
-    )
-  )
+  .take(exprBlockElementsParser)
   .take(closeBraceParser)
-  .map(ExprBlock.init)
+  .map { ExprBlock(openBrace: $0, elements: $1, closeBrace: $2).syntaxNode }

@@ -87,9 +87,12 @@ func assertNotFullyConsumed(
 }
 
 func assertEval(_ source: ParsingState, _ normalForm: NormalForm, file: StaticString = #file, line: UInt = #line) {
+  var source = source
+  let parsingResult = exprParser.parse(&source)
+  assertFullyConsumed(source)
   let e = DeclEnvironment()
   try XCTAssertNoDifference(
-    exprParser.parse(source).output?.content.content.eval(e),
+    parsingResult?.content.content.eval(e),
     normalForm,
     file: file,
     line: line

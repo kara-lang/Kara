@@ -121,7 +121,7 @@ struct ConstraintSystem {
       let parameters = ids.map { _ in fresh() }
       return try .arrow(
         parameters,
-        infer(withExtendedBindings: zip(ids, parameters.map { (nil, Scheme($0)) }), c.body?.content.content ?? .unit)
+        infer(withExtendedBindings: zip(ids, parameters.map { (nil, Scheme($0)) }), Expr.block(c.exprBlock))
       )
 
     case let .application(app):
@@ -191,13 +191,18 @@ struct ConstraintSystem {
     case let .block(block):
       // Expression blocks should always contain at least one expression and end with an expression.
       guard case let .expr(last) = block.elements.last?.content.content else {
-        throw TypeError.noExpressionsInBlock(block.sourceRange)
+        return .unit
       }
 
       return try infer(last)
 
     case let .structLiteral(structLiteral):
-      return structLiteral.type.content.content
+      let typeExpr = structLiteral.type
+      guard let type = try typeExpr.content.content.eval(environment).type else {
+        throw TypeError.exprIsNotType(typeExpr.range)
+      }
+
+      return type
 
     case .type:
       return .type
