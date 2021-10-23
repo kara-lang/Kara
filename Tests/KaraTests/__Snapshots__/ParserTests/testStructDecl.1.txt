@@ -12,7 +12,6 @@ SyntaxNode(
       ],
       content: 0:7-0:9 Identifier(value: "Foo")
     ),
-    genericParameters: [],
     declarations: SyntaxNode(
       leadingTrivia: [
         [0]: Whitespace(" ")

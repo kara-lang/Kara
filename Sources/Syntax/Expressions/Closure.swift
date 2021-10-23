@@ -10,7 +10,7 @@ public struct Closure {
   public struct Parameter {
     public let identifier: SyntaxNode<Identifier>
     // FIXME: parse type annotations
-    public let typeAnnotation: SyntaxNode<Type>?
+    public let typeAnnotation: SyntaxNode<Expr>?
     public let comma: SyntaxNode<Empty>?
   }
 

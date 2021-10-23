@@ -199,49 +199,6 @@ final class ParserTests: XCTestCase {
     assertSnapshot(exprParser.parse(#"S[]"#))
   }
 
-  func testTypeConstructor() {
-    assertSnapshot(typeParser.parse("Array<Int>"))
-    assertNotFullyConsumed(typeParser.parse("Set<Double").rest)
-    assertSnapshot(typeParser.parse("Dictionary <String, Bool>"))
-    assertSnapshot(typeParser.parse("Result <String, IOError,>"))
-    assertSnapshot(
-      typeParser.parse(
-        """
-        Dictionary <String,
-        Array<Bool>
-        >
-        """
-      )
-    )
-  }
-
-  func testTupleType() {
-    assertSnapshot(typeParser.parse("(Int, Double, Bool)"))
-    assertSnapshot(typeParser.parse("(Int, Double, Bool, String,)"))
-    assertSnapshot(typeParser.parse("Array<(Int, String)>"))
-    assertSnapshot(typeParser.parse("Array<(Int, String, Bool,)>"))
-    assertSnapshot(typeParser.parse("Array<(Int, String, Bool,Dictionary<Double, Set<(Foo, Bar)>>)>"))
-  }
-
-  func testArrow() {
-    assertSnapshot(typeParser.parse("Int -> Double"))
-    assertSnapshot(typeParser.parse("Int -> Double -> String"))
-    assertSnapshot(
-      typeParser.parse(
-        """
-        Int ->
-        Double ->
-        String
-        """
-      )
-    )
-    assertSnapshot(typeParser.parse("(Int, Double) -> String"))
-    assertSnapshot(typeParser.parse("Dictionary<Bool, (Int, Double, String)> -> Array<Character>"))
-    assertSnapshot(typeParser.parse("Dictionary<Bool, (Int, Double, String)> -> (Array<Character>, Array<Bool>)"))
-    assertNotFullyConsumed(typeParser.parse("Int -> ").rest)
-    XCTAssertNil(typeParser.parse(" -> String").output)
-  }
-
   func testFuncDecl() {
     assertSnapshot(funcDeclParser.parse("func f(x: Int) -> Int { x }"))
     assertSnapshot(funcDeclParser.parse(#"func f(x y: Bool) -> String { if y { "x" } else { "not x" } }"#))

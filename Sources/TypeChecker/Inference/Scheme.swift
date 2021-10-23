@@ -47,7 +47,7 @@ extension FuncDecl {
   func scheme(_ environment: DeclEnvironment) throws -> Scheme {
     try .init(
       .arrow(parameterTypes(environment), returnType(environment)),
-      variables: genericParameters
+      variables: []
     )
   }
 }

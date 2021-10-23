@@ -19,7 +19,6 @@ SyntaxNode(
       ],
       content: 0:13-0:13 Identifier(value: "f")
     ),
-    genericParameters: [],
     parameters: DelimitedSequence(
       start: SyntaxNode(
         leadingTrivia: [],

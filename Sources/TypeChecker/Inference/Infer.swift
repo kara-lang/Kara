@@ -4,6 +4,23 @@
 
 import Syntax
 
+extension Literal {
+  var defaultType: Type {
+    switch self {
+    case .int32:
+      return .int32
+    case .int64:
+      return .int64
+    case .double:
+      return .double
+    case .bool:
+      return .bool
+    case .string:
+      return .string
+    }
+  }
+}
+
 extension Expr {
   func infer(
     _ environment: DeclEnvironment = DeclEnvironment()

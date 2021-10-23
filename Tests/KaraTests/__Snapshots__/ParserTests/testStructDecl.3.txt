@@ -12,7 +12,6 @@ SyntaxNode(
       ],
       content: 1:0-1:2 Identifier(value: "Baz")
     ),
-    genericParameters: [],
     declarations: SyntaxNode(
       leadingTrivia: [
         [0]: Whitespace("\n")

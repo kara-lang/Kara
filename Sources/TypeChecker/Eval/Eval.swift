@@ -107,9 +107,6 @@ extension Expr {
         )
       )
 
-    case let .type(t):
-      return t.eval(environment)
-
     case .unit:
       return .tuple([])
     }

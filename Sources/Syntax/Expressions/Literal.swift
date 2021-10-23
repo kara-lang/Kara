@@ -10,21 +10,6 @@ public enum Literal: Hashable {
   case double(Double)
   case bool(Bool)
   case string(String)
-
-  public var defaultType: Type {
-    switch self {
-    case .int32:
-      return .int32
-    case .int64:
-      return .int64
-    case .double:
-      return .double
-    case .bool:
-      return .bool
-    case .string:
-      return .string
-    }
-  }
 }
 
 extension Literal: ExpressibleByStringLiteral {

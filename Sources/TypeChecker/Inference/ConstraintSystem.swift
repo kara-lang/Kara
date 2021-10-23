@@ -204,9 +204,6 @@ struct ConstraintSystem {
 
       return type
 
-    case .type:
-      return .type
-
     case .unit:
       return .unit
     }

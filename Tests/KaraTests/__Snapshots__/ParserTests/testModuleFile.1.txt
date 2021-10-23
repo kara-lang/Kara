@@ -15,7 +15,6 @@ ModuleFile(
             ],
             content: 0:7-0:12 Identifier(value: "String")
           ),
-          genericParameters: [],
           declarations: SyntaxNode(
             leadingTrivia: [
               [0]: Whitespace(" ")
@@ -56,7 +55,6 @@ ModuleFile(
             ],
             content: 2:5-2:5 Identifier(value: "f")
           ),
-          genericParameters: [],
           parameters: DelimitedSequence(
             start: SyntaxNode(
               leadingTrivia: [],

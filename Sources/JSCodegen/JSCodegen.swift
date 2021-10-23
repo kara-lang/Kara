@@ -201,9 +201,9 @@ extension Expr {
       return b.jsCodegen
     case let .structLiteral(s):
       return s.jsCodegen
-    case let .type(t):
-      // FIXME: specify module type here to avoid name collisions
-      return #"Symbol.for("Kara.\#(t.description)")"#
+//    case let .type(t):
+    // FIXME: specify module type here to avoid name collisions
+//      return #"Symbol.for("Kara.\#(t.description)")"#
     case .unit:
       return "undefined"
     }

@@ -23,7 +23,6 @@ public struct FuncDecl {
   public let modifiers: [SyntaxNode<DeclModifier>]
   public let funcKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<Identifier>
-  public let genericParameters: [TypeVariable]
   public let parameters: DelimitedSequence<Parameter>
 
   public let arrow: SyntaxNode<Arrow>?
@@ -78,7 +77,6 @@ let funcDeclParser =
         funcKeyword: $1,
         identifier: $2,
         // FIXME: fix generic parameters parsing
-        genericParameters: [],
         parameters: $3,
         arrow: $4,
         body: $5?.content.content
