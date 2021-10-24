@@ -27,8 +27,11 @@ struct Scheme {
 
 extension SyntaxNode where Content == Expr {
   func evalToType(_ environment: DeclEnvironment) throws -> Type {
-    if let type = try content.content.eval(environment).type {
+    let normalForm = try content.content.eval(environment)
+    if let type = normalForm.type {
       return type
+    } else if case let .identifier(i) = normalForm {
+      throw TypeError.unbound(i)
     } else {
       throw TypeError.exprIsNotType(range)
     }

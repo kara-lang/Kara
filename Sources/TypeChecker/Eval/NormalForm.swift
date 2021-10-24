@@ -4,9 +4,12 @@
 
 import Syntax
 
+/// A type that represents an evaluated in-memory expression that doesn't have a corresponding
+/// syntax node in a source file. Compared to `enum Expr` in `Syntax` module,
+/// no syntactic information is stored here such as source location or trivia.
 enum NormalForm: Hashable {
-  // FIXME: use a different closure type separate from the `Syntax` type
-  case closure(Closure)
+  case identifier(Identifier)
+  indirect case closure(parameters: [Identifier], body: NormalForm)
   case literal(Literal)
   indirect case ifThenElse(condition: Identifier, then: NormalForm, else: NormalForm)
   case tuple([NormalForm])
@@ -29,7 +32,7 @@ enum NormalForm: Hashable {
 
       return .arrow(headTypes, tailType)
 
-    case .closure, .literal, .ifThenElse, .structLiteral:
+    case .closure, .literal, .ifThenElse, .structLiteral, .identifier:
       return nil
     }
   }

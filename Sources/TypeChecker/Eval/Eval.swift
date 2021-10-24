@@ -36,48 +36,44 @@ extension Expr {
       } else if environment.types[i] != nil {
         return .typeConstructor(i, [])
       } else if i == "Type" {
+        // FIXME: maybe "Type" should be present in `DeclEnvironment` instead of checking for it directly?
         return .typeConstructor("Type", [])
       } else {
-        // FIXME: maybe "Type" should be present in `DeclEnvironment` instead of checking for it directly?
-        throw TypeError.unbound(i)
+        return .identifier(i)
       }
 
     case let .application(a):
       let arguments = a.arguments.elementsContent
 
       switch try a.function.content.content.eval(environment) {
-      case let .closure(c):
-        guard
-          // FIXME: cache or avoid this inference call
-          case let .arrow(typesOfArguments, _) = try Expr.closure(c).infer(environment)
-        else {
-          return .tuple([])
-        }
-
-        var modifiedEnvironment = environment
-
-        let argumentsWithTypes = zip(arguments, typesOfArguments.map { Scheme($0) })
-        let parameterIdentifiers: [Identifier] = c.parameters.map(\.identifier.content.content)
-        let sequence = Array(zip(parameterIdentifiers, argumentsWithTypes))
-        modifiedEnvironment.insert(bindings: sequence)
-        return try c.exprBlock.eval(modifiedEnvironment)
+      case let .closure(parameters, body):
+        precondition(arguments.count == parameters.count)
+        return try body.apply(
+          .init(uniqueKeysWithValues: zip(parameters, arguments.map { try $0.eval(environment) }))
+        )
 
       default:
         fatalError()
       }
 
     case let .closure(c):
-      return .closure(c)
+      return try .closure(
+        parameters: c.parameters.map(\.identifier.content.content),
+        body: c.body.eval(environment)
+      )
 
     case let .literal(l):
       return .literal(l)
 
     case let .ifThenElse(i):
+      let thenBranch = try i.thenBlock.elements.eval(environment)
+      let elseBranch = try i.elseBranch?.elseBlock.elements.eval(environment) ?? .tuple([])
       switch try i.condition.content.content.eval(environment) {
       case let .literal(.bool(condition)):
-        return try condition ? i.thenBlock.eval(environment) : (
-          i.elseBranch?.elseBlock.eval(environment) ?? .tuple([])
-        )
+        return condition ? thenBranch : elseBranch
+
+      case let .identifier(i):
+        return .ifThenElse(condition: i, then: thenBranch, else: elseBranch)
 
       default:
         fatalError()
@@ -90,22 +86,25 @@ extension Expr {
       return try .tuple(t.elementsContent.map { try $0.eval(environment) })
 
     case let .block(b):
-      return try b.eval(environment)
+      return try b.elements.eval(environment)
 
     case let .structLiteral(s):
-      // FIXME: should we get rid of `TypeIdentifier` and use `Identifier` everywhere instead?
-      guard case let .typeConstructor(i, _) = try s.type.content.content.eval(environment) else {
+      switch try s.type.content.content.eval(environment) {
+      case let .identifier(i):
+        throw TypeError.unbound(i)
+      case let .typeConstructor(i, _):
+        return try .structLiteral(
+          i,
+          .init(
+            uniqueKeysWithValues: s.elements.elementsContent.map {
+              try ($0.property.content.content, $0.value.content.content.eval(environment))
+            }
+          )
+        )
+
+      default:
         fatalError()
       }
-
-      return try .structLiteral(
-        Identifier(stringLiteral: i.value),
-        .init(
-          uniqueKeysWithValues: s.elements.elementsContent.map {
-            try ($0.property.content.content, $0.value.content.content.eval(environment))
-          }
-        )
-      )
 
     case .unit:
       return .tuple([])
@@ -113,13 +112,13 @@ extension Expr {
   }
 }
 
-extension ExprBlock {
+extension Array where Element == SyntaxNode<ExprBlock.Element> {
   func eval(_ environment: DeclEnvironment) throws -> NormalForm {
     var modifiedEnvironment = environment
 
-    for (i, element) in elements.enumerated() {
+    for (i, element) in enumerated() {
       switch element.content.content {
-      case let .expr(e) where i == elements.count - 1:
+      case let .expr(e) where i == count - 1:
         return try e.eval(modifiedEnvironment)
 
       case let .declaration(d):
@@ -146,6 +145,62 @@ extension MemberAccess {
 
     default:
       fatalError()
+    }
+  }
+}
+
+extension Dictionary where Value == NormalForm {
+  func apply(_ substitution: [Identifier: NormalForm]) -> Self {
+    mapValues { $0.apply(substitution) }
+  }
+}
+
+extension Array where Element == NormalForm {
+  func apply(_ substitution: [Identifier: NormalForm]) -> Self {
+    map { $0.apply(substitution) }
+  }
+}
+
+extension NormalForm {
+  func apply(_ substitution: [Identifier: NormalForm]) -> NormalForm {
+    switch self {
+    case let .identifier(i):
+      // FIXME: shouldn't this throw an error?
+      return substitution[i] ?? .identifier(i)
+
+    case let .closure(parameters, body):
+      // Exclude closure parameters from the substitution to support shadowing.
+      var modifiedSubstitution = substitution
+      for parameter in parameters {
+        modifiedSubstitution[parameter] = nil
+      }
+      return body.apply(substitution)
+
+    case let .literal(l):
+      return .literal(l)
+
+    case let .ifThenElse(condition, thenBranch, elseBranch):
+      if case let .literal(.bool(condition)) = substitution[condition] {
+        if condition {
+          return thenBranch.apply(substitution)
+        } else {
+          return elseBranch.apply(substitution)
+        }
+      } else {
+        fatalError()
+      }
+
+    case let .tuple(elements):
+      return .tuple(elements.apply(substitution))
+
+    case let .structLiteral(id, fields):
+      return .structLiteral(id, fields.apply(substitution))
+
+    case let .typeConstructor(id, args):
+      return .typeConstructor(id, args.apply(substitution))
+
+    case let .arrow(head, tail):
+      return .arrow(head.apply(substitution), tail.apply(substitution))
     }
   }
 }

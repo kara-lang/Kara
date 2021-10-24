@@ -16,5 +16,43 @@ final class EvalTests: XCTestCase {
     assertEval("{ x, y, z in if z { x } else { y }}(0, 42, false)", .literal(42))
     assertEval("(0, 42, false).1", .literal(42))
     assertEvalThrows("S [a: 0, b: 42, c: false].b", TypeError.unbound("S"))
+    assertEval(
+      """
+      {
+      struct S {}
+      S [a: 0, b: 42, c: false].b
+      }
+      """,
+      .closure(parameters: [], body: .literal(42))
+    )
+    assertEval(
+      """
+      {
+      struct S {}
+      S [a: 0, b: 42, c: false].c
+      }
+      """,
+      .closure(parameters: [], body: .literal(false))
+    )
+    assertEval(
+      """
+      {
+      struct S {}
+      let SAlias: Type = S
+      SAlias [a: 0, b: 42, c: false].a
+      }
+      """,
+      .closure(parameters: [], body: .literal(0))
+    )
+    assertEvalThrows(
+      """
+      {
+      struct S {}
+      let SAlias1: Type = S
+      SAlias2 [a: 0, b: 42, c: false].a
+      }
+      """,
+      TypeError.unbound("SAlias2")
+    )
   }
 }
