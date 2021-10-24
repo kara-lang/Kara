@@ -8,9 +8,7 @@ public enum AccessControl {
 }
 
 let accessControlParser =
-  SyntaxNodeParser(
-    Terminal("public").map { $0.map { _ in DeclModifier.access(.public) } }
-      .orElse(
-        Terminal("private").map { $0.map { _ in DeclModifier.access(.private) } }
-      )
-  )
+  Keyword.public.parser.map { $0.map { _ in DeclModifier.access(.public) } }
+    .orElse(
+      Keyword.private.parser.map { $0.map { _ in DeclModifier.access(.private) } }
+    )

@@ -13,6 +13,12 @@ enum Keyword: String, CaseIterable {
   case `else`
   case `in`
   case `let`
+  case `public`
+  case `private`
+  case `static`
+  case interop
+  case `true`
+  case `false`
 
   var parser: SyntaxNodeParser<Terminal, Empty> {
     .init(Terminal(rawValue))

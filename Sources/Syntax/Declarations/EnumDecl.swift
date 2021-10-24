@@ -24,7 +24,7 @@ extension EnumDecl: CustomStringConvertible {
 
 let enumParser =
   Many(declModifierParser)
-    .take(SyntaxNodeParser(Terminal("enum")))
+    .take(Keyword.enum.parser)
     .take(identifierParser(requiresLeadingTrivia: true))
     .take(declBlockParser)
     // FIXME: generic parameters

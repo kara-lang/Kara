@@ -17,7 +17,7 @@ public struct InteropModifier {
   let closeParen: SyntaxNode<Empty>
 }
 
-let interopModifierParser = SyntaxNodeParser(Terminal("interop"))
+let interopModifierParser = Keyword.interop.parser
   .take(openParenParser)
   .take(SyntaxNodeParser(identifierSequenceParser.stateful()))
   .take(commaParser)
