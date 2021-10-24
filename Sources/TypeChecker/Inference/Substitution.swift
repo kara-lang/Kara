@@ -121,13 +121,3 @@ extension Constraint: Substitutable {
     }
   }
 }
-
-extension NormalForm: Substitutable {
-  var freeTypeVariables: Set<TypeVariable> {
-    Set()
-  }
-
-  func apply(_: Substitution) -> NormalForm {
-    self
-  }
-}
