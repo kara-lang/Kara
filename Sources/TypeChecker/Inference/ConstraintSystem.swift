@@ -91,7 +91,7 @@ struct ConstraintSystem {
     in environment: DeclEnvironment,
     orThrow error: TypeError
   ) throws -> Type {
-    guard let scheme = environment.bindings[id]?.scheme ?? environment.functions[id]?.scheme else {
+    guard let scheme = environment.schemes.bindings[id]?.scheme ?? environment.schemes.functions[id]?.scheme else {
       guard environment.types[id] != nil else {
         throw error
       }

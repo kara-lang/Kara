@@ -4,11 +4,31 @@
 
 import Syntax
 
-/** Environment that maps a given binding `Identifier` to its declaration and `Scheme` signature. */
-typealias BindingEnvironment = [Identifier: (value: Expr?, scheme: Scheme)]
+/// Environment that maps available identifiers to their `Scheme` signatures together with optional definitions.
+struct SchemeEnvironment {
+  typealias Bindings = [Identifier: (value: Expr?, scheme: Scheme)]
+  typealias Functions = [Identifier: (body: ExprBlock?, scheme: Scheme)]
 
-/** Environment that maps a given function `Identifier` to its declaration and `Scheme` signature. */
-typealias FunctionEnvironment = [Identifier: (body: ExprBlock?, scheme: Scheme)]
+  init(bindings: Bindings = .init(), functions: Functions = .init()) {
+    self.bindings = bindings
+    self.functions = functions
+  }
+
+  fileprivate(set) var bindings: Bindings
+  fileprivate(set) var functions: Functions
+}
+
+struct MemberEnvironment {
+  /** Members available on implicitly declared `self` in the current scope, or on a given value of such type
+    in any location that has the type available in scope.
+   */
+  let members: SchemeEnvironment
+
+  /** Members available on implicitly declared `Self` type in the current scope, via leading dot
+   expressions, or via fully qualified type name where such type is available in scope.
+   */
+  let staticMembers: SchemeEnvironment
+}
 
 /** Mapping from a type identifier to an environment with its members. */
 typealias TypeEnvironment = [Identifier: DeclEnvironment]
@@ -22,22 +42,17 @@ struct StructLiteralField: Hashable {
 
 struct DeclEnvironment {
   init(
-    bindings: BindingEnvironment = [:],
-    functions: FunctionEnvironment = [:],
+    schemes: SchemeEnvironment = .init(),
     types: TypeEnvironment = [:],
     structLiterals: StructLiteralEnvironment = [:]
   ) {
-    self.bindings = bindings
-    self.functions = functions
+    self.schemes = schemes
     self.types = types
     self.structLiterals = structLiterals
   }
 
-  /// Environment of bindings available in this declaration.
-  private(set) var bindings: BindingEnvironment
-
-  /// Environment of functions available in this declaration.
-  private(set) var functions: FunctionEnvironment
+  /// Mapping of identifiers to their schemes available in this declaration.
+  private(set) var schemes: SchemeEnvironment
 
   /// Environment of types available in this declaration.
   private(set) var types: TypeEnvironment
@@ -51,11 +66,11 @@ struct DeclEnvironment {
     switch declaration {
     case let .function(f):
       let identifier = f.identifier.content.content
-      guard functions[identifier] == nil else {
+      guard schemes.functions[identifier] == nil else {
         throw TypeError.funcDeclAlreadyExists(identifier)
       }
 
-      functions[identifier] = try (f.body, f.scheme(self))
+      schemes.functions[identifier] = try (f.body, f.scheme(self))
 
     case let .binding(b):
       let identifier = b.identifier.content.content
@@ -63,11 +78,11 @@ struct DeclEnvironment {
         throw TypeError.topLevelAnnotationMissing(identifier)
       }
 
-      guard bindings[identifier] == nil else {
+      guard schemes.bindings[identifier] == nil else {
         throw TypeError.bindingDeclAlreadyExists(identifier)
       }
 
-      bindings[identifier] = (b.value?.expr.content.content, scheme)
+      schemes.bindings[identifier] = (b.value?.expr.content.content, scheme)
 
     case let .struct(s):
       let typeIdentifier = s.identifier.content.content
@@ -93,7 +108,7 @@ struct DeclEnvironment {
 
   mutating func insert<T>(bindings sequence: T) where T: Sequence, T.Element == (Identifier, (Expr?, Scheme)) {
     for (id, (value, scheme)) in sequence {
-      bindings[id] = (value, scheme)
+      schemes.bindings[id] = (value, scheme)
     }
   }
 

@@ -27,8 +27,8 @@ extension Expr {
     switch self {
     case let .identifier(i):
       let result = try (
-        environment.bindings[i]?.value ??
-          environment.functions[i]?.body.flatMap(Expr.block)
+        environment.schemes.bindings[i]?.value ??
+          environment.schemes.functions[i]?.body.flatMap(Expr.block)
       )?.eval(environment)
 
       if let result = result {

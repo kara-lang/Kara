@@ -92,16 +92,6 @@ extension Array: Substitutable where Element: Substitutable {
   }
 }
 
-extension BindingEnvironment: Substitutable {
-  func apply(_ sub: Substitution) -> BindingEnvironment {
-    mapValues { ($0.value, $0.scheme.apply(sub)) }
-  }
-
-  var freeTypeVariables: Set<TypeVariable> {
-    values.map(\.scheme).freeTypeVariables
-  }
-}
-
 extension Constraint: Substitutable {
   func apply(_ sub: Substitution) -> Constraint {
     switch self {
