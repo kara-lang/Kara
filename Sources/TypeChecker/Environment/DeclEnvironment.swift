@@ -18,6 +18,9 @@ struct SchemeEnvironment {
   fileprivate(set) var functions: Functions
 }
 
+/** Mapping from a type identifier to an environment with its members. */
+typealias TypeEnvironment = [Identifier: DeclEnvironment]
+
 struct MemberEnvironment {
   /** Members available on implicitly declared `self` in the current scope, or on a given value of such type
     in any location that has the type available in scope.
@@ -28,10 +31,12 @@ struct MemberEnvironment {
    expressions, or via fully qualified type name where such type is available in scope.
    */
   let staticMembers: SchemeEnvironment
-}
 
-/** Mapping from a type identifier to an environment with its members. */
-typealias TypeEnvironment = [Identifier: DeclEnvironment]
+  /** Member types on implicitly declared `Self` type in the current scope, or via fully qualified type
+   name where such type is available in scope.
+   */
+  let types: TypeEnvironment
+}
 
 typealias StructLiteralEnvironment = [Identifier: Set<StructLiteralField>]
 
