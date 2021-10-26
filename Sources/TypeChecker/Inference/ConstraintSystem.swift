@@ -18,9 +18,9 @@ struct ConstraintSystem {
   private var typeVariableCount = 0
   private(set) var constraints = [Constraint]()
 
-  private(set) var environment: DeclEnvironment
+  private(set) var environment: ModuleEnvironment
 
-  init(_ environment: DeclEnvironment) {
+  init(_ environment: ModuleEnvironment) {
     self.environment = environment
   }
 
@@ -55,7 +55,7 @@ struct ConstraintSystem {
 
     defer { self.environment = old }
 
-    environment.insert(bindings: bindings)
+    environment.schemes.insert(bindings: bindings)
 
     return try infer(inferred)
   }
@@ -81,18 +81,21 @@ struct ConstraintSystem {
 
     return try lookup(
       member,
-      in: environment,
+      schemes: environment.members,
+      // Local type environment shadows the top level module environment.
+      types: self.environment.types.merging(environment.types) { _, new in new },
       orThrow: .unknownMember(typeID, member)
     )
   }
 
   private mutating func lookup(
     _ id: Identifier,
-    in environment: DeclEnvironment,
+    schemes: SchemeEnvironment,
+    types: TypeEnvironment,
     orThrow error: TypeError
   ) throws -> Type {
-    guard let scheme = environment.schemes.bindings[id]?.scheme ?? environment.schemes.functions[id]?.scheme else {
-      guard environment.types[id] != nil else {
+    guard let scheme = schemes.bindings[id]?.scheme ?? schemes.functions[id]?.scheme else {
+      guard types[id] != nil else {
         throw error
       }
       return .type
@@ -114,7 +117,7 @@ struct ConstraintSystem {
       return literal.defaultType
 
     case let .identifier(id):
-      return try lookup(id, in: environment, orThrow: .unbound(id))
+      return try lookup(id, schemes: environment.schemes, types: environment.types, orThrow: .unbound(id))
 
     case let .closure(c):
       let ids = c.parameters.map(\.identifier.content.content)

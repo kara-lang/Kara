@@ -52,6 +52,7 @@ SyntaxNode(
           content: 1:4-1:23 ExprBlock.Element.declaration(
             Declaration.binding(
               BindingDecl(
+                modifiers: [],
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [],
                   content: 1:4-1:6 ()

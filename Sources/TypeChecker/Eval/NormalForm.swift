@@ -9,12 +9,13 @@ import Syntax
 /// no syntactic information is stored here such as source location or trivia.
 enum NormalForm: Hashable {
   case identifier(Identifier)
-  indirect case closure(parameters: [Identifier], body: NormalForm)
   case literal(Literal)
-  indirect case ifThenElse(condition: Identifier, then: NormalForm, else: NormalForm)
   case tuple([NormalForm])
   case structLiteral(Identifier, [Identifier: NormalForm])
   case typeConstructor(Identifier, [NormalForm])
+  indirect case memberAccess(NormalForm, MemberAccess.Member)
+  indirect case closure(parameters: [Identifier], body: NormalForm)
+  indirect case ifThenElse(condition: Identifier, then: NormalForm, else: NormalForm)
   indirect case arrow([NormalForm], NormalForm)
 
   var type: Type? {
@@ -32,7 +33,7 @@ enum NormalForm: Hashable {
 
       return .arrow(headTypes, tailType)
 
-    case .closure, .literal, .ifThenElse, .structLiteral, .identifier:
+    case .closure, .literal, .ifThenElse, .structLiteral, .identifier, .memberAccess:
       return nil
     }
   }

@@ -4,7 +4,7 @@
 
 import Parsing
 
-public struct FuncDecl {
+public struct FuncDecl: ModifiersContainer {
   public struct Parameter {
     public let externalName: SyntaxNode<Identifier>?
     public let internalName: SyntaxNode<Identifier>

@@ -23,7 +23,7 @@ extension Literal {
 
 extension Expr {
   func infer(
-    _ environment: DeclEnvironment = DeclEnvironment()
+    _ environment: ModuleEnvironment = ModuleEnvironment()
   ) throws -> Type {
     var system = ConstraintSystem(environment)
     let type = try system.infer(self)

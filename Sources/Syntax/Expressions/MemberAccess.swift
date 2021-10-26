@@ -5,7 +5,7 @@
 import Parsing
 
 public struct MemberAccess {
-  public enum Member: Equatable {
+  public enum Member: Hashable {
     case tupleElement(Int)
     case identifier(Identifier)
   }

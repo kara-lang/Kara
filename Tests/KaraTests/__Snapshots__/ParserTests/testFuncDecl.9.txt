@@ -1,0 +1,113 @@
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:40 FuncDecl(
+    modifiers: [
+      [0]: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:5 DeclModifier.static
+      ),
+      [1]: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
+        content: 0:7-0:12 DeclModifier.access(AccessControl.public)
+      )
+    ],
+    funcKeyword: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
+      content: 0:14-0:17 ()
+    ),
+    identifier: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
+      content: 0:19-0:19 Identifier(value: "f")
+    ),
+    parameters: DelimitedSequence(
+      start: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:20-0:20 ()
+      ),
+      elements: [
+        [0]: DelimitedSequence.Element(
+          content: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:21-0:26 FuncDecl.Parameter(
+              externalName: nil,
+              internalName: SyntaxNode(
+                leadingTrivia: [],
+                content: 0:21-0:21 Identifier(value: "x")
+              ),
+              colon: SyntaxNode(
+                leadingTrivia: [],
+                content: 0:22-0:22 ()
+              ),
+              type: SyntaxNode(
+                leadingTrivia: [
+                  [0]: Whitespace(" ")
+                ],
+                content: 0:24-0:26 Expr.identifier(
+                  Identifier(value: "Int")
+                )
+              )
+            )
+          ),
+          separator: nil
+        )
+      ],
+      end: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:27-0:27 ()
+      )
+    ),
+    arrow: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
+      content: 0:29-0:34 FuncDecl.Arrow(
+        arrowSymbol: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:29-0:30 ()
+        ),
+        returns: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:32-0:34 Expr.identifier(
+            Identifier(value: "Int")
+          )
+        )
+      )
+    ),
+    body: ExprBlock(
+      openBrace: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
+        content: 0:36-0:36 ()
+      ),
+      elements: [
+        [0]: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:38-0:38 ExprBlock.Element.expr(
+            Expr.identifier(
+              Identifier(value: "x")
+            )
+          )
+        )
+      ],
+      closeBrace: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
+        content: 0:40-0:40 ()
+      )
+    )
+  )
+)

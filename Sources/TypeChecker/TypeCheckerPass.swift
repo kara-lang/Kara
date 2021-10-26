@@ -6,7 +6,7 @@ import Basic
 import Syntax
 
 extension FuncDecl {
-  func typeCheck(_ environment: DeclEnvironment) throws {
+  func typeCheck(_ environment: ModuleEnvironment) throws {
     guard let body = body else {
       throw TypeError.funcDeclBodyMissing(identifier.content.content)
     }
@@ -17,7 +17,7 @@ extension FuncDecl {
     // it's already called when inferring `Scheme` for this `FuncDecl` while collecting passed `DeclEnvironment`?
     let parameterSchemes = try parameterTypes(environment).map { (Expr?.none, Scheme($0)) }
     let parameters = self.parameters.elementsContent.map(\.internalName.content.content)
-    functionEnvironment.insert(bindings: zip(parameters, parameterSchemes))
+    functionEnvironment.schemes.insert(bindings: zip(parameters, parameterSchemes))
 
     let inferredType = try Expr.block(body).infer(functionEnvironment)
     let expectedType = try returnType(environment)
@@ -29,13 +29,13 @@ extension FuncDecl {
 }
 
 extension StructDecl {
-  func typeCheck(_ environment: DeclEnvironment) throws {
+  func typeCheck(_ environment: ModuleEnvironment) throws {
     try declarations.elements.map(\.content.content).forEach { try $0.typeCheck(environment) }
   }
 }
 
 extension BindingDecl {
-  func typeCheck(_ environment: DeclEnvironment) throws {
+  func typeCheck(_ environment: ModuleEnvironment) throws {
     guard let value = value else { return }
 
     let inferredType = try value.expr.content.content.infer(environment)
@@ -49,7 +49,7 @@ extension BindingDecl {
 }
 
 extension Declaration {
-  func typeCheck(_ environment: DeclEnvironment) throws {
+  func typeCheck(_ environment: ModuleEnvironment) throws {
     switch self {
     case let .function(f):
       try f.typeCheck(environment)
@@ -68,7 +68,7 @@ extension Declaration {
 
 extension ModuleFile {
   func typeCheck() throws {
-    let environment = try extend(DeclEnvironment())
+    let environment = try ModuleEnvironment(self)
 
     try declarations.map(\.content.content).forEach { try $0.typeCheck(environment) }
   }

@@ -5,7 +5,7 @@
 import Syntax
 
 extension Type {
-  func eval(_ environment: DeclEnvironment) -> NormalForm {
+  func eval(_ environment: ModuleEnvironment) -> NormalForm {
     switch self {
     case let .tuple(types):
       return .tuple(types.map { $0.eval(environment) })
@@ -23,7 +23,7 @@ extension Type {
 }
 
 extension Expr {
-  func eval(_ environment: DeclEnvironment) throws -> NormalForm {
+  func eval(_ environment: ModuleEnvironment) throws -> NormalForm {
     switch self {
     case let .identifier(i):
       let result = try (
@@ -45,7 +45,8 @@ extension Expr {
     case let .application(a):
       let arguments = a.arguments.elementsContent
 
-      switch try a.function.content.content.eval(environment) {
+      let nf = try a.function.content.content.eval(environment)
+      switch nf {
       case let .closure(parameters, body):
         precondition(arguments.count == parameters.count)
         return try body.apply(
@@ -113,7 +114,7 @@ extension Expr {
 }
 
 extension Array where Element == SyntaxNode<ExprBlock.Element> {
-  func eval(_ environment: DeclEnvironment) throws -> NormalForm {
+  func eval(_ environment: ModuleEnvironment) throws -> NormalForm {
     var modifiedEnvironment = environment
 
     for (i, element) in enumerated() {
@@ -134,14 +135,18 @@ extension Array where Element == SyntaxNode<ExprBlock.Element> {
 }
 
 extension MemberAccess {
-  func eval(_ environment: DeclEnvironment) throws -> NormalForm {
+  func eval(_ environment: ModuleEnvironment) throws -> NormalForm {
     let base = try self.base.content.content.eval(environment)
     switch (base, member.content.content) {
     case let (.tuple(elements), .tupleElement(i)):
       return elements[i]
 
-    case let (.structLiteral(_, args), .identifier(member)):
-      return args[member]!
+    case let (.structLiteral(typeID, args), .identifier(member)):
+      if let body = environment.types[typeID]!.members.functions[member]?.0 {
+        return try body.elements.eval(environment)
+      } else {
+        return args[member]!
+      }
 
     default:
       fatalError()
@@ -201,6 +206,8 @@ extension NormalForm {
 
     case let .arrow(head, tail):
       return .arrow(head.apply(substitution), tail.apply(substitution))
+    case let .memberAccess(base, member):
+      return .memberAccess(base.apply(substitution), member)
     }
   }
 }

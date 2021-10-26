@@ -30,6 +30,7 @@ SyntaxNode(
             ],
             content: 1:2-1:6 Declaration.binding(
               BindingDecl(
+                modifiers: [],
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [
                     [0]: Whitespace("\n  ")
@@ -72,6 +73,7 @@ SyntaxNode(
             ],
             content: 2:2-2:6 Declaration.binding(
               BindingDecl(
+                modifiers: [],
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [
                     [0]: Whitespace("    "),
@@ -120,6 +122,7 @@ SyntaxNode(
             ],
             content: 3:2-3:6 Declaration.binding(
               BindingDecl(
+                modifiers: [],
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [
                     [0]: Whitespace("   "),

@@ -61,6 +61,7 @@ SyntaxNode(
                         ],
                         content: 2:4-2:8 Declaration.binding(
                           BindingDecl(
+                            modifiers: [],
                             bindingKeyword: SyntaxNode(
                               leadingTrivia: [
                                 [0]: Whitespace("\n    ")
@@ -109,6 +110,7 @@ SyntaxNode(
             ],
             content: 4:2-4:6 Declaration.binding(
               BindingDecl(
+                modifiers: [],
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [
                     [0]: Whitespace("\n  ")
@@ -151,6 +153,7 @@ SyntaxNode(
             ],
             content: 5:2-5:6 Declaration.binding(
               BindingDecl(
+                modifiers: [],
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [
                     [0]: Whitespace("    "),
@@ -199,6 +202,7 @@ SyntaxNode(
             ],
             content: 6:2-6:6 Declaration.binding(
               BindingDecl(
+                modifiers: [],
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [
                     [0]: Whitespace("   "),
@@ -284,6 +288,7 @@ SyntaxNode(
                         ],
                         content: 9:4-9:8 Declaration.binding(
                           BindingDecl(
+                            modifiers: [],
                             bindingKeyword: SyntaxNode(
                               leadingTrivia: [
                                 [0]: Whitespace("\n    ")
@@ -332,6 +337,7 @@ SyntaxNode(
             ],
             content: 12:2-12:11 Declaration.binding(
               BindingDecl(
+                modifiers: [],
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [
                     [0]: Whitespace("\n\n  ")
@@ -368,6 +374,7 @@ SyntaxNode(
             ],
             content: 13:2-13:11 Declaration.binding(
               BindingDecl(
+                modifiers: [],
                 bindingKeyword: SyntaxNode(
                   leadingTrivia: [
                     [0]: Whitespace("\n  ")

@@ -223,6 +223,7 @@ final class ParserTests: XCTestCase {
         """
       )
     )
+    assertSnapshot(funcDeclParser.parse("static public func f(x: Int) -> Int { x }"))
   }
 
   func testModuleFile() {
