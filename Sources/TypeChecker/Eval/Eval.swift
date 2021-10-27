@@ -26,13 +26,10 @@ extension Expr {
   func eval(_ environment: ModuleEnvironment) throws -> NormalForm {
     switch self {
     case let .identifier(i):
-      let result = try (
-        environment.schemes.bindings[i]?.value ??
-          environment.schemes.functions[i]?.body.flatMap(Expr.block)
-      )?.eval(environment)
-
-      if let result = result {
-        return result
+      if case let (binding?, _)? = environment.schemes.bindings[i] {
+        return try binding.eval(environment)
+      } else if case let (parameters, body?, _)? = environment.schemes.functions[i] {
+        return try .closure(parameters: parameters, body: body.elements.eval(environment))
       } else if environment.types[i] != nil {
         return .typeConstructor(i, [])
       } else if i == "Type" {
@@ -142,11 +139,14 @@ extension MemberAccess {
       return elements[i]
 
     case let (.structLiteral(typeID, args), .identifier(member)):
-      if let body = environment.types[typeID]!.members.functions[member]?.0 {
+      if let body = environment.types[typeID]!.members.functions[member]?.body {
         return try body.elements.eval(environment)
       } else {
         return args[member]!
       }
+
+    case let (.identifier(id), member):
+      return .memberAccess(.identifier(id), member)
 
     default:
       fatalError()
@@ -207,7 +207,16 @@ extension NormalForm {
     case let .arrow(head, tail):
       return .arrow(head.apply(substitution), tail.apply(substitution))
     case let .memberAccess(base, member):
-      return .memberAccess(base.apply(substitution), member)
+      switch (base.apply(substitution), member) {
+      case let (.identifier(i), _):
+        return .memberAccess(.identifier(i), member)
+      case let (.structLiteral(_, fields), .identifier(field)):
+        return fields[field]!
+      case let (.tuple(elements), .tupleElement(index)):
+        return elements[index]
+      default:
+        fatalError()
+      }
     }
   }
 }

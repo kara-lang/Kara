@@ -67,4 +67,18 @@ final class EvalTests: XCTestCase {
       TypeError.unbound("SAlias2")
     )
   }
+
+  func testMemberAccess() {
+    assertEval(
+      """
+      {
+        struct Int {}
+        struct S { let x: Int }
+        func f(x: S) -> Int { x.x }
+        f(S[x: 42])
+      }
+      """,
+      .closure(parameters: [], body: .literal(42))
+    )
+  }
 }

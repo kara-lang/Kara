@@ -36,8 +36,8 @@ final class SyntaxInferenceTests: XCTestCase {
   func testApplication() throws {
     let e = ModuleEnvironment(
       schemes: .init(functions: [
-        "increment": (nil, .init(.int32 --> .int32)),
-        "stringify": (nil, .init(.int32 --> .string)),
+        "increment": ([], nil, .init(.int32 --> .int32)),
+        "stringify": ([], nil, .init(.int32 --> .string)),
       ])
     )
 
@@ -50,9 +50,9 @@ final class SyntaxInferenceTests: XCTestCase {
   func testClosure() throws {
     let e = ModuleEnvironment(
       schemes: .init(functions: [
-        "increment": (nil, .init(.int32 --> .int32)),
-        "stringify": (nil, .init(.int32 --> .string)),
-        "decode": (nil, .init(.string --> .int32)),
+        "increment": ([], nil, .init(.int32 --> .int32)),
+        "stringify": ([], nil, .init(.int32 --> .string)),
+        "decode": ([], nil, .init(.string --> .int32)),
       ])
     )
 
@@ -85,9 +85,9 @@ final class SyntaxInferenceTests: XCTestCase {
   func testClosureWithMultipleArguments() throws {
     let e = ModuleEnvironment(
       schemes: .init(functions: [
-        "sum": (nil, .init([.int32, .int32] --> .int32)),
-        "stringify": (nil, .init([.int32, .int32] --> .string)),
-        "decode": (nil, .init([.string, .string] --> .int32)),
+        "sum": ([], nil, .init([.int32, .int32] --> .int32)),
+        "stringify": ([], nil, .init([.int32, .int32] --> .string)),
+        "decode": ([], nil, .init([.string, .string] --> .int32)),
       ])
     )
 
@@ -113,9 +113,9 @@ final class SyntaxInferenceTests: XCTestCase {
   func testClosureWithMultipleArgumentsDifferentTypes() throws {
     let e = ModuleEnvironment(
       schemes: .init(functions: [
-        "concatenate": (nil, .init([.int32, .string] --> .string)),
-        "sum": (nil, .init([.int32, .int32] --> .int32)),
-        "decode": (nil, .init([.string, .int32] --> .int32)),
+        "concatenate": ([], nil, .init([.int32, .string] --> .string)),
+        "sum": ([], nil, .init([.int32, .int32] --> .int32)),
+        "decode": ([], nil, .init([.string, .int32] --> .int32)),
       ])
     )
 

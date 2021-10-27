@@ -7,7 +7,7 @@ import Syntax
 /// Environment that maps available identifiers to their `Scheme` signatures together with optional definitions.
 struct SchemeEnvironment {
   typealias Bindings = [Identifier: (value: Expr?, scheme: Scheme)]
-  typealias Functions = [Identifier: (body: ExprBlock?, scheme: Scheme)]
+  typealias Functions = [Identifier: (parameters: [Identifier], body: ExprBlock?, scheme: Scheme)]
 
   init(bindings: Bindings = .init(), functions: Functions = .init()) {
     self.bindings = bindings
@@ -36,7 +36,11 @@ struct SchemeEnvironment {
       throw TypeError.funcDeclAlreadyExists(identifier)
     }
 
-    functions[identifier] = try (f.body, f.scheme(topLevel))
+    functions[identifier] = try (
+      f.parameters.elementsContent.map(\.internalName.content.content),
+      f.body,
+      f.scheme(topLevel)
+    )
   }
 
   mutating func insert<T>(bindings sequence: T) where T: Sequence, T.Element == (Identifier, (Expr?, Scheme)) {
