@@ -24,7 +24,7 @@ public struct BindingDecl: ModifiersContainer {
 
 extension BindingDecl: SyntaxNodeContainer {
   public var start: SyntaxNode<Empty> { bindingKeyword }
-  public var end: SyntaxNode<Empty> { value?.expr.map { _ in Empty() } ?? identifier.map { _ in Empty() } }
+  public var end: SyntaxNode<Empty> { value?.expr.empty ?? identifier.empty }
 }
 
 let bindingParser = Many(declModifierParser)

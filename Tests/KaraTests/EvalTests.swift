@@ -81,4 +81,48 @@ final class EvalTests: XCTestCase {
       .closure(parameters: [], body: .literal(42))
     )
   }
+
+  func testEnvironmentCapture() {
+    assertEval(
+      """
+      {
+        struct Int {}
+        let x: Int = 42
+        func f() -> Int { x }
+        f()
+      }
+      """,
+      .closure(parameters: [], body: .literal(42))
+    )
+  }
+
+  func testMemberFunctions() {
+    assertEval(
+      """
+      {
+        struct String {}
+        enum Bool {}
+
+        struct S {
+          func f() -> String { "forty two" }
+
+          static func f() -> String { "static" }
+        }
+
+        let s: S = S[]
+
+        func f(condition: Bool) -> String {
+          if condition {
+            s.f()
+          } else {
+            S.f()
+          }
+        }
+
+        f(false)
+      }
+      """,
+      .closure(parameters: [], body: .literal("static"))
+    )
+  }
 }

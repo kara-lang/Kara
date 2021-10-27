@@ -12,7 +12,7 @@ public struct StructDecl {
 }
 
 extension StructDecl: SyntaxNodeContainer {
-  public var start: SyntaxNode<Empty> { modifiers.first?.map { _ in Empty() } ?? structKeyword }
+  public var start: SyntaxNode<Empty> { modifiers.first?.empty ?? structKeyword }
   public var end: SyntaxNode<Empty> { declarations.end }
 }
 

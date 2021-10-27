@@ -106,6 +106,9 @@ extension Expr {
 
     case .unit:
       return .tuple([])
+
+    case .leadingDot:
+      fatalError()
     }
   }
 }
@@ -139,14 +142,23 @@ extension MemberAccess {
       return elements[i]
 
     case let (.structLiteral(typeID, args), .identifier(member)):
-      if let body = environment.types[typeID]!.members.functions[member]?.body {
-        return try body.elements.eval(environment)
+      if case let (parameters, body?, _)? = environment.types[typeID]!.members.functions[member] {
+        return try .closure(parameters: parameters, body: body.elements.eval(environment))
       } else {
         return args[member]!
       }
 
     case let (.identifier(id), member):
       return .memberAccess(.identifier(id), member)
+
+    case let (.typeConstructor(typeID, _), .identifier(member)):
+      if case let (parameters, body?, _)? = environment.types[typeID]!.staticMembers.functions[member] {
+        return try .closure(parameters: parameters, body: body.elements.eval(environment))
+      } else if case let (value?, _)? = environment.types[typeID]!.staticMembers.bindings[member] {
+        return try value.eval(environment)
+      } else {
+        fatalError()
+      }
 
     default:
       fatalError()

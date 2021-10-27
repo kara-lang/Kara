@@ -16,11 +16,9 @@ public struct MemberAccess {
 }
 
 let memberAccessParser =
-  SyntaxNodeParser(
-    Terminal(".")
-  )
-  .take(
-    identifierParser().map { $0.map(MemberAccess.Member.identifier) }
-      .orElse(SyntaxNodeParser(Int.parser().stateful()).map { $0.map(MemberAccess.Member.tupleElement) })
-  )
-  .map(ExprSyntaxTail.memberAccess)
+  dotParser
+    .take(
+      identifierParser().map { $0.map(MemberAccess.Member.identifier) }
+        .orElse(SyntaxNodeParser(Int.parser().stateful()).map { $0.map(MemberAccess.Member.tupleElement) })
+    )
+    .map(ExprSyntaxTail.memberAccess)

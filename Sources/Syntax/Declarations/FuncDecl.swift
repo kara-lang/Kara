@@ -17,7 +17,7 @@ public struct FuncDecl: ModifiersContainer {
     public let returns: SyntaxNode<Expr>
 
     public var start: SyntaxNode<Empty> { arrowSymbol }
-    public var end: SyntaxNode<Empty> { returns.map { _ in Empty() } }
+    public var end: SyntaxNode<Empty> { returns.empty }
   }
 
   public let modifiers: [SyntaxNode<DeclModifier>]
@@ -30,7 +30,7 @@ public struct FuncDecl: ModifiersContainer {
 }
 
 extension FuncDecl: SyntaxNodeContainer {
-  public var start: SyntaxNode<Empty> { modifiers.first?.map { _ in Empty() } ?? funcKeyword }
+  public var start: SyntaxNode<Empty> { modifiers.first?.empty ?? funcKeyword }
   public var end: SyntaxNode<Empty> { body?.closeBrace ?? arrow?.map(\.returns).map { _ in
     Empty()
   } ?? parameters.end }

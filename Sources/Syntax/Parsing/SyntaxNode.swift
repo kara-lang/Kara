@@ -20,6 +20,10 @@ public struct SyntaxNode<Content> {
   public var range: SourceRange<Empty> {
     SourceRange(start: content.start, end: content.end)
   }
+
+  public var empty: SyntaxNode<Empty> {
+    map { _ in Empty() }
+  }
 }
 
 extension SyntaxNode: Equatable where Content: Equatable {}

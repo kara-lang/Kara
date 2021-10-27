@@ -107,7 +107,7 @@ struct ConstraintSystem {
   /// Converting a σ type into a τ type by creating fresh names for each type
   /// variable that does not appear in the current typing environment.
   private mutating func instantiate(_ scheme: Scheme) -> Type {
-    let substitution = scheme.variables.map { ($0, fresh()) }
+    let substitution: [(TypeVariable, Type)] = scheme.variables.map { ($0, fresh()) }
     return scheme.type.apply(Dictionary(uniqueKeysWithValues: substitution))
   }
 
@@ -209,6 +209,8 @@ struct ConstraintSystem {
 
     case .unit:
       return .unit
+    case .leadingDot:
+      fatalError()
     }
   }
 }

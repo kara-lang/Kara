@@ -12,7 +12,7 @@ public struct EnumDecl {
 }
 
 extension EnumDecl: SyntaxNodeContainer {
-  public var start: SyntaxNode<Empty> { modifiers.first?.map { _ in Empty() } ?? enumKeyword }
+  public var start: SyntaxNode<Empty> { modifiers.first?.empty ?? enumKeyword }
   public var end: SyntaxNode<Empty> { declarations.end }
 }
 

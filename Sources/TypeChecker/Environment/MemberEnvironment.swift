@@ -36,16 +36,16 @@ struct MemberEnvironment {
     switch declaration {
     case let .function(f):
       if f.isStatic {
-        try members.insert(f, topLevel)
-      } else {
         try staticMembers.insert(f, topLevel)
+      } else {
+        try members.insert(f, topLevel)
       }
 
     case let .binding(b):
       if b.isStatic {
-        try members.insert(b, topLevel)
-      } else {
         try staticMembers.insert(b, topLevel)
+      } else {
+        try members.insert(b, topLevel)
       }
 
     case let .struct(s):

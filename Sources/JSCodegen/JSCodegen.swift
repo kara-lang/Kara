@@ -206,6 +206,8 @@ extension Expr {
 //      return #"Symbol.for("Kara.\#(t.description)")"#
     case .unit:
       return "undefined"
+    case .leadingDot:
+      fatalError()
     }
   }
 }

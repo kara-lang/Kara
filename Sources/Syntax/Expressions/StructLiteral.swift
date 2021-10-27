@@ -11,11 +11,11 @@ public struct StructLiteral: SyntaxNodeContainer {
     public let value: SyntaxNode<Expr>
 
     public var start: SyntaxNode<Empty> {
-      property.map { _ in Empty() }
+      property.empty
     }
 
     public var end: SyntaxNode<Empty> {
-      value.map { _ in Empty() }
+      value.empty
     }
   }
 
@@ -23,7 +23,7 @@ public struct StructLiteral: SyntaxNodeContainer {
   public let elements: DelimitedSequence<Element>
 
   public var start: SyntaxNode<Empty> {
-    type.map { _ in Empty() }
+    type.empty
   }
 
   public var end: SyntaxNode<Empty> {
