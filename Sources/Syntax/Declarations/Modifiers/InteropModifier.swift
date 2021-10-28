@@ -2,7 +2,9 @@
 //  Created by Max Desiatov on 21/09/2021.
 //
 
-public struct InteropModifier {
+import Parsing
+
+public struct InteropModifier: SyntaxNodeContainer {
   public enum Language: String {
     case js = "JS"
     case c = "C"
@@ -13,38 +15,25 @@ public struct InteropModifier {
   let openParen: SyntaxNode<Empty>
   public let language: SyntaxNode<Language>
   let comma: SyntaxNode<Empty>
-  public let externalName: SyntaxNode<String>
+  public let externalName: SyntaxNode<Substring>
   let closeParen: SyntaxNode<Empty>
+
+  public var start: SyntaxNode<Empty> { interopKeyword }
+  public var end: SyntaxNode<Empty> { closeParen }
 }
 
-let interopModifierParser = Keyword.interop.parser
-  .take(openParenParser)
-  .take(SyntaxNodeParser(identifierSequenceParser.stateful()))
-  .take(commaParser)
-  .take(SyntaxNodeParser(singleQuotedStringParser.stateful()))
-  .take(closeParenParser)
-  .compactMap { interopKeyword, openParen, rawLanguage, comma, externalName, closeParen -> SyntaxNode<DeclModifier>? in
-    guard let language = InteropModifier.Language(rawValue: rawLanguage.content.content) else {
-      return nil
-    }
-
-    return
-      SyntaxNode(
-        leadingTrivia: interopKeyword.leadingTrivia,
-        content: SourceRange(
-          start: interopKeyword.content.start,
-          end: closeParen.content.end,
-          content:
-          DeclModifier.interop(
-            InteropModifier(
-              interopKeyword: interopKeyword,
-              openParen: openParen,
-              language: rawLanguage.map { _ in language },
-              comma: comma,
-              externalName: externalName.map { String(Substring($0)) },
-              closeParen: closeParen
-            )
-          )
-        )
-      )
-  }
+let interopModifierParser = Parse {
+  Keyword.interop.parser
+  openParenParser
+  SyntaxNodeParser(
+    identifierSequenceParser
+      .compactMap(InteropModifier.Language.init(rawValue:))
+      .stateful()
+  )
+  commaParser
+  SyntaxNodeParser(singleQuotedStringParser.stateful()).map(Substring.init)
+  closeParenParser
+}
+.map(InteropModifier.init)
+.map(\.syntaxNode)
+.map { $0.map(DeclModifier.interop) }

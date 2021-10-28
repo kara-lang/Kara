@@ -35,30 +35,28 @@ extension Trivia: CustomStringConvertible {
 }
 
 typealias TriviaParser = Many<
-  Parsers.OneOf<Parsers.Map<
-    Parsers
-      .OneOf<
-        Parsers.Map<Parsers.Take2<Terminal, StatefulParser<Prefix<Substring.UTF8View>>>, SourceRange<Comment>>,
-        Parsers.Map<
-          Parsers
-            .Take3<Parsers.Take2<Terminal, LineCounter>, SourceRange<Empty>, SourceRange<Substring.UTF8View>, Terminal>,
-          SourceRange<Comment>
-        >
-      >,
-    SourceRange<Trivia>
-  >, Parsers.Map<LineCounter, SourceRange<Trivia>>>,
+  OneOf<OneOf2<
+    Parsers.Map<OneOf<OneOf2<
+      Parsers.Map<Parse<Zip2_OO<Terminal, StatefulParser<Prefix<Substring.UTF8View>>>>, SourceRange<Comment>>,
+      Parsers.Map<Parse<Zip3_OOO<Terminal, LineCounter, Terminal>>, SourceRange<Comment>>
+    >>, SourceRange<Trivia>>,
+    Parsers.Map<LineCounter, SourceRange<Trivia>>
+  >>,
   [SourceRange<Trivia>],
   Always<ParsingState, ()>
 >
 
 func triviaParser(requiresLeadingTrivia: Bool) -> TriviaParser {
-  Many(
-    commentParser
-      .map { $0.map(Trivia.comment) }
-      .orElse(
-        statefulWhitespace(isRequired: true)
-          .map { $0.map { Trivia.whitespace(String(Substring($0))) } }
-      ),
+  let result = Many(
+    OneOf {
+      commentParser
+        .map { $0.map(Trivia.comment) }
+
+      statefulWhitespace(isRequired: true)
+        .map { $0.map { Trivia.whitespace(String(Substring($0))) } }
+    },
     atLeast: requiresLeadingTrivia ? 1 : 0
   )
+
+  return result
 }

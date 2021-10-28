@@ -12,8 +12,9 @@ public struct LeadingDot: SyntaxNodeContainer {
   public var end: SyntaxNode<Empty> { member.empty }
 }
 
-let leadingDotParser =
+let leadingDotParser = Parse {
   dotParser
-    .take(identifierParser())
-    .map(LeadingDot.init)
-    .map(\.syntaxNode)
+  identifierParser()
+}
+.map(LeadingDot.init)
+.map(\.syntaxNode)

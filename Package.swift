@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -20,7 +20,7 @@ let package = Package(
     .package(
       name: "swift-parsing",
       url: "https://github.com/pointfreeco/swift-parsing.git",
-      .upToNextMinor(from: "0.3.1")
+      .branch("parser-builder")
     ),
     .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.9.0"),
     .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "0.2.0"),
@@ -77,11 +77,11 @@ let package = Package(
       dependencies: []
     ),
 
-    .target(
+    .executableTarget(
       name: "kara",
       dependencies: ["Driver"]
     ),
-    .target(
+    .executableTarget(
       name: "kara-benchmark",
       dependencies: ["Benchmark"]
     ),
