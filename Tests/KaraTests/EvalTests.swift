@@ -56,6 +56,16 @@ final class EvalTests: XCTestCase {
       """,
       .closure(parameters: [], body: .literal(0))
     )
+    assertEval(
+      """
+      {
+      struct S {}
+      func SAlias() -> Type { S }
+      SAlias() [a: 0, b: 42, c: false].a
+      }
+      """,
+      .closure(parameters: [], body: .literal(0))
+    )
     assertEvalThrows(
       """
       {
