@@ -39,3 +39,5 @@ let colonParser = SyntaxNodeParser(Terminal(":"))
 
 let commaParser = SyntaxNodeParser(Terminal(","))
 let dotParser = SyntaxNodeParser(Terminal("."))
+
+let arrowSymbolParser = SyntaxNodeParser(Terminal("->"))

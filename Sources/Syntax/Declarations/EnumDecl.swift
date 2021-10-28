@@ -22,11 +22,12 @@ extension EnumDecl: CustomStringConvertible {
   }
 }
 
-let enumParser =
+let enumParser = Parse {
   Many(declModifierParser)
-    .take(Keyword.enum.parser)
-    .take(identifierParser(requiresLeadingTrivia: true))
-    .take(declBlockParser)
-    // FIXME: generic parameters
-    .map { EnumDecl(modifiers: $0, enumKeyword: $1, identifier: $2, declarations: $3) }
-    .map(\.syntaxNode)
+  Keyword.enum.parser
+  identifierParser(requiresLeadingTrivia: true)
+  declBlockParser
+}
+// FIXME: generic parameters
+.map(EnumDecl.init)
+.map(\.syntaxNode)

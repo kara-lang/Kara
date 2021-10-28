@@ -55,6 +55,12 @@ struct SyntaxNodeParser<Inner, Content>: Parser
       .map { SyntaxNode(leadingTrivia: $0.map(\.content), content: $1) }
       .parse(&input)
   }
+
+  func map<NewContent>(_ transformer: @escaping (Content) -> NewContent) -> Parsers
+    .Map<Self, SyntaxNode<NewContent>>
+  {
+    map { (node: SyntaxNode<Content>) -> SyntaxNode<NewContent> in node.map(transformer) }
+  }
 }
 
 public protocol SyntaxNodeContainer {

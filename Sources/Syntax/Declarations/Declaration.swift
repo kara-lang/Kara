@@ -12,12 +12,13 @@ public enum Declaration {
   case trait(TraitDecl)
 }
 
-let declarationParser: AnyParser<ParsingState, SyntaxNode<Declaration>> =
+let declarationParser: AnyParser<ParsingState, SyntaxNode<Declaration>> = OneOf {
   funcDeclParser.map { $0.map(Declaration.function) }
-    .orElse(structParser.map { $0.map(Declaration.struct) })
-    .orElse(enumParser.map { $0.map(Declaration.enum) })
-    .orElse(traitParser.map { $0.map(Declaration.trait) })
-    .orElse(bindingParser.map { $0.map(Declaration.binding) })
-    // Required to give `declarationParser` an explicit type signature, otherwise this won't compile due to mutual
-    // recursion with subexpression parsers.
-    .eraseToAnyParser()
+  structParser.map { $0.map(Declaration.struct) }
+  enumParser.map { $0.map(Declaration.enum) }
+  traitParser.map { $0.map(Declaration.trait) }
+  bindingParser.map { $0.map(Declaration.binding) }
+}
+// Required to give `declarationParser` an explicit type signature, otherwise this won't compile due to mutual
+// recursion with subexpression parsers.
+.eraseToAnyParser()

@@ -22,11 +22,12 @@ extension StructDecl: CustomStringConvertible {
   }
 }
 
-let structParser =
+let structParser = Parse {
   Many(declModifierParser)
-    .take(Keyword.struct.parser)
-    .take(identifierParser(requiresLeadingTrivia: true))
-    .take(declBlockParser)
-    // FIXME: generic parameters
-    .map { StructDecl(modifiers: $0, structKeyword: $1, identifier: $2, declarations: $3) }
-    .map(\.syntaxNode)
+  Keyword.struct.parser
+  identifierParser(requiresLeadingTrivia: true)
+  declBlockParser
+}
+// FIXME: generic parameters
+.map(StructDecl.init)
+.map(\.syntaxNode)

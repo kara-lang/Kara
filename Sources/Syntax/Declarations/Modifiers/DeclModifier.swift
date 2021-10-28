@@ -2,15 +2,19 @@
 //  Created by Max Desiatov on 21/09/2021.
 //
 
+import Parsing
+
 public enum DeclModifier {
   case access(AccessControl)
   case interop(InteropModifier)
   case `static`
 }
 
-let declModifierParser = interopModifierParser
-  .orElse(accessControlParser)
-  .orElse(Keyword.static.parser.map { $0.map { _ in .static }})
+let declModifierParser = OneOf {
+  interopModifierParser
+  accessControlParser
+  Keyword.static.parser.map { _ in DeclModifier.static }
+}
 
 public protocol ModifiersContainer {
   var modifiers: [SyntaxNode<DeclModifier>] { get }

@@ -62,50 +62,53 @@ let nonParametricClosureParser = exprBlockParser
     ).syntaxNode
   }
 
-let parametricClosureParser = openBraceParser
-  // Parses closures of form `{ a, b, c, in }`, note the trailing comma
-  .take(
-    Many(
-      identifierParser()
-        .take(commaParser)
-    )
-  )
-  // Optional tail component without the comma to parse closures of form `{ a, b, c in }`
-  .take(
-    Optional.parser(of: identifierParser())
-  )
-  .take(Keyword.in.parser)
-  .take(
-    Optional.parser(
-      of: triviaParser(requiresLeadingTrivia: true)
-        .take(exprBlockElementsParser)
-        .map { trivia, elements -> Closure.Body in
-          [.init(leadingTrivia: trivia.map(\.content), content: elements[0].content)] + elements.dropFirst()
-        }
-    )
-  )
-  .take(closeBraceParser)
-  .map { openBrace, head, tail, inKeyword, body, closeBrace -> SyntaxNode<Closure> in
-    let parameters: [Closure.Parameter]
-    if let tail = tail {
-      let headWithOptionalCommas = head.map { id, comma -> (SyntaxNode<Identifier>, SyntaxNode<Empty>?) in
-        (id, comma)
-      }
+let parametricClosureParser = Parse {
+  openBraceParser
 
-      parameters = (headWithOptionalCommas + [(tail, nil)])
-        .map { Closure.Parameter(identifier: $0.0, comma: $0.1) }
-    } else {
-      parameters = head.map { Closure.Parameter(identifier: $0.0, comma: $0.1) }
+  // Parses closures of form `{ a, b, c, in }`, note the trailing comma
+  Many(
+    identifierParser()
+      .take(commaParser)
+  )
+
+  // Optional tail component without the comma to parse closures of form `{ a, b, c in }`
+  Optional.parser(of: identifierParser())
+
+  Keyword.in.parser
+
+  Optional.parser(
+    of: triviaParser(requiresLeadingTrivia: true)
+      .take(exprBlockElementsParser)
+      .map { trivia, elements -> Closure.Body in
+        [.init(leadingTrivia: trivia.map(\.content), content: elements[0].content)] + elements.dropFirst()
+      }
+  )
+
+  closeBraceParser
+}
+.map { openBrace, head, tail, inKeyword, body, closeBrace -> SyntaxNode<Closure> in
+  let parameters: [Closure.Parameter]
+  if let tail = tail {
+    let headWithOptionalCommas = head.map { id, comma -> (SyntaxNode<Identifier>, SyntaxNode<Empty>?) in
+      (id, comma)
     }
 
-    return Closure(
-      openBrace: openBrace,
-      parameters: parameters,
-      inKeyword: inKeyword,
-      body: body ?? [],
-      closeBrace: closeBrace
-    ).syntaxNode
+    parameters = (headWithOptionalCommas + [(tail, nil)])
+      .map { Closure.Parameter(identifier: $0.0, comma: $0.1) }
+  } else {
+    parameters = head.map { Closure.Parameter(identifier: $0.0, comma: $0.1) }
   }
 
-let closureParser = parametricClosureParser
-  .orElse(nonParametricClosureParser)
+  return Closure(
+    openBrace: openBrace,
+    parameters: parameters,
+    inKeyword: inKeyword,
+    body: body ?? [],
+    closeBrace: closeBrace
+  ).syntaxNode
+}
+
+let closureParser = OneOf {
+  parametricClosureParser
+  nonParametricClosureParser
+}

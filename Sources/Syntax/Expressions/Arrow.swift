@@ -10,5 +10,7 @@ struct Arrow {
   let tail: SyntaxNode<Expr>
 }
 
-let arrowTailParser = SyntaxNodeParser(Terminal("->"))
-  .take(Lazy { exprParser })
+let arrowTailParser = Parse {
+  arrowSymbolParser
+  Lazy { exprParser }
+}

@@ -31,43 +31,56 @@ public struct DelimitedSequence<T>: SyntaxNodeContainer {
   }
 }
 
+typealias DelimitedSequenceParser<T, P: Parser> = Parsers.CompactMap<
+  Parse<Zip4_OOOO<
+    SyntaxNodeParser<Terminal, Empty>,
+    Many<
+      Parsers.Take2<P, SyntaxNodeParser<Terminal, Empty>>,
+      [(SyntaxNode<T>, SyntaxNode<Empty>)],
+      Always<ParsingState, ()>
+    >,
+    Parsers.OptionalParser<P>,
+    SyntaxNodeParser<Terminal, Empty>
+  >>,
+  DelimitedSequence<T>
+> where P.Output == SyntaxNode<T>, P.Input == ParsingState
+
 func delimitedSequenceParser<T, P: Parser>(
   startParser: SyntaxNodeParser<Terminal, Empty>,
   endParser: SyntaxNodeParser<Terminal, Empty>,
   separatorParser: SyntaxNodeParser<Terminal, Empty>,
   elementParser: P,
   atLeast minimum: Int = 0
-) -> AnyParser<ParsingState, DelimitedSequence<T>> where P.Output == SyntaxNode<T>, P.Input == ParsingState {
-  startParser
-    .take(
-      Many(
-        elementParser
-          .take(separatorParser)
-      )
+) -> DelimitedSequenceParser<T, P> {
+  Parse {
+    startParser
+    Many(
+      elementParser
+        .take(separatorParser)
     )
     // Optional tail component to cover cases without a trailing comma
-    .take(Optional.parser(of: elementParser))
-    .take(endParser)
-    .compactMap { startNode, head, tail, endNode -> DelimitedSequence<T>? in
-      guard let tail = tail else {
-        guard head.count >= minimum else { return nil }
-
-        return DelimitedSequence(
-          start: startNode,
-          elements: head.map { .init(content: $0, separator: $1) },
-          end: endNode
-        )
-      }
-
-      let result = head + [tail]
-
-      guard result.count >= minimum else { return nil }
+    Optional.parser(of: elementParser)
+    endParser
+  }
+  .compactMap { startNode, head, tail, endNode -> DelimitedSequence<T>? in
+    guard let tail = tail else {
+      guard head.count >= minimum else { return nil }
 
       return DelimitedSequence(
         start: startNode,
-        elements: head.map { .init(content: $0, separator: $1) } + [.init(content: tail, separator: nil)],
+        elements: head.map { .init(content: $0, separator: $1) },
         end: endNode
       )
     }
-    .eraseToAnyParser()
+
+    let result = head + [tail]
+
+    guard result.count >= minimum else { return nil }
+
+    return DelimitedSequence(
+      start: startNode,
+      elements: head.map { .init(content: $0, separator: $1) } + [.init(content: tail, separator: nil)],
+      end: endNode
+    )
+  }
 }

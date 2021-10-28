@@ -71,24 +71,22 @@ let intLiteralParser = Int64.parser(of: UTF8SubSequence.self)
 let floatLiteralParser = Double.parser(of: UTF8SubSequence.self)
   .map(Literal.double)
 
-let singleQuotedStringParser = UTF8Terminal("\"".utf8)
-  .take(Prefix { $0 != UInt8(ascii: "\"") })
-  .skip(StartsWith("\"".utf8))
+let singleQuotedStringParser = Parse {
+  "\"".utf8
+  Prefix { $0 != UInt8(ascii: "\"") }
+  "\"".utf8
+}
 
 let stringLiteralParser = singleQuotedStringParser
   .compactMap(String.init)
   .map(Literal.string)
 
-let boolLiteralParser = UTF8Terminal("true".utf8)
-  .map { _ in true }
-  .orElse(
-    UTF8Terminal("false".utf8)
-      .map { _ in false }
-  )
+let boolLiteralParser = Bool.parser(of: UTF8SubSequence.self)
   .map(Literal.bool)
 
-let literalParser =
+let literalParser = OneOf {
   intLiteralParser
-    .orElse(floatLiteralParser)
-    .orElse(stringLiteralParser)
-    .orElse(boolLiteralParser)
+  floatLiteralParser
+  stringLiteralParser
+  boolLiteralParser
+}

@@ -21,12 +21,17 @@ extension ExprBlock: SyntaxNodeContainer {
 }
 
 let exprBlockElementsParser = Many(
-  Lazy { declarationParser }.map { $0.map(ExprBlock.Element.declaration) }
-    .orElse(Lazy { exprParser }.map { $0.map(ExprBlock.Element.expr) }),
+  OneOf {
+    Lazy { declarationParser }.map { $0.map(ExprBlock.Element.declaration) }
+    Lazy { exprParser }.map { $0.map(ExprBlock.Element.expr) }
+  },
   separator: newlineParser
 )
 
-let exprBlockParser = openBraceParser
-  .take(exprBlockElementsParser)
-  .take(closeBraceParser)
-  .map { ExprBlock(openBrace: $0, elements: $1, closeBrace: $2).syntaxNode }
+let exprBlockParser = Parse {
+  openBraceParser
+  exprBlockElementsParser
+  closeBraceParser
+}
+.map(ExprBlock.init)
+.map(\.syntaxNode)

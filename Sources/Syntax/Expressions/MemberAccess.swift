@@ -15,10 +15,11 @@ public struct MemberAccess {
   public let member: SyntaxNode<Member>
 }
 
-let memberAccessParser =
+let memberAccessParser = Parse {
   dotParser
-    .take(
-      identifierParser().map { $0.map(MemberAccess.Member.identifier) }
-        .orElse(SyntaxNodeParser(Int.parser().stateful()).map { $0.map(MemberAccess.Member.tupleElement) })
-    )
-    .map(ExprSyntaxTail.memberAccess)
+  OneOf {
+    identifierParser().map { $0.map(MemberAccess.Member.identifier) }
+    SyntaxNodeParser(Int.parser().stateful()).map { $0.map(MemberAccess.Member.tupleElement) }
+  }
+}
+.map(ExprSyntaxTail.memberAccess)

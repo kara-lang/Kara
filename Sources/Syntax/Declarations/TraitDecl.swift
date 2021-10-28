@@ -22,8 +22,10 @@ extension TraitDecl: CustomStringConvertible {
   }
 }
 
-let traitParser = Keyword.trait.parser
-  .take(identifierParser(requiresLeadingTrivia: true))
-  .take(declBlockParser)
-  .map(TraitDecl.init)
-  .map(\.syntaxNode)
+let traitParser = Parse {
+  Keyword.trait.parser
+  identifierParser(requiresLeadingTrivia: true)
+  declBlockParser
+}
+.map(TraitDecl.init)
+.map(\.syntaxNode)

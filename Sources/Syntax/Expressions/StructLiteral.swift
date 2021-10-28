@@ -31,12 +31,13 @@ public struct StructLiteral: SyntaxNodeContainer {
   }
 }
 
-let structLiteralElementParser = identifierParser()
-  .take(colonParser)
-  .take(Lazy { exprParser })
-  .map {
-    StructLiteral.Element(property: $0, colon: $1, value: $2).syntaxNode
-  }
+let structLiteralElementParser = Parse {
+  identifierParser()
+  colonParser
+  Lazy { exprParser }
+}
+.map(StructLiteral.Element.init)
+.map(\.syntaxNode)
 
 let structLiteralParser = delimitedSequenceParser(
   startParser: openSquareBracketParser,

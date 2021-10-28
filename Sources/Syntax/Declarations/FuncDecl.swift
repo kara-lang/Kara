@@ -5,11 +5,14 @@
 import Parsing
 
 public struct FuncDecl: ModifiersContainer {
-  public struct Parameter {
+  public struct Parameter: SyntaxNodeContainer {
     public let externalName: SyntaxNode<Identifier>?
     public let internalName: SyntaxNode<Identifier>
     public let colon: SyntaxNode<Empty>
     public let type: SyntaxNode<Expr>
+
+    public var start: SyntaxNode<Empty> { externalName?.empty ?? internalName.empty }
+    public var end: SyntaxNode<Empty> { type.empty }
   }
 
   public struct Arrow: SyntaxNodeContainer {
@@ -36,49 +39,34 @@ extension FuncDecl: SyntaxNodeContainer {
   } ?? parameters.end }
 }
 
-let functionParameterParser = identifierParser()
-  .take(Optional.parser(of: identifierParser(requiresLeadingTrivia: true)))
-  .take(colonParser)
-  .take(exprParser)
-  .map { firstName, secondName, colon, type in
-    SyntaxNode(
-      leadingTrivia: firstName.leadingTrivia,
-      content:
-      SourceRange(
-        start: firstName.content.start,
-        end: type.content.end,
-        content: FuncDecl.Parameter(
-          externalName: secondName == nil ? nil : firstName,
-          internalName: secondName == nil ? firstName : secondName!,
-          colon: colon,
-          type: type
-        )
-      )
-    )
-  }
+let functionParameterParser = Parse {
+  identifierParser()
+  Optional.parser(of: identifierParser(requiresLeadingTrivia: true))
+  colonParser
+  exprParser
+}
+.map { firstName, secondName, colon, type in
+  FuncDecl.Parameter(
+    externalName: secondName == nil ? nil : firstName,
+    internalName: secondName == nil ? firstName : secondName!,
+    colon: colon,
+    type: type
+  ).syntaxNode
+}
 
-let funcDeclParser =
+let funcDeclParser = Parse {
   Many(declModifierParser)
-    .take(Keyword.func.parser)
-    .take(identifierParser(requiresLeadingTrivia: true))
-    .take(
-      delimitedSequenceParser(
-        startParser: openParenParser,
-        endParser: closeParenParser,
-        separatorParser: commaParser,
-        elementParser: functionParameterParser
-      )
-    )
-    .take(Optional.parser(of: arrowTailParser.map(FuncDecl.Arrow.init).map(\.syntaxNode)))
-    .take(Optional.parser(of: exprBlockParser))
-    .map {
-      FuncDecl(
-        modifiers: $0,
-        funcKeyword: $1,
-        identifier: $2,
-        // FIXME: fix generic parameters parsing
-        parameters: $3,
-        arrow: $4,
-        body: $5?.content.content
-      ).syntaxNode
-    }
+  Keyword.func.parser
+  identifierParser(requiresLeadingTrivia: true)
+
+  delimitedSequenceParser(
+    startParser: openParenParser,
+    endParser: closeParenParser,
+    separatorParser: commaParser,
+    elementParser: functionParameterParser
+  )
+  Optional.parser(of: arrowTailParser.map(FuncDecl.Arrow.init).map(\.syntaxNode))
+  Optional.parser(of: exprBlockParser.map(\.content.content))
+}
+.map(FuncDecl.init)
+.map(\.syntaxNode)

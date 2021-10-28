@@ -27,22 +27,23 @@ extension BindingDecl: SyntaxNodeContainer {
   public var end: SyntaxNode<Empty> { value?.expr.empty ?? identifier.empty }
 }
 
-let bindingParser = Many(declModifierParser)
-  .take(Keyword.let.parser)
-  .take(identifierParser())
-  .take(
-    Optional.parser(
-      of: colonParser
-        .take(exprParser)
-        .map(BindingDecl.TypeAnnotation.init)
-    )
+let bindingParser = Parse {
+  Many(declModifierParser)
+
+  Keyword.let.parser
+  identifierParser()
+
+  Optional.parser(
+    of: colonParser
+      .take(exprParser)
+      .map(BindingDecl.TypeAnnotation.init)
   )
-  .take(
-    Optional.parser(
-      of: SyntaxNodeParser(Terminal("="))
-        .take(exprParser)
-        .map(BindingDecl.Value.init)
-    )
+
+  Optional.parser(
+    of: SyntaxNodeParser(Terminal("="))
+      .take(exprParser)
+      .map(BindingDecl.Value.init)
   )
-  .map(BindingDecl.init)
-  .map(\.syntaxNode)
+}
+.map(BindingDecl.init)
+.map(\.syntaxNode)
