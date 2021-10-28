@@ -3,7 +3,8 @@
 An experimental functional programming language with dependent types, inspired by [Swift](https://swift.org) and [Idris](https://www.idris-lang.org).
 
 Kara is at a very early stage and is not available for general or limited use at this moment. The project currently contains only a basic
-parser, type checker, interpreter, and JavaScript codegen. Documentation is sparse and most of the features are still in flux.
+parser, type checker, interpreter, and JavaScript codegen. Documentation is sparse and most of the features are still in flux. Pre-release
+versions are currently only tagged for a purpose of some future retrospective.
 
 Star and watch the repository if you're interested in imminent updates.
 
