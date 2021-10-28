@@ -12,12 +12,11 @@ struct Terminal: Parser {
   let string: String
 
   func parse(_ state: inout ParsingState) -> SourceRange<Empty>? {
-    StartsWith<UTF8SubSequence>(string.utf8).map { _ in Empty() }.stateful().parse(&state)
+    string.utf8.map { _ in Empty() }.stateful().parse(&state)
   }
 }
 
 public typealias UTF8SubSequence = String.UTF8View.SubSequence
-typealias UTF8Terminal = StartsWith<UTF8SubSequence>
 
 let newlineCodeUnits = [UInt8(ascii: "\n"), UInt8(ascii: "\r")]
 let whitespaceCodeUnits = newlineCodeUnits + [UInt8(ascii: " ")]
