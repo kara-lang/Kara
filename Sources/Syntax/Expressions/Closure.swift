@@ -89,14 +89,14 @@ let parametricClosureParser = Parse {
 .map { openBrace, head, tail, inKeyword, body, closeBrace -> SyntaxNode<Closure> in
   let parameters: [Closure.Parameter]
   if let tail = tail {
+    // A hacky way to convert a non-optional to optional?
     let headWithOptionalCommas = head.map { id, comma -> (SyntaxNode<Identifier>, SyntaxNode<Empty>?) in
       (id, comma)
     }
 
-    parameters = (headWithOptionalCommas + [(tail, nil)])
-      .map { Closure.Parameter(identifier: $0.0, comma: $0.1) }
+    parameters = (headWithOptionalCommas + [(tail, nil)]).map(Closure.Parameter.init)
   } else {
-    parameters = head.map { Closure.Parameter(identifier: $0.0, comma: $0.1) }
+    parameters = head.map(Closure.Parameter.init)
   }
 
   return Closure(
