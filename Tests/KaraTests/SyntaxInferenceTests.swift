@@ -153,7 +153,7 @@ final class SyntaxInferenceTests: XCTestCase {
     )
     assertError(
       try #""Test".description"#.inferParsedExpr(environment: e),
-      TypeError.unknownMember("String", "description")
+      TypeError.unknownMember(baseTypeID: "String", .identifier("description"))
     )
   }
 
@@ -173,7 +173,7 @@ final class SyntaxInferenceTests: XCTestCase {
     )
     assertError(
       try #""Test".magnitude.count"#.inferParsedExpr(environment: e),
-      TypeError.unknownMember("String", "magnitude")
+      TypeError.unknownMember(baseTypeID: "String", .identifier("magnitude"))
     )
   }
 

@@ -13,7 +13,7 @@ enum TypeError: Error, Equatable {
   case tupleIndexOutOfRange([Type], addressed: Int)
   case unificationFailure(Type, Type)
   case unknownType(Identifier)
-  case unknownMember(Identifier, Identifier)
+  case unknownMember(baseTypeID: Identifier, MemberAccess.Member)
   case unknownTupleMember(MemberAccess.Member)
   case unbound(Identifier)
   case tupleUnificationFailure(Identifier, Identifier)

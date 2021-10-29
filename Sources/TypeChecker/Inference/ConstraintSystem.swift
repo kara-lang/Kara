@@ -12,6 +12,8 @@ enum Constraint {
    properties.
    */
   case member(Type, member: MemberAccess.Member, memberType: Type)
+
+  case leadingDot(Type, member: Identifier)
 }
 
 struct ConstraintSystem {
@@ -73,7 +75,8 @@ struct ConstraintSystem {
 
   mutating func lookup(
     _ member: Identifier,
-    in typeID: Identifier
+    in typeID: Identifier,
+    isStatic: Bool
   ) throws -> Type {
     guard let environment = environment.types[typeID] else {
       throw TypeError.unknownType(typeID)
@@ -81,10 +84,10 @@ struct ConstraintSystem {
 
     return try lookup(
       member,
-      schemes: environment.members,
+      schemes: isStatic ? environment.staticMembers : environment.members,
       // Local type environment shadows the top level module environment.
       types: self.environment.types.merging(environment.types) { _, new in new },
-      orThrow: .unknownMember(typeID, member)
+      orThrow: .unknownMember(baseTypeID: typeID, .identifier(member))
     )
   }
 
@@ -107,7 +110,7 @@ struct ConstraintSystem {
   /// Converting a σ type into a τ type by creating fresh names for each type
   /// variable that does not appear in the current typing environment.
   private mutating func instantiate(_ scheme: Scheme) -> Type {
-    let substitution: [(TypeVariable, Type)] = scheme.variables.map { ($0, fresh()) }
+    let substitution = scheme.variables.map { ($0, fresh()) }
     return scheme.type.apply(Dictionary(uniqueKeysWithValues: substitution))
   }
 
@@ -160,11 +163,10 @@ struct ConstraintSystem {
         throw TypeError.invalidFunctionMember(member)
 
       case let .constructor(typeID, _):
-        // Static member access.
         guard case let .identifier(identifier) = member else {
-          throw TypeError.invalidStaticMember(member)
+          throw TypeError.unknownMember(baseTypeID: typeID, member)
         }
-        return try lookup(identifier, in: typeID)
+        return try lookup(identifier, in: typeID, isStatic: false)
 
       case let .variable(v):
         let memberType = fresh()
@@ -209,6 +211,7 @@ struct ConstraintSystem {
 
     case .unit:
       return .unit
+
     case .leadingDot:
       fatalError()
     }

@@ -38,6 +38,8 @@ struct Solver {
     var system = self.system
     guard let constraint = system.removeFirst() else { return substitution }
 
+    let assumedType: Type
+    let actualType: Type
     switch constraint {
     case let .equal(t1, t2):
       let s = try unify(t1, t2)
@@ -49,13 +51,21 @@ struct Solver {
         system: s.system.appending(system.constraints)
       ).solve()
 
+    case let .leadingDot(type, identifier):
+      guard case let .constructor(typeID, _) = type else {
+        fatalError("unhandled leading dot constraint")
+      }
+
+      assumedType = try system.lookup(identifier, in: typeID, isStatic: true)
+      actualType = type
+
     case let .member(type, member, memberType):
-      let assumedType: Type
+      actualType = memberType
 
       switch (type, member) {
       case let (.constructor(typeID, _), .identifier(identifier)):
         // generate new constraints for member lookup
-        assumedType = try system.lookup(identifier, in: typeID)
+        assumedType = try system.lookup(identifier, in: typeID, isStatic: false)
 
       case let (.tuple(types), .tupleElement(index)):
         guard (0..<types.count).contains(index) else {
@@ -68,16 +78,16 @@ struct Solver {
         // FIXME: throw meaningful error
         fatalError("unhandled member constraint")
       }
-
-      if case .constructor = assumedType {
-        system.prepend(.equal(memberType, assumedType))
-      }
-
-      return try Solver(
-        substitution: substitution,
-        system: system
-      ).solve()
     }
+
+    if case .constructor = assumedType {
+      system.prepend(.equal(actualType, assumedType))
+    }
+
+    return try Solver(
+      substitution: substitution,
+      system: system
+    ).solve()
   }
 
   private func unify(_ t1: Type, _ t2: Type) throws -> Solver {

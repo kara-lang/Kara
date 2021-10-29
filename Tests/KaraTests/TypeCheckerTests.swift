@@ -158,7 +158,7 @@ final class TypeCheckerTests: XCTestCase {
         let first: Int = s.0
         """
       ),
-      TypeError.invalidStaticMember(.tupleElement(0))
+      TypeError.unknownMember(baseTypeID: "S", .tupleElement(0))
     )
 
     assertError(

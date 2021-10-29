@@ -99,6 +99,8 @@ extension Constraint: Substitutable {
       return .equal(t1.apply(sub), t2.apply(sub))
     case let .member(type, member, mt):
       return .member(type.apply(sub), member: member, memberType: mt.apply(sub))
+    case let .leadingDot(type, member):
+      return .leadingDot(type.apply(sub), member: member)
     }
   }
 
@@ -108,6 +110,8 @@ extension Constraint: Substitutable {
       return t1.freeTypeVariables.union(t2.freeTypeVariables)
     case let .member(type, _, memberType):
       return type.freeTypeVariables.union(memberType.freeTypeVariables)
+    case let .leadingDot(type, _):
+      return type.freeTypeVariables
     }
   }
 }
