@@ -1,0 +1,30 @@
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:9 Expr.structLiteral(
+    StructLiteral(
+      type: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 Expr.identifier(
+          Identifier(value: "S")
+        )
+      ),
+      elements: DelimitedSequence(
+        start: SyntaxNode(
+          leadingTrivia: [
+            [0]: Comment(
+              kind: Comment.Kind.multipleLines,
+              isDocComment: false,
+              content: "foo"
+            )
+          ],
+          content: 0:8-0:8 ()
+        ),
+        elements: [],
+        end: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:9-0:9 ()
+        )
+      )
+    )
+  )
+)

@@ -1,0 +1,49 @@
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:5 Expr.member(
+    MemberAccess(
+      base: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:3 Expr.member(
+          MemberAccess(
+            base: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:0-0:1 Expr.leadingDot(
+                LeadingDot(
+                  dot: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 0:0-0:0 ()
+                  ),
+                  member: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 0:1-0:1 Identifier(value: "a")
+                  )
+                )
+              )
+            ),
+            dot: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:2-0:2 ()
+            ),
+            member: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:3-0:3 MemberAccess.Member.identifier(
+                Identifier(value: "b")
+              )
+            )
+          )
+        )
+      ),
+      dot: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:4-0:4 ()
+      ),
+      member: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:5-0:5 MemberAccess.Member.identifier(
+          Identifier(value: "c")
+        )
+      )
+    )
+  )
+)

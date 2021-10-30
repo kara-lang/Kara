@@ -197,6 +197,13 @@ final class ParserTests: XCTestCase {
     assertSnapshot(exprParser.parse(#"S [a: 5, b: true, c: "c"]"#))
     assertSnapshot(exprParser.parse(#"S []"#))
     assertSnapshot(exprParser.parse(#"S[]"#))
+    assertSnapshot(exprParser.parse(#"S/*foo*/[]"#))
+  }
+
+  func testLeadingDot() {
+    assertSnapshot(exprParser.parse(".a"))
+    assertSnapshot(exprParser.parse(".a.b.c"))
+    assertSnapshot(exprParser.parse("./*foo*/a./*bar*/b/*baz*/.c"))
   }
 
   func testFuncDecl() {

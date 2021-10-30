@@ -1,0 +1,15 @@
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:1 Expr.leadingDot(
+    LeadingDot(
+      dot: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 ()
+      ),
+      member: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:1-0:1 Identifier(value: "a")
+      )
+    )
+  )
+)
