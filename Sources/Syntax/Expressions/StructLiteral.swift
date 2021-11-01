@@ -4,11 +4,11 @@
 
 import Parsing
 
-public struct StructLiteral: SyntaxNodeContainer {
+public struct StructLiteral<A: Annotation>: SyntaxNodeContainer {
   public struct Element: SyntaxNodeContainer {
     public let property: SyntaxNode<Identifier>
     public let colon: SyntaxNode<Empty>
-    public let value: SyntaxNode<Expr>
+    public let value: SyntaxNode<Expr<A>>
 
     public var start: SyntaxNode<Empty> {
       property.empty
@@ -19,7 +19,7 @@ public struct StructLiteral: SyntaxNodeContainer {
     }
   }
 
-  public let type: SyntaxNode<Expr>
+  public let type: SyntaxNode<Expr<A>>
   public let elements: DelimitedSequence<Element>
 
   public var start: SyntaxNode<Empty> {

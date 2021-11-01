@@ -9,7 +9,7 @@ extension Bool {
   var not: Bool { !self }
 }
 
-public let jsModuleFileCodegen = CompilerPass<ModuleFile, String> {
+public let jsModuleFileCodegen = CompilerPass<ModuleFile<EmptyAnnotation>, String> {
   $0.declarations.map(\.jsCodegen).filter(\.isEmpty.not)
     .joined(separator: "\n")
 }
@@ -103,7 +103,7 @@ extension ExprBlock.Element {
   var jsCodegen: String {
     switch self {
     case let .expr(e):
-      return e.jsCodegen
+      return e.payload.jsCodegen
     case let .declaration(d):
       return d.jsCodegen
     }
@@ -136,7 +136,7 @@ extension Identifier {
 
 extension StructLiteral.Element {
   var jsCodegen: String {
-    "\(property.jsCodegen): \(value.jsCodegen)"
+    "\(property.jsCodegen): \(value.payload.jsCodegen)"
   }
 }
 
@@ -146,7 +146,7 @@ extension StructLiteral {
   }
 }
 
-extension Expr {
+extension Expr.Payload {
   var jsCodegen: String {
     switch self {
     case let .literal(.bool(b)):
@@ -163,8 +163,8 @@ extension Expr {
       return id.jsCodegen
     case let .application(a):
       return """
-      \(a.function.jsCodegen)\
-      (\(a.arguments.elementsContent.map(\.jsCodegen).joined(separator: ",")))
+      \(a.function.payload.jsCodegen)\
+      (\(a.arguments.elementsContent.map(\.payload.jsCodegen).joined(separator: ",")))
       """
     case let .closure(c):
       return
@@ -176,7 +176,7 @@ extension Expr {
       guard let elseBlock = ifThenElse.elseBranch?.elseBlock else {
         return
           """
-          if (\(ifThenElse.condition.jsCodegen)) \
+          if (\(ifThenElse.condition.payload.jsCodegen)) \
           \(ifThenElse.thenBlock.jsCodegen)
           """
       }
@@ -184,19 +184,19 @@ extension Expr {
       // FIXME: this is unlikely to work in blocks with multiple expressions
       return
         """
-        (\(ifThenElse.condition.jsCodegen) ?\
+        (\(ifThenElse.condition.payload.jsCodegen) ?\
          \(ifThenElse.thenBlock.jsCodegen) :\
          \(elseBlock.jsCodegen))
         """
     case let .member(m):
       switch m.member.content.content {
       case let .identifier(identifier):
-        return "\(m.base.jsCodegen).\(identifier.jsCodegen)"
+        return "\(m.base.payload.jsCodegen).\(identifier.jsCodegen)"
       case let .tupleElement(index):
-        return "\(m.base.jsCodegen)[\(index)]"
+        return "\(m.base.payload.jsCodegen)[\(index)]"
       }
     case let .tuple(t):
-      return "[\(t.elementsContent.map(\.jsCodegen).joined(separator: ","))]"
+      return "[\(t.elementsContent.map(\.payload.jsCodegen).joined(separator: ","))]"
     case let .block(b):
       return b.jsCodegen
     case let .structLiteral(s):
@@ -216,7 +216,7 @@ extension BindingDecl {
   var jsCodegen: String {
     var result = "const \(identifier.jsCodegen)"
     if let value = value {
-      result.append(" = \(value.expr.jsCodegen);")
+      result.append(" = \(value.expr.payload.jsCodegen);")
     } else {
       result.append(";")
     }

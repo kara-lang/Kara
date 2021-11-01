@@ -4,9 +4,9 @@
 
 import Parsing
 
-public struct DeclBlock {
+public struct DeclBlock<A: Annotation> {
   public let openBrace: SyntaxNode<Empty>
-  public let elements: [SyntaxNode<Declaration>]
+  public let elements: [SyntaxNode<Declaration<A>>]
   public let closeBrace: SyntaxNode<Empty>
 }
 

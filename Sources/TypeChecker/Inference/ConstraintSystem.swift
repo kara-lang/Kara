@@ -11,7 +11,7 @@ enum Constraint {
   /** Member constraint representing members of type declarations: functions and
    properties.
    */
-  case member(Type, member: MemberAccess.Member, memberType: Type)
+  case member(Type, member: Member, memberType: Type)
 
   case leadingDot(Type, member: Identifier)
 }
@@ -42,24 +42,6 @@ struct ConstraintSystem {
 
   mutating func apply(_ sub: Substitution) {
     constraints = constraints.apply(sub)
-  }
-
-  /// Temporarily extends the current `self.environment` with `environment` to
-  /// infer the type of `inferred` expression. Is used to infer
-  /// type of an expression evaluated in a closure.
-  private mutating func infer<T>(
-    withExtendedBindings bindings: T,
-    _ inferred: Expr
-  ) throws -> Type where T: Sequence, T.Element == (Identifier, (Expr?, Scheme)) {
-    // preserve old environment to be restored after inference in extended
-    // environment has finished
-    let old = environment
-
-    defer { self.environment = old }
-
-    environment.schemes.insert(bindings: bindings)
-
-    return try infer(inferred)
   }
 
   /** Generate a new type variable that can be stored in `constraints`. If
@@ -107,45 +89,94 @@ struct ConstraintSystem {
     return instantiate(scheme)
   }
 
-  /// Converting a σ type into a τ type by creating fresh names for each type
+  /// Converting a σ `Scheme` into a τ `Type` by creating fresh names for each type
   /// variable that does not appear in the current typing environment.
   private mutating func instantiate(_ scheme: Scheme) -> Type {
     let substitution = scheme.variables.map { ($0, fresh()) }
     return scheme.type.apply(Dictionary(uniqueKeysWithValues: substitution))
   }
 
-  mutating func infer(_ expr: Expr) throws -> Type {
-    switch expr {
+    private func annotate(declaration: Declaration<EmptyAnnotation>) throws -> Declaration<TypeAnnotation> {
+        switch declaration {
+        case let .binding(b):
+            <#code#>
+        case let .function(f):
+            <#code#>
+        case let .struct(s):
+            <#code#>
+        case let .enum(e):
+            <#code#>
+        case let .trait(t):
+            <#code#>
+        }
+    }
+
+    private mutating func annotate(block: ExprBlock<EmptyAnnotation>) throws -> ExprBlock<TypeAnnotation> {
+        try block.addAnnotation(
+            expr: { try annotate(expr: $0) },
+            declaration: { try annotate(declaration: $0) }
+        )
+    }
+
+    /// Temporarily extends the current `self.environment` with `environment` to
+    /// infer the type of `closure`, where `bindings` extending the environment represent closure parameters.
+    private mutating func annotate(
+      closure: Closure<EmptyAnnotation>
+    ) throws -> (Closure<TypeAnnotation>, [Type]) {
+      // Preserve old environment to be restored after inference in extended environment has finished.
+      let old = environment
+
+      defer { self.environment = old }
+
+          let ids = closure.parameters.map(\.identifier.content.content)
+          let parameterTypes = ids.map { _ in fresh() }
+
+      environment.schemes.insert(bindings: zip(ids, parameterTypes.map { (nil, Scheme($0)) }))
+
+        return try (closure.addAnnotation(
+            parameter: { try annotate(expr: $0) },
+            body: { _ in try annotate(block: closure.exprBlock).elements }
+        ), parameterTypes)
+    }
+
+  mutating func annotate(expr: Expr<EmptyAnnotation>) throws -> Expr<TypeAnnotation> {
+    switch expr.payload {
     case let .literal(literal):
-      return literal.defaultType
+        return .init(payload: .literal(literal), annotation: literal.defaultType)
 
     case let .identifier(id):
-      return try lookup(id, schemes: environment.schemes, types: environment.types, orThrow: .unbound(id))
+        return try .init(
+            payload: .identifier(id),
+            annotation: lookup(id, schemes: environment.schemes, types: environment.types, orThrow: .unbound(id))
+        )
 
     case let .closure(c):
-      let ids = c.parameters.map(\.identifier.content.content)
-      let parameters = ids.map { _ in fresh() }
-      return try .arrow(
-        parameters,
-        infer(withExtendedBindings: zip(ids, parameters.map { (nil, Scheme($0)) }), Expr.block(c.exprBlock))
-      )
+
+        let (annotatedClosure, parameterTypes) = try annotate(closure: c)
+        return try .init(
+            payload: .closure(annotatedClosure),
+            annotation: .arrow(
+                parameterTypes,
+                annotatedClosure.exprBlock.getLastExprType()
+            )
+        )
 
     case let .application(app):
-      let callableType = try infer(app.function.content.content)
+      let callableType = try annotate(app.function.content.content)
       let typeVariable = fresh()
       constraints.append(.equal(
         callableType,
-        .arrow(try app.arguments.elementsContent.map { try infer($0) }, typeVariable)
+        .arrow(try app.arguments.elementsContent.map { try annotate($0) }, typeVariable)
       ))
       return typeVariable
 
     case let .ifThenElse(ifThenElse):
-      let result = try infer(.block(ifThenElse.thenBlock))
+      let result = try annotate(Expr(.block(ifThenElse.thenBlock)))
 
-      try constraints.append(.equal(infer(ifThenElse.condition.content.content), .bool))
+      try constraints.append(.equal(annotate(ifThenElse.condition.content.content), .bool))
 
       if let elseBlock = ifThenElse.elseBranch?.elseBlock {
-        try constraints.append(.equal(result, infer(.block(elseBlock))))
+          try constraints.append(contentsOf: .equal(result, annotate(Expr(.block(elseBlock)))))
       } else {
         // A sole `if` branch should have a `.unit` type, to unify with the missing `else` branch, which implicitly
         // evaluates to `.unit`.
@@ -157,7 +188,7 @@ struct ConstraintSystem {
     case let .member(memberAccess):
       let member = memberAccess.member.content.content
 
-      switch try infer(memberAccess.base.content.content) {
+      switch try annotate(memberAccess.base.content.content) {
       case .arrow:
         // Function values don't have members.
         throw TypeError.invalidFunctionMember(member)
@@ -191,26 +222,24 @@ struct ConstraintSystem {
       }
 
     case let .tuple(tuple):
-      return try .tuple(tuple.elementsContent.map { try infer($0) })
+      return try .tuple(tuple.elementsContent.map { try annotate($0) })
 
     case let .block(block):
-      // Expression blocks should always contain at least one expression and end with an expression.
-      guard case let .expr(last) = block.elements.last?.content.content else {
-        return .unit
-      }
-
-      return try infer(last)
+        let annotatedBlock = try annotate(block: block)
+        return try .init(
+            payload: .block(annotatedBlock)
+            annotation: annotatedBlock.getLastExprType()
 
     case let .structLiteral(structLiteral):
       let typeExpr = structLiteral.type
-      guard let type = try typeExpr.content.content.eval(environment).type else {
+      guard let type = try typeExpr.content.content.payload.eval(environment).type else {
         throw TypeError.exprIsNotType(typeExpr.range)
       }
 
       return type
 
     case .unit:
-      return .unit
+        return .init(payload: .unit, annotation: .unit)
 
     case .leadingDot:
       fatalError()

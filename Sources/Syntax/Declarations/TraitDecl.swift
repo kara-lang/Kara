@@ -4,10 +4,10 @@
 
 import Parsing
 
-public struct TraitDecl {
+public struct TraitDecl<A: Annotation> {
   public let traitKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<Identifier>
-  public let declarations: SyntaxNode<DeclBlock>
+  public let declarations: SyntaxNode<DeclBlock<A>>
 }
 
 extension TraitDecl: SyntaxNodeContainer {

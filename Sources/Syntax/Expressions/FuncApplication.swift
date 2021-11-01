@@ -4,9 +4,9 @@
 
 import Parsing
 
-public struct FuncApplication {
-  public let function: SyntaxNode<Expr>
-  public let arguments: DelimitedSequence<Expr>
+public struct FuncApplication<A: Annotation> {
+  public let function: SyntaxNode<Expr<A>>
+  public let arguments: DelimitedSequence<Expr<A>>
 }
 
 let applicationArgumentsParser =

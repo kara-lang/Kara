@@ -4,17 +4,17 @@
 
 import Parsing
 
-public struct FuncDecl: ModifiersContainer {
+public struct FuncDecl<A: Annotation>: ModifiersContainer {
   public struct Parameter {
     public let externalName: SyntaxNode<Identifier>?
     public let internalName: SyntaxNode<Identifier>
     public let colon: SyntaxNode<Empty>
-    public let type: SyntaxNode<Expr>
+    public let type: SyntaxNode<Expr<A>>
   }
 
   public struct Arrow: SyntaxNodeContainer {
     public let arrowSymbol: SyntaxNode<Empty>
-    public let returns: SyntaxNode<Expr>
+    public let returns: SyntaxNode<Expr<A>>
 
     public var start: SyntaxNode<Empty> { arrowSymbol }
     public var end: SyntaxNode<Empty> { returns.empty }
@@ -26,7 +26,7 @@ public struct FuncDecl: ModifiersContainer {
   public let parameters: DelimitedSequence<Parameter>
 
   public let arrow: SyntaxNode<Arrow>?
-  public var body: ExprBlock?
+  public var body: ExprBlock<A>?
 }
 
 extension FuncDecl: SyntaxNodeContainer {

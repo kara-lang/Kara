@@ -13,7 +13,7 @@ enum NormalForm: Hashable {
   case tuple([NormalForm])
   case structLiteral(Identifier, [Identifier: NormalForm])
   case typeConstructor(Identifier, [NormalForm])
-  indirect case memberAccess(NormalForm, MemberAccess.Member)
+  indirect case memberAccess(NormalForm, Member)
   indirect case closure(parameters: [Identifier], body: NormalForm)
   indirect case ifThenElse(condition: Identifier, then: NormalForm, else: NormalForm)
   indirect case arrow([NormalForm], NormalForm)

@@ -4,11 +4,11 @@
 
 import Parsing
 
-public struct EnumDecl {
+public struct EnumDecl<A: Annotation> {
   public let modifiers: [SyntaxNode<DeclModifier>]
   public let enumKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<Identifier>
-  public let declarations: SyntaxNode<DeclBlock>
+  public let declarations: SyntaxNode<DeclBlock<A>>
 }
 
 extension EnumDecl: SyntaxNodeContainer {

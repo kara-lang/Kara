@@ -4,24 +4,24 @@
 
 import Parsing
 
-public struct IfThenElse {
+public struct IfThenElse<A: Annotation> {
+  public struct ElseBranch {
+    public let elseKeyword: SyntaxNode<Empty>
+    public let elseBlock: ExprBlock<A>
+  }
+
   public let ifKeyword: SyntaxNode<Empty>
-  public let condition: SyntaxNode<Expr>
-  public let thenBlock: ExprBlock
+  public let condition: SyntaxNode<Expr<A>>
+  public let thenBlock: ExprBlock<A>
 
   // FIXME: handle multiple `else if` branches
   public let elseBranch: ElseBranch?
 }
 
-public struct ElseBranch {
-  public let elseKeyword: SyntaxNode<Empty>
-  public let elseBlock: ExprBlock
-}
-
 private let elseBranchParser = Keyword.else.parser
   .take(Lazy { exprBlockParser })
   .map {
-    ElseBranch(
+    IfThenElse<EmptyAnnotation>.ElseBranch(
       elseKeyword: $0,
       elseBlock: $1.content.content
     )
@@ -31,7 +31,7 @@ let ifThenElseParser = Keyword.if.parser
   .take(Lazy { exprParser })
   .take(Lazy { exprBlockParser })
   .take(Optional.parser(of: elseBranchParser))
-  .map { tuple -> SyntaxNode<IfThenElse> in
+  .map { tuple -> SyntaxNode<IfThenElse<EmptyAnnotation>> in
     let (ifKeyword, condition, thenBlock, elseBranch) = tuple
     return SyntaxNode(
       leadingTrivia: ifKeyword.leadingTrivia,

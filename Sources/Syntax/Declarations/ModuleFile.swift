@@ -4,8 +4,8 @@
 
 import Parsing
 
-public struct ModuleFile {
-  public var declarations: [SyntaxNode<Declaration>]
+public struct ModuleFile<A: Annotation> {
+  public var declarations: [SyntaxNode<Declaration<A>>]
   public let trailingTrivia: [Trivia]
 }
 

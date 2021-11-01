@@ -4,11 +4,11 @@
 
 import Parsing
 
-public struct StructDecl {
+public struct StructDecl<A: Annotation> {
   public let modifiers: [SyntaxNode<DeclModifier>]
   public let structKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<Identifier>
-  public let declarations: SyntaxNode<DeclBlock>
+  public let declarations: SyntaxNode<DeclBlock<A>>
 }
 
 extension StructDecl: SyntaxNodeContainer {

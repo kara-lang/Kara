@@ -4,15 +4,35 @@
 
 import Parsing
 
-public struct ExprBlock {
+public struct ExprBlock<A: Annotation> {
   public enum Element {
-    case expr(Expr)
-    case declaration(Declaration)
+    case expr(Expr<A>)
+    case declaration(Declaration<A>)
   }
 
   public let openBrace: SyntaxNode<Empty>
-  public var elements: [SyntaxNode<Element>]
+  public let elements: [SyntaxNode<Element>]
   public let closeBrace: SyntaxNode<Empty>
+
+  public func addAnnotation<NewAnnotation>(
+    expr exprTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
+    declaration declarationTransform: (Declaration<A>) throws -> Declaration<NewAnnotation>
+  ) rethrows -> ExprBlock<NewAnnotation> {
+    try .init(
+      openBrace: openBrace,
+      elements: elements.map {
+        try $0.map {
+          switch $0 {
+          case let .expr(e):
+            return try .expr(exprTransform(e))
+          case let .declaration(d):
+            return try .declaration(declarationTransform(d))
+          }
+        }
+      },
+      closeBrace: closeBrace
+    )
+  }
 }
 
 extension ExprBlock: SyntaxNodeContainer {

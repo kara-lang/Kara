@@ -135,4 +135,18 @@ final class EvalTests: XCTestCase {
       .closure(parameters: [], body: .literal("static"))
     )
   }
+
+//    func testLeadingDot() {
+//        assertEval(
+//            """
+//            {
+//              struct Int32 { static let max: Int32 = 2147483647 }
+//              func f(x: Int32, y: Int32) { x }
+//
+//              f(.max, 0)
+//            }
+//            """,
+//            .closure(parameters: [], body: .literal(2147483647))
+//        )
+//    }
 }

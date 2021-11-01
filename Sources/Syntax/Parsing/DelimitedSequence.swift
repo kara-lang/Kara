@@ -11,7 +11,7 @@ import Parsing
  (parens), generic parameters and arguments (angle brackets), etc.
  */
 public struct DelimitedSequence<T>: SyntaxNodeContainer {
-  struct Element {
+  public struct Element {
     let content: SyntaxNode<T>
     let separator: SyntaxNode<Empty>?
   }
@@ -28,6 +28,12 @@ public struct DelimitedSequence<T>: SyntaxNodeContainer {
   /// Helper for retrieving an array of elements in the sequence without their syntax node information.
   public var elementsContent: [T] {
     elements.map(\.content.content.content)
+  }
+}
+
+extension DelimitedSequence: Sequence {
+  public func makeIterator() -> Array<Element>.Iterator {
+    elements.makeIterator()
   }
 }
 

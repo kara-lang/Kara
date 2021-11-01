@@ -4,45 +4,62 @@
 
 import Parsing
 
-public indirect enum Expr {
-  case identifier(Identifier)
-  case application(FuncApplication)
-  case closure(Closure)
-  case literal(Literal)
-  case ifThenElse(IfThenElse)
-  case member(MemberAccess)
-  case tuple(DelimitedSequence<Expr>)
-  case block(ExprBlock)
-  case structLiteral(StructLiteral)
-  case leadingDot(LeadingDot)
-  case unit
+/// Protocol grouping possible expression annotations.
+public protocol Annotation {}
+
+public struct EmptyAnnotation: Annotation {}
+
+public struct Expr<A: Annotation> {
+  public init(payload: Payload, annotation: A) {
+    self.payload = payload
+    self.annotation = annotation
+  }
+
+  public indirect enum Payload {
+    case identifier(Identifier)
+    case application(FuncApplication<A>)
+    case closure(Closure<A>)
+    case literal(Literal)
+    case ifThenElse(IfThenElse<A>)
+    case member(MemberAccess<A>)
+    case tuple(DelimitedSequence<Expr<A>>)
+    case block(ExprBlock<A>)
+    case structLiteral(StructLiteral<A>)
+    case leadingDot(LeadingDot)
+    case unit
+  }
+
+  public let payload: Payload
+  public var annotation: A
 }
 
-extension Expr: ExpressibleByStringLiteral {
-  public init(stringLiteral value: String) {
-    self = .identifier(.init(value: value))
+public extension Expr where A == EmptyAnnotation {
+  init(_ payload: Expr<EmptyAnnotation>.Payload) {
+    self.payload = payload
+    annotation = .init()
   }
 }
 
-extension Expr: ExpressibleByIntegerLiteral {
+extension Expr: ExpressibleByIntegerLiteral where A == EmptyAnnotation {
   public init(integerLiteral value: Int) {
-    self = .literal(Literal(integerLiteral: value))
+    self.init(.literal(Literal(integerLiteral: value)))
   }
 }
 
 enum ExprSyntaxTail {
-  case memberAccess(dot: SyntaxNode<Empty>, SyntaxNode<MemberAccess.Member>)
-  case applicationArguments(DelimitedSequence<Expr>)
-  case structLiteral(DelimitedSequence<StructLiteral.Element>)
+  case memberAccess(dot: SyntaxNode<Empty>, SyntaxNode<Member>)
+  case applicationArguments(DelimitedSequence<Expr<EmptyAnnotation>>)
+  case structLiteral(DelimitedSequence<StructLiteral<EmptyAnnotation>.Element>)
 }
 
-let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
-  SyntaxNodeParser(literalParser.map(Expr.literal).stateful())
-    .orElse(ifThenElseParser.map { $0.map(Expr.ifThenElse) })
-    .orElse(identifierParser().map { $0.map(Expr.identifier) })
-    .orElse(tupleExprParser.map { $0.syntaxNode.map(Expr.tuple) })
-    .orElse(closureParser.map { $0.map(Expr.closure) })
-    .orElse(leadingDotParser.map { $0.map(Expr.leadingDot) })
+let exprParser: AnyParser<ParsingState, SyntaxNode<Expr<EmptyAnnotation>>> =
+  SyntaxNodeParser(literalParser.map(Expr.Payload.literal).stateful())
+    .orElse(ifThenElseParser.map { $0.map(Expr.Payload.ifThenElse) })
+    .orElse(identifierParser().map { $0.map(Expr.Payload.identifier) })
+    .orElse(tupleExprParser.map { $0.syntaxNode.map(Expr.Payload.tuple) })
+    .orElse(closureParser.map { $0.map(Expr.Payload.closure) })
+    .orElse(leadingDotParser.map { $0.map(Expr.Payload.leadingDot) })
+    .map { $0.map(Expr<EmptyAnnotation>.init) }
 
     // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain
     // derivations, specifically member access and function application. Expressing left recursion with combinators
@@ -54,7 +71,7 @@ let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
           .orElse(structLiteralParser)
       )
     )
-    .map { (expr: SyntaxNode<Expr>, tail: [ExprSyntaxTail]) -> SyntaxNode<Expr> in
+    .map { (expr: SyntaxNode<Expr<EmptyAnnotation>>, tail: [ExprSyntaxTail]) -> SyntaxNode<Expr<EmptyAnnotation>> in
       tail.reduce(expr) { reducedExpr, tailElement in
         switch tailElement {
         case let .memberAccess(dot, identifier):
@@ -63,7 +80,7 @@ let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
             content: .init(
               start: reducedExpr.content.start,
               end: identifier.content.end,
-              content: .member(.init(base: reducedExpr, dot: dot, member: identifier))
+              content: .init(.member(.init(base: reducedExpr, dot: dot, member: identifier)))
             )
           )
         case let .applicationArguments(arguments):
@@ -72,11 +89,13 @@ let exprParser: AnyParser<ParsingState, SyntaxNode<Expr>> =
             content: .init(
               start: reducedExpr.content.start,
               end: arguments.end.content.end,
-              content: .application(.init(function: reducedExpr, arguments: arguments))
+              content: .init(.application(.init(function: reducedExpr, arguments: arguments)))
             )
           )
         case let .structLiteral(elements):
-          return StructLiteral(type: reducedExpr, elements: elements).syntaxNode.map(Expr.structLiteral)
+          return StructLiteral(type: reducedExpr, elements: elements).syntaxNode
+            .map(Expr.Payload.structLiteral)
+            .map(Expr.init)
         }
       }
     }
