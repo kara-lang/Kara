@@ -96,7 +96,17 @@ struct ConstraintSystem {
     return scheme.type.apply(Dictionary(uniqueKeysWithValues: substitution))
   }
 
-  private mutating func annotate(declaration: Declaration<EmptyAnnotation>) throws -> Declaration<TypeAnnotation> {
+  mutating func annotate(funcDecl: FuncDecl<EmptyAnnotation>) throws -> FuncDecl<TypeAnnotation> {
+    try funcDecl.addAnnotation(
+      parameterType: { try annotate(expr: $0) },
+      arrow: { try annotate(expr: $0) },
+      body: { try annotate(block: $0) }
+    )
+  }
+
+  private mutating func annotate(
+    declaration: Declaration<EmptyAnnotation>
+  ) throws -> Declaration<TypeAnnotation> {
     switch declaration {
     case let .binding(b):
       return try .binding(
@@ -107,13 +117,7 @@ struct ConstraintSystem {
       )
 
     case let .function(f):
-      return try .function(
-        f.addAnnotation(
-          parameterType: { try annotate(expr: $0) },
-          arrow: { try annotate(expr: $0) },
-          body: { try annotate(block: $0) }
-        )
-      )
+      return try .function(annotate(funcDecl: f))
     case let .struct(s):
       return try .struct(
         s.addAnnotation { try annotate(declaration: $0) }
@@ -153,7 +157,7 @@ struct ConstraintSystem {
 
     return try (closure.addAnnotation(
       parameter: { try annotate(expr: $0) },
-      body: { _ in try annotate(block: closure.exprBlock).elements }
+      body: { try annotate(block: $0) }
     ), parameterTypes)
   }
 

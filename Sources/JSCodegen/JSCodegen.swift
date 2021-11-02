@@ -4,12 +4,13 @@
 
 import Basic
 import Syntax
+import TypeChecker
 
 extension Bool {
   var not: Bool { !self }
 }
 
-public let jsModuleFileCodegen = CompilerPass<ModuleFile<EmptyAnnotation>, String> {
+public let jsModuleFileCodegen = CompilerPass<ModuleFile<TypeAnnotation>, String> {
   $0.declarations.map(\.jsCodegen).filter(\.isEmpty.not)
     .joined(separator: "\n")
 }

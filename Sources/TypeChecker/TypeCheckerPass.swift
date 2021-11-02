@@ -6,77 +6,83 @@ import Basic
 import Syntax
 
 extension FuncDecl where A == EmptyAnnotation {
-  func typeCheck(_ environment: ModuleEnvironment) throws {
-    guard let body = body else {
-      throw TypeError.funcDeclBodyMissing(identifier.content.content)
-    }
-
+  func typeCheck(_ environment: ModuleEnvironment) throws -> FuncDecl<TypeAnnotation> {
     var functionEnvironment = environment
 
-    // FIXME: possibly duplicate call to `parameterTypes`,
+    // FIXME: this call to `parameterTypes` is possibly duplicate,
     // it's already called when inferring `Scheme` for this `FuncDecl` while collecting passed `DeclEnvironment`?
     let parameterSchemes = try parameterTypes(environment).map { (Expr<EmptyAnnotation>?.none, Scheme($0)) }
     let parameters = self.parameters.elementsContent.map(\.internalName.content.content)
     functionEnvironment.schemes.insert(bindings: zip(parameters, parameterSchemes))
 
-    let inferredType = try Expr<EmptyAnnotation>(.block(body)).annotate(functionEnvironment).annotation
+    let annotated = try annotate(environment)
+
+    guard let inferredType = try annotated.body?.getLastExprType() else {
+      return annotated
+    }
+
     let expectedType = try returnType(environment)
 
     guard expectedType == inferredType else {
       throw TypeError.typeMismatch(identifier.content.content, expected: expectedType, actual: inferredType)
     }
-  }
-}
 
-extension StructDecl where A == EmptyAnnotation {
-  func typeCheck(_ environment: ModuleEnvironment) throws {
-    try declarations.elements.map(\.content.content).forEach { try $0.typeCheck(environment) }
+    return annotated
   }
 }
 
 extension BindingDecl where A == EmptyAnnotation {
-  func typeCheck(_ environment: ModuleEnvironment) throws {
-    guard let value = value else { return }
+  func typeCheck(_ environment: ModuleEnvironment) throws -> BindingDecl<TypeAnnotation> {
+    let annotated = try addAnnotation(
+      typeSignature: { try $0.annotate(environment) },
+      value: { try $0.annotate(environment) }
+    )
 
-    let inferredType = try value.expr.content.content.annotate(environment).annotation
+    guard let inferredType = annotated.value?.expr.content.content.annotation else {
+      return annotated
+    }
 
-    guard let expectedType = try type(environment) else { return }
+    guard let expectedType = try type(environment) else { fatalError() }
 
     guard inferredType == expectedType else {
       throw TypeError.typeMismatch(identifier.content.content, expected: expectedType, actual: inferredType)
     }
+
+    return annotated
   }
 }
 
 extension Declaration where A == EmptyAnnotation {
-  func typeCheck(_ environment: ModuleEnvironment) throws {
+  func typeCheck(_ environment: ModuleEnvironment) throws -> Declaration<TypeAnnotation> {
     switch self {
     case let .function(f):
-      try f.typeCheck(environment)
+      return try .function(f.typeCheck(environment))
 
     case let .struct(s):
-      try s.typeCheck(environment)
+      return try .struct(s.addAnnotation { try $0.typeCheck(environment) })
 
     case let .binding(b):
-      try b.typeCheck(environment)
+      return try .binding(b.typeCheck(environment))
 
-    default:
-      return
+    case let .enum(e):
+      return try .enum(e.addAnnotation { try $0.typeCheck(environment) })
+
+    case .trait:
+      fatalError()
     }
   }
 }
 
 extension ModuleFile where A == EmptyAnnotation {
-  func typeCheck() throws {
+  func typeCheck() throws -> ModuleFile<TypeAnnotation> {
     let environment = try ModuleEnvironment(self)
 
-    try declarations.map(\.content.content).forEach { try $0.typeCheck(environment) }
+    return try addAnnotation { try $0.typeCheck(environment) }
   }
 }
 
 public let typeCheckerPass =
-  CompilerPass { (module: ModuleFile<EmptyAnnotation>) throws -> ModuleFile<EmptyAnnotation> in
+  CompilerPass { (module: ModuleFile<EmptyAnnotation>) throws -> ModuleFile<TypeAnnotation> in
     // FIXME: detailed diagnostics
     try module.typeCheck()
-    return module
   }
