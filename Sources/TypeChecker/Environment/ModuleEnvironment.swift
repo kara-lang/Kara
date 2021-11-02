@@ -37,7 +37,7 @@ struct ModuleEnvironment {
   /// Create a new module environment for a given module
   /// - Parameter module: `ModuleFile` value to be scanned for declarations that will extend this environment.
   /// - Throws: `TypeError` if type checking fails for any declarations within the module during scanning.
-  init(_ module: ModuleFile) throws {
+  init(_ module: ModuleFile<EmptyAnnotation>) throws {
     self = try module.declarations.map(\.content.content).reduce(into: ModuleEnvironment()) {
       try $0.insert($1)
     }
@@ -45,7 +45,7 @@ struct ModuleEnvironment {
 
   /// Inserts a given declaration type (and members if appropriate) into this environment.
   /// - Parameter declaration: `Declaration` value that will be recursively scanned to produce nested environments.
-  mutating func insert(_ declaration: Declaration) throws {
+  mutating func insert(_ declaration: Declaration<EmptyAnnotation>) throws {
     switch declaration {
     case let .function(f):
       try schemes.insert(f, self)
@@ -59,6 +59,8 @@ struct ModuleEnvironment {
       guard types[typeIdentifier] == nil else {
         throw TypeError.typeDeclAlreadyExists(typeIdentifier)
       }
+      // Add an empty environment first to allow members to reference own type.
+      types[typeIdentifier] = MemberEnvironment()
       types[typeIdentifier] = try s.extend(self)
 
     case let .enum(e):

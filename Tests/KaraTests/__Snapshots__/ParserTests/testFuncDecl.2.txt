@@ -40,8 +40,11 @@ SyntaxNode(
                 leadingTrivia: [
                   [0]: Whitespace(" ")
                 ],
-                content: 0:12-0:15 Expr.identifier(
-                  Identifier(value: "Bool")
+                content: 0:12-0:15 Expr(
+                  payload: Expr.Payload.identifier(
+                    Identifier(value: "Bool")
+                  ),
+                  annotation: EmptyAnnotation()
                 )
               )
             )
@@ -54,24 +57,22 @@ SyntaxNode(
         content: 0:16-0:16 ()
       )
     ),
-    arrow: SyntaxNode(
-      leadingTrivia: [
-        [0]: Whitespace(" ")
-      ],
-      content: 0:18-0:26 FuncDecl.Arrow(
-        arrowSymbol: SyntaxNode(
-          leadingTrivia: [
-            [0]: Whitespace(" ")
-          ],
-          content: 0:18-0:19 ()
-        ),
-        returns: SyntaxNode(
-          leadingTrivia: [
-            [0]: Whitespace(" ")
-          ],
-          content: 0:21-0:26 Expr.identifier(
+    arrow: FuncDecl.Arrow(
+      arrowSymbol: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
+        content: 0:18-0:19 ()
+      ),
+      returns: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
+        content: 0:21-0:26 Expr(
+          payload: Expr.Payload.identifier(
             Identifier(value: "String")
-          )
+          ),
+          annotation: EmptyAnnotation()
         )
       )
     ),
@@ -88,70 +89,44 @@ SyntaxNode(
             [0]: Whitespace(" ")
           ],
           content: 0:30-0:58 ExprBlock.Element.expr(
-            Expr.ifThenElse(
-              IfThenElse(
-                ifKeyword: SyntaxNode(
-                  leadingTrivia: [
-                    [0]: Whitespace(" ")
-                  ],
-                  content: 0:30-0:31 ()
-                ),
-                condition: SyntaxNode(
-                  leadingTrivia: [
-                    [0]: Whitespace(" ")
-                  ],
-                  content: 0:33-0:33 Expr.identifier(
-                    Identifier(value: "y")
-                  )
-                ),
-                thenBlock: ExprBlock(
-                  openBrace: SyntaxNode(
+            Expr(
+              payload: Expr.Payload.ifThenElse(
+                IfThenElse(
+                  ifKeyword: SyntaxNode(
                     leadingTrivia: [
                       [0]: Whitespace(" ")
                     ],
-                    content: 0:35-0:35 ()
+                    content: 0:30-0:31 ()
                   ),
-                  elements: [
-                    [0]: SyntaxNode(
-                      leadingTrivia: [
-                        [0]: Whitespace(" ")
-                      ],
-                      content: 0:37-0:39 ExprBlock.Element.expr(
-                        Expr.literal(
-                          Literal.string("x")
-                        )
-                      )
+                  condition: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 0:33-0:33 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "y")
+                      ),
+                      annotation: EmptyAnnotation()
                     )
-                  ],
-                  closeBrace: SyntaxNode(
-                    leadingTrivia: [
-                      [0]: Whitespace(" ")
-                    ],
-                    content: 0:41-0:41 ()
-                  )
-                ),
-                elseBranch: ElseBranch(
-                  elseKeyword: SyntaxNode(
-                    leadingTrivia: [
-                      [0]: Whitespace(" ")
-                    ],
-                    content: 0:43-0:46 ()
                   ),
-                  elseBlock: ExprBlock(
+                  thenBlock: ExprBlock(
                     openBrace: SyntaxNode(
                       leadingTrivia: [
                         [0]: Whitespace(" ")
                       ],
-                      content: 0:48-0:48 ()
+                      content: 0:35-0:35 ()
                     ),
                     elements: [
                       [0]: SyntaxNode(
                         leadingTrivia: [
                           [0]: Whitespace(" ")
                         ],
-                        content: 0:50-0:56 ExprBlock.Element.expr(
-                          Expr.literal(
-                            Literal.string("not x")
+                        content: 0:37-0:39 ExprBlock.Element.expr(
+                          Expr(
+                            payload: Expr.Payload.literal(
+                              Literal.string("x")
+                            ),
+                            annotation: EmptyAnnotation()
                           )
                         )
                       )
@@ -160,11 +135,49 @@ SyntaxNode(
                       leadingTrivia: [
                         [0]: Whitespace(" ")
                       ],
-                      content: 0:58-0:58 ()
+                      content: 0:41-0:41 ()
+                    )
+                  ),
+                  elseBranch: IfThenElse.ElseBranch(
+                    elseKeyword: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 0:43-0:46 ()
+                    ),
+                    elseBlock: ExprBlock(
+                      openBrace: SyntaxNode(
+                        leadingTrivia: [
+                          [0]: Whitespace(" ")
+                        ],
+                        content: 0:48-0:48 ()
+                      ),
+                      elements: [
+                        [0]: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace(" ")
+                          ],
+                          content: 0:50-0:56 ExprBlock.Element.expr(
+                            Expr(
+                              payload: Expr.Payload.literal(
+                                Literal.string("not x")
+                              ),
+                              annotation: EmptyAnnotation()
+                            )
+                          )
+                        )
+                      ],
+                      closeBrace: SyntaxNode(
+                        leadingTrivia: [
+                          [0]: Whitespace(" ")
+                        ],
+                        content: 0:58-0:58 ()
+                      )
                     )
                   )
                 )
-              )
+              ),
+              annotation: EmptyAnnotation()
             )
           )
         )

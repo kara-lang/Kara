@@ -92,7 +92,7 @@ func assertEval(_ source: ParsingState, _ normalForm: NormalForm, file: StaticSt
   assertFullyConsumed(source)
   let e = ModuleEnvironment()
   try XCTAssertNoDifference(
-    parsingResult?.content.content.eval(e),
+    parsingResult?.content.content.payload.eval(e),
     normalForm,
     file: file,
     line: line
@@ -109,5 +109,5 @@ func assertEvalThrows<E: Error & Equatable>(
   let parsingResult = exprParser.parse(&source)
   assertFullyConsumed(source)
   let e = ModuleEnvironment()
-  try assertError(parsingResult?.content.content.eval(e), error, file: file, line: line)
+  try assertError(parsingResult?.content.content.payload.eval(e), error, file: file, line: line)
 }

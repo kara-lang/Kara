@@ -1,6 +1,9 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-0:4 Expr.identifier(
-    Identifier(value: "Int32")
+  content: 0:0-0:4 Expr(
+    payload: Expr.Payload.identifier(
+      Identifier(value: "Int32")
+    ),
+    annotation: EmptyAnnotation()
   )
 )

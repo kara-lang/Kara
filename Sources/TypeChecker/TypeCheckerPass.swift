@@ -5,7 +5,7 @@
 import Basic
 import Syntax
 
-extension FuncDecl {
+extension FuncDecl where A == EmptyAnnotation {
   func typeCheck(_ environment: ModuleEnvironment) throws {
     guard let body = body else {
       throw TypeError.funcDeclBodyMissing(identifier.content.content)
@@ -15,11 +15,11 @@ extension FuncDecl {
 
     // FIXME: possibly duplicate call to `parameterTypes`,
     // it's already called when inferring `Scheme` for this `FuncDecl` while collecting passed `DeclEnvironment`?
-    let parameterSchemes = try parameterTypes(environment).map { (Expr?.none, Scheme($0)) }
+    let parameterSchemes = try parameterTypes(environment).map { (Expr<EmptyAnnotation>?.none, Scheme($0)) }
     let parameters = self.parameters.elementsContent.map(\.internalName.content.content)
     functionEnvironment.schemes.insert(bindings: zip(parameters, parameterSchemes))
 
-    let inferredType = try Expr.block(body).infer(functionEnvironment)
+    let inferredType = try Expr<EmptyAnnotation>(.block(body)).annotate(functionEnvironment).annotation
     let expectedType = try returnType(environment)
 
     guard expectedType == inferredType else {
@@ -28,17 +28,17 @@ extension FuncDecl {
   }
 }
 
-extension StructDecl {
+extension StructDecl where A == EmptyAnnotation {
   func typeCheck(_ environment: ModuleEnvironment) throws {
     try declarations.elements.map(\.content.content).forEach { try $0.typeCheck(environment) }
   }
 }
 
-extension BindingDecl {
+extension BindingDecl where A == EmptyAnnotation {
   func typeCheck(_ environment: ModuleEnvironment) throws {
     guard let value = value else { return }
 
-    let inferredType = try value.expr.content.content.infer(environment)
+    let inferredType = try value.expr.content.content.annotate(environment).annotation
 
     guard let expectedType = try type(environment) else { return }
 
@@ -48,7 +48,7 @@ extension BindingDecl {
   }
 }
 
-extension Declaration {
+extension Declaration where A == EmptyAnnotation {
   func typeCheck(_ environment: ModuleEnvironment) throws {
     switch self {
     case let .function(f):
@@ -66,7 +66,7 @@ extension Declaration {
   }
 }
 
-extension ModuleFile {
+extension ModuleFile where A == EmptyAnnotation {
   func typeCheck() throws {
     let environment = try ModuleEnvironment(self)
 
@@ -74,8 +74,9 @@ extension ModuleFile {
   }
 }
 
-public let typeCheckerPass = CompilerPass { (module: ModuleFile) throws -> ModuleFile in
-  // FIXME: detailed diagnostics
-  try module.typeCheck()
-  return module
-}
+public let typeCheckerPass =
+  CompilerPass { (module: ModuleFile<EmptyAnnotation>) throws -> ModuleFile<EmptyAnnotation> in
+    // FIXME: detailed diagnostics
+    try module.typeCheck()
+    return module
+  }

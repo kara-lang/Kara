@@ -4,22 +4,27 @@
 
 import Parsing
 
-public struct EnumDecl {
+public struct EnumDecl<A: Annotation> {
   public let modifiers: [SyntaxNode<DeclModifier>]
   public let enumKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<Identifier>
-  public let declarations: SyntaxNode<DeclBlock>
+  public let declarations: SyntaxNode<DeclBlock<A>>
+
+  public func addAnnotation<NewAnnotation: Annotation>(
+    _ transform: (Declaration<A>) throws -> Declaration<NewAnnotation>
+  ) rethrows -> EnumDecl<NewAnnotation> {
+    try .init(
+      modifiers: modifiers,
+      enumKeyword: enumKeyword,
+      identifier: identifier,
+      declarations: declarations.map { try $0.addAnnotation(transform) }
+    )
+  }
 }
 
 extension EnumDecl: SyntaxNodeContainer {
   public var start: SyntaxNode<Empty> { modifiers.first?.empty ?? enumKeyword }
   public var end: SyntaxNode<Empty> { declarations.end }
-}
-
-extension EnumDecl: CustomStringConvertible {
-  public var description: String {
-    "enum \(identifier) {}"
-  }
 }
 
 let enumParser =

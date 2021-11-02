@@ -25,9 +25,9 @@ struct Scheme {
   }
 }
 
-extension SyntaxNode where Content == Expr {
+extension SyntaxNode where Content == Expr<EmptyAnnotation> {
   func evalToType(_ environment: ModuleEnvironment) throws -> Type {
-    let normalForm = try content.content.eval(environment)
+    let normalForm = try content.content.payload.eval(environment)
     if let type = normalForm.type {
       return type
     } else if case let .identifier(i) = normalForm {
@@ -38,7 +38,7 @@ extension SyntaxNode where Content == Expr {
   }
 }
 
-extension FuncDecl {
+extension FuncDecl where A == EmptyAnnotation {
   func returnType(_ environment: ModuleEnvironment) throws -> Type {
     try arrow?.returns.evalToType(environment) ?? .unit
   }
@@ -55,9 +55,9 @@ extension FuncDecl {
   }
 }
 
-extension BindingDecl {
+extension BindingDecl where A == EmptyAnnotation {
   func type(_ environment: ModuleEnvironment) throws -> Type? {
-    try typeAnnotation?.signature.content.content.eval(environment).type
+    try typeSignature?.signature.content.content.payload.eval(environment).type
   }
 
   func scheme(_ environment: ModuleEnvironment) throws -> Scheme? {

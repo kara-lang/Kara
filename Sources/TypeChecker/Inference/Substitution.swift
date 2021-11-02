@@ -115,3 +115,13 @@ extension Constraint: Substitutable {
     }
   }
 }
+
+extension Expr: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> Expr<TypeAnnotation> {
+    .init(payload: payload, annotation: annotation.apply(sub))
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    annotation.freeTypeVariables
+  }
+}

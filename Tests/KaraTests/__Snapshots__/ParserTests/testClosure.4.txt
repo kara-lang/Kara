@@ -1,47 +1,53 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-0:9 Expr.closure(
-    Closure(
-      openBrace: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:0-0:0 ()
-      ),
-      parameters: [
-        [0]: Closure.Parameter(
-          identifier: SyntaxNode(
-            leadingTrivia: [
-              [0]: Whitespace(" ")
-            ],
-            content: 0:2-0:2 Identifier(value: "x")
-          ),
-          typeAnnotation: nil,
-          comma: nil
-        )
-      ],
-      inKeyword: SyntaxNode(
-        leadingTrivia: [
-          [0]: Whitespace(" ")
+  content: 0:0-0:9 Expr(
+    payload: Expr.Payload.closure(
+      Closure(
+        openBrace: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:0-0:0 ()
+        ),
+        parameters: [
+          [0]: Closure.Parameter(
+            identifier: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 0:2-0:2 Identifier(value: "x")
+            ),
+            typeSignature: nil,
+            comma: nil
+          )
         ],
-        content: 0:4-0:5 ()
-      ),
-      body: [
-        [0]: SyntaxNode(
+        inKeyword: SyntaxNode(
           leadingTrivia: [
             [0]: Whitespace(" ")
           ],
-          content: 0:7-0:7 ExprBlock.Element.expr(
-            Expr.literal(
-              Literal.int32(1)
+          content: 0:4-0:5 ()
+        ),
+        body: [
+          [0]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
+            content: 0:7-0:7 ExprBlock.Element.expr(
+              Expr(
+                payload: Expr.Payload.literal(
+                  Literal.int32(1)
+                ),
+                annotation: EmptyAnnotation()
+              )
             )
           )
-        )
-      ],
-      closeBrace: SyntaxNode(
-        leadingTrivia: [
-          [0]: Whitespace(" ")
         ],
-        content: 0:9-0:9 ()
+        closeBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:9-0:9 ()
+        )
       )
-    )
+    ),
+    annotation: EmptyAnnotation()
   )
 )

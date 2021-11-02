@@ -1,23 +1,29 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-0:12 Expr.member(
-    MemberAccess(
-      base: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:0-0:0 Expr.literal(
-          Literal.int32(5)
-        )
-      ),
-      dot: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:1-0:1 ()
-      ),
-      member: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:2-0:12 MemberAccess.Member.identifier(
-          Identifier(value: "description")
+  content: 0:0-0:12 Expr(
+    payload: Expr.Payload.member(
+      MemberAccess(
+        base: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:0-0:0 Expr(
+            payload: Expr.Payload.literal(
+              Literal.int32(5)
+            ),
+            annotation: EmptyAnnotation()
+          )
+        ),
+        dot: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:1-0:1 ()
+        ),
+        member: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:2-0:12 Member.identifier(
+            Identifier(value: "description")
+          )
         )
       )
-    )
+    ),
+    annotation: EmptyAnnotation()
   )
 )

@@ -4,14 +4,24 @@
 
 import Parsing
 
-public struct Closure {
-  public typealias Body = [SyntaxNode<ExprBlock.Element>]
+public struct Closure<A: Annotation> {
+  public typealias Body = [SyntaxNode<ExprBlock<A>.Element>]
 
   public struct Parameter {
     public let identifier: SyntaxNode<Identifier>
     // FIXME: parse type annotations
-    public let typeAnnotation: SyntaxNode<Expr>?
+    public let typeSignature: SyntaxNode<Expr<A>>?
     public let comma: SyntaxNode<Empty>?
+
+    func addAnnotation<NewAnnotation: Annotation>(
+      _ transform: (Expr<A>) throws -> Expr<NewAnnotation>
+    ) rethrows -> Closure<NewAnnotation>.Parameter {
+      try .init(
+        identifier: identifier,
+        typeSignature: typeSignature?.map(transform),
+        comma: comma
+      )
+    }
   }
 
   public let openBrace: SyntaxNode<Empty>
@@ -21,14 +31,27 @@ public struct Closure {
 
   public let closeBrace: SyntaxNode<Empty>
 
-  public var exprBlock: ExprBlock {
+  public var exprBlock: ExprBlock<A> {
     .init(openBrace: openBrace, elements: body, closeBrace: closeBrace)
+  }
+
+  public func addAnnotation<NewAnnotation: Annotation>(
+    parameter parameterTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
+    body bodyTransform: (Body) throws -> Closure<NewAnnotation>.Body
+  ) rethrows -> Closure<NewAnnotation> {
+    try .init(
+      openBrace: openBrace,
+      parameters: parameters.map { try $0.addAnnotation(parameterTransform) },
+      inKeyword: inKeyword,
+      body: bodyTransform(body),
+      closeBrace: closeBrace
+    )
   }
 }
 
 extension Closure.Parameter {
   init(identifier: SyntaxNode<Identifier>, comma: SyntaxNode<Empty>?) {
-    self.init(identifier: identifier, typeAnnotation: nil, comma: comma)
+    self.init(identifier: identifier, typeSignature: nil, comma: comma)
   }
 }
 
@@ -79,14 +102,15 @@ let parametricClosureParser = openBraceParser
     Optional.parser(
       of: triviaParser(requiresLeadingTrivia: true)
         .take(exprBlockElementsParser)
-        .map { trivia, elements -> Closure.Body in
+        .map { trivia, elements -> Closure<EmptyAnnotation>.Body in
+          // Append required leading trivia to `ExprBlock` elements.
           [.init(leadingTrivia: trivia.map(\.content), content: elements[0].content)] + elements.dropFirst()
         }
     )
   )
   .take(closeBraceParser)
-  .map { openBrace, head, tail, inKeyword, body, closeBrace -> SyntaxNode<Closure> in
-    let parameters: [Closure.Parameter]
+  .map { openBrace, head, tail, inKeyword, body, closeBrace -> SyntaxNode<Closure<EmptyAnnotation>> in
+    let parameters: [Closure<EmptyAnnotation>.Parameter]
     if let tail = tail {
       let headWithOptionalCommas = head.map { id, comma -> (SyntaxNode<Identifier>, SyntaxNode<Empty>?) in
         (id, comma)

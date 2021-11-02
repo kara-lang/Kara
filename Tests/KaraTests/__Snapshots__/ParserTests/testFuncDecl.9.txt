@@ -48,8 +48,11 @@ SyntaxNode(
                 leadingTrivia: [
                   [0]: Whitespace(" ")
                 ],
-                content: 0:24-0:26 Expr.identifier(
-                  Identifier(value: "Int")
+                content: 0:24-0:26 Expr(
+                  payload: Expr.Payload.identifier(
+                    Identifier(value: "Int")
+                  ),
+                  annotation: EmptyAnnotation()
                 )
               )
             )
@@ -62,24 +65,22 @@ SyntaxNode(
         content: 0:27-0:27 ()
       )
     ),
-    arrow: SyntaxNode(
-      leadingTrivia: [
-        [0]: Whitespace(" ")
-      ],
-      content: 0:29-0:34 FuncDecl.Arrow(
-        arrowSymbol: SyntaxNode(
-          leadingTrivia: [
-            [0]: Whitespace(" ")
-          ],
-          content: 0:29-0:30 ()
-        ),
-        returns: SyntaxNode(
-          leadingTrivia: [
-            [0]: Whitespace(" ")
-          ],
-          content: 0:32-0:34 Expr.identifier(
+    arrow: FuncDecl.Arrow(
+      arrowSymbol: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
+        content: 0:29-0:30 ()
+      ),
+      returns: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
+        content: 0:32-0:34 Expr(
+          payload: Expr.Payload.identifier(
             Identifier(value: "Int")
-          )
+          ),
+          annotation: EmptyAnnotation()
         )
       )
     ),
@@ -96,8 +97,11 @@ SyntaxNode(
             [0]: Whitespace(" ")
           ],
           content: 0:38-0:38 ExprBlock.Element.expr(
-            Expr.identifier(
-              Identifier(value: "x")
+            Expr(
+              payload: Expr.Payload.identifier(
+                Identifier(value: "x")
+              ),
+              annotation: EmptyAnnotation()
             )
           )
         )

@@ -4,10 +4,10 @@
 
 import Parsing
 
-struct Arrow {
-  let head: SyntaxNode<Expr>
+struct Arrow<A: Annotation> {
+  let head: SyntaxNode<Expr<A>>
   let arrowSymbol: SyntaxNode<Empty>
-  let tail: SyntaxNode<Expr>
+  let tail: SyntaxNode<Expr<A>>
 }
 
 let arrowTailParser = SyntaxNodeParser(Terminal("->"))

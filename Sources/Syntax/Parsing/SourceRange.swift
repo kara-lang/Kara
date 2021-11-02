@@ -28,8 +28,8 @@ public struct SourceRange<Content> {
 
   public let content: Content
 
-  public func map<NewContent>(_ transform: (Content) -> NewContent) -> SourceRange<NewContent> {
-    .init(start: start, end: end, content: transform(content))
+  public func map<NewContent>(_ transform: (Content) throws -> NewContent) rethrows -> SourceRange<NewContent> {
+    try .init(start: start, end: end, content: transform(content))
   }
 }
 
@@ -42,6 +42,10 @@ extension SourceRange where Content == Empty {
     self.start = start
     self.end = end
     content = Empty()
+  }
+
+  public func merge(_ other: Self) -> Self {
+    .init(start: start, end: other.end)
   }
 }
 

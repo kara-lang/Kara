@@ -1,50 +1,62 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-0:6 Expr.tuple(
-    DelimitedSequence(
-      start: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:0-0:0 ()
-      ),
-      elements: [
-        [0]: DelimitedSequence.Element(
-          content: SyntaxNode(
-            leadingTrivia: [],
-            content: 0:1-0:1 Expr.literal(
-              Literal.int32(1)
-            )
-          ),
-          separator: SyntaxNode(
-            leadingTrivia: [],
-            content: 0:2-0:2 ()
-          )
+  content: 0:0-0:6 Expr(
+    payload: Expr.Payload.tuple(
+      DelimitedSequence(
+        start: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:0-0:0 ()
         ),
-        [1]: DelimitedSequence.Element(
-          content: SyntaxNode(
-            leadingTrivia: [],
-            content: 0:3-0:3 Expr.literal(
-              Literal.int32(2)
+        elements: [
+          [0]: DelimitedSequence.Element(
+            content: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:1-0:1 Expr(
+                payload: Expr.Payload.literal(
+                  Literal.int32(1)
+                ),
+                annotation: EmptyAnnotation()
+              )
+            ),
+            separator: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:2-0:2 ()
             )
           ),
-          separator: SyntaxNode(
-            leadingTrivia: [],
-            content: 0:4-0:4 ()
+          [1]: DelimitedSequence.Element(
+            content: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:3-0:3 Expr(
+                payload: Expr.Payload.literal(
+                  Literal.int32(2)
+                ),
+                annotation: EmptyAnnotation()
+              )
+            ),
+            separator: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:4-0:4 ()
+            )
+          ),
+          [2]: DelimitedSequence.Element(
+            content: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:5-0:5 Expr(
+                payload: Expr.Payload.literal(
+                  Literal.int32(3)
+                ),
+                annotation: EmptyAnnotation()
+              )
+            ),
+            separator: nil
           )
-        ),
-        [2]: DelimitedSequence.Element(
-          content: SyntaxNode(
-            leadingTrivia: [],
-            content: 0:5-0:5 Expr.literal(
-              Literal.int32(3)
-            )
-          ),
-          separator: nil
+        ],
+        end: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:6-0:6 ()
         )
-      ],
-      end: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:6-0:6 ()
       )
-    )
+    ),
+    annotation: EmptyAnnotation()
   )
 )

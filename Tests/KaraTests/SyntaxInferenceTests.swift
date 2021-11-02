@@ -16,7 +16,7 @@ extension String {
       throw ParsingError.unknown(startIndex..<endIndex)
     }
 
-    return try expr.content.content.infer(environment)
+    return try expr.content.content.annotate(environment).annotation
   }
 }
 
@@ -77,7 +77,7 @@ final class SyntaxInferenceTests: XCTestCase {
         """
         { x in stringify(decode(increment(x))) }
         """
-      ).output?.content.content.infer(),
+      ).output?.content.content.annotate(ModuleEnvironment()),
       TypeError.unbound("stringify")
     )
   }

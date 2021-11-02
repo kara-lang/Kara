@@ -4,11 +4,11 @@
 
 import Parsing
 
-public struct StructLiteral: SyntaxNodeContainer {
+public struct StructLiteral<A: Annotation>: SyntaxNodeContainer {
   public struct Element: SyntaxNodeContainer {
     public let property: SyntaxNode<Identifier>
     public let colon: SyntaxNode<Empty>
-    public let value: SyntaxNode<Expr>
+    public let value: SyntaxNode<Expr<A>>
 
     public var start: SyntaxNode<Empty> {
       property.empty
@@ -19,7 +19,7 @@ public struct StructLiteral: SyntaxNodeContainer {
     }
   }
 
-  public let type: SyntaxNode<Expr>
+  public let type: SyntaxNode<Expr<A>>
   public let elements: DelimitedSequence<Element>
 
   public var start: SyntaxNode<Empty> {
@@ -28,6 +28,22 @@ public struct StructLiteral: SyntaxNodeContainer {
 
   public var end: SyntaxNode<Empty> {
     elements.end
+  }
+
+  public func addAnnotation<NewAnnotation>(
+    type typeTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
+    value valueTransform: (Expr<A>) throws -> Expr<NewAnnotation>
+  ) rethrows -> StructLiteral<NewAnnotation> {
+    try .init(
+      type: type.map(typeTransform),
+      elements: elements.map {
+        try .init(
+          property: $0.property,
+          colon: $0.colon,
+          value: $0.value.map(valueTransform)
+        )
+      }
+    )
   }
 }
 

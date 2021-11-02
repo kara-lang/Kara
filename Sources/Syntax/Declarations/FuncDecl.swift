@@ -4,17 +4,17 @@
 
 import Parsing
 
-public struct FuncDecl: ModifiersContainer {
+public struct FuncDecl<A: Annotation>: ModifiersContainer {
   public struct Parameter {
     public let externalName: SyntaxNode<Identifier>?
     public let internalName: SyntaxNode<Identifier>
     public let colon: SyntaxNode<Empty>
-    public let type: SyntaxNode<Expr>
+    public let type: SyntaxNode<Expr<A>>
   }
 
   public struct Arrow: SyntaxNodeContainer {
     public let arrowSymbol: SyntaxNode<Empty>
-    public let returns: SyntaxNode<Expr>
+    public let returns: SyntaxNode<Expr<A>>
 
     public var start: SyntaxNode<Empty> { arrowSymbol }
     public var end: SyntaxNode<Empty> { returns.empty }
@@ -25,13 +25,40 @@ public struct FuncDecl: ModifiersContainer {
   public let identifier: SyntaxNode<Identifier>
   public let parameters: DelimitedSequence<Parameter>
 
-  public let arrow: SyntaxNode<Arrow>?
-  public var body: ExprBlock?
+  public let arrow: Arrow?
+  public var body: ExprBlock<A>?
+
+  public func addAnnotation<NewAnnotation: Annotation>(
+    parameterType parameterTypeTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
+    arrow arrowTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
+    body bodyTransform: (ExprBlock<A>) throws -> ExprBlock<NewAnnotation>
+  ) rethrows -> FuncDecl<NewAnnotation> {
+    try .init(
+      modifiers: modifiers,
+      funcKeyword: funcKeyword,
+      identifier: identifier,
+      parameters: parameters.map {
+        try .init(
+          externalName: $0.externalName,
+          internalName: $0.internalName,
+          colon: $0.colon,
+          type: $0.type.map(parameterTypeTransform)
+        )
+      },
+      arrow: arrow.map {
+        try .init(
+          arrowSymbol: $0.arrowSymbol,
+          returns: $0.returns.map(arrowTransform)
+        )
+      },
+      body: body.map(bodyTransform)
+    )
+  }
 }
 
 extension FuncDecl: SyntaxNodeContainer {
   public var start: SyntaxNode<Empty> { modifiers.first?.empty ?? funcKeyword }
-  public var end: SyntaxNode<Empty> { body?.closeBrace ?? arrow?.map(\.returns).map { _ in
+  public var end: SyntaxNode<Empty> { body?.closeBrace ?? arrow?.returns.map { _ in
     Empty()
   } ?? parameters.end }
 }
@@ -69,7 +96,7 @@ let funcDeclParser =
         elementParser: functionParameterParser
       )
     )
-    .take(Optional.parser(of: arrowTailParser.map(FuncDecl.Arrow.init).map(\.syntaxNode)))
+    .take(Optional.parser(of: arrowTailParser.map(FuncDecl.Arrow.init)))
     .take(Optional.parser(of: exprBlockParser))
     .map {
       FuncDecl(

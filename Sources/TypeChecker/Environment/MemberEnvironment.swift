@@ -32,7 +32,7 @@ struct MemberEnvironment {
 
   /// Inserts a given declaration type (and members if appropriate) into this environment.
   /// - Parameter declaration: `Declaration` value that will be recursively scanned to produce nested environments.
-  mutating func insert(_ declaration: Declaration, _ topLevel: ModuleEnvironment) throws {
+  mutating func insert(_ declaration: Declaration<EmptyAnnotation>, _ topLevel: ModuleEnvironment) throws {
     switch declaration {
     case let .function(f):
       if f.isStatic {
@@ -70,7 +70,7 @@ struct MemberEnvironment {
   }
 }
 
-extension StructDecl {
+extension StructDecl where A == EmptyAnnotation {
   func extend(_ topLevel: ModuleEnvironment) throws -> MemberEnvironment {
     try declarations.elements.map(\.content.content).reduce(into: MemberEnvironment()) {
       try $0.insert($1, topLevel)
@@ -78,7 +78,7 @@ extension StructDecl {
   }
 }
 
-extension EnumDecl {
+extension EnumDecl where A == EmptyAnnotation {
   func extend(_ topLevel: ModuleEnvironment) throws -> MemberEnvironment {
     try declarations.elements.map(\.content.content).reduce(into: MemberEnvironment()) {
       try $0.insert($1, topLevel)

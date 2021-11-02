@@ -9,8 +9,8 @@ public struct SyntaxNode<Content> {
   let leadingTrivia: [Trivia]
   public let content: SourceRange<Content>
 
-  func map<NewContent>(_ transform: (Content) -> NewContent) -> SyntaxNode<NewContent> {
-    .init(leadingTrivia: leadingTrivia, content: content.map(transform))
+  func map<NewContent>(_ transform: (Content) throws -> NewContent) rethrows -> SyntaxNode<NewContent> {
+    try .init(leadingTrivia: leadingTrivia, content: content.map(transform))
   }
 
   public subscript<T>(dynamicMember keyPath: KeyPath<Content, T>) -> T {

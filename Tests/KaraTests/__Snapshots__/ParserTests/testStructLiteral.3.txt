@@ -1,24 +1,30 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-0:2 Expr.structLiteral(
-    StructLiteral(
-      type: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:0-0:0 Expr.identifier(
-          Identifier(value: "S")
-        )
-      ),
-      elements: DelimitedSequence(
-        start: SyntaxNode(
+  content: 0:0-0:2 Expr(
+    payload: Expr.Payload.structLiteral(
+      StructLiteral(
+        type: SyntaxNode(
           leadingTrivia: [],
-          content: 0:1-0:1 ()
+          content: 0:0-0:0 Expr(
+            payload: Expr.Payload.identifier(
+              Identifier(value: "S")
+            ),
+            annotation: EmptyAnnotation()
+          )
         ),
-        elements: [],
-        end: SyntaxNode(
-          leadingTrivia: [],
-          content: 0:2-0:2 ()
+        elements: DelimitedSequence(
+          start: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:1-0:1 ()
+          ),
+          elements: [],
+          end: SyntaxNode(
+            leadingTrivia: [],
+            content: 0:2-0:2 ()
+          )
         )
       )
-    )
+    ),
+    annotation: EmptyAnnotation()
   )
 )

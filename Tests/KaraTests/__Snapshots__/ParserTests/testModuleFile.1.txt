@@ -78,8 +78,11 @@ ModuleFile(
                       leadingTrivia: [
                         [0]: Whitespace(" ")
                       ],
-                      content: 2:18-2:21 Expr.identifier(
-                        Identifier(value: "Bool")
+                      content: 2:18-2:21 Expr(
+                        payload: Expr.Payload.identifier(
+                          Identifier(value: "Bool")
+                        ),
+                        annotation: EmptyAnnotation()
                       )
                     )
                   )
@@ -92,24 +95,22 @@ ModuleFile(
               content: 2:22-2:22 ()
             )
           ),
-          arrow: SyntaxNode(
-            leadingTrivia: [
-              [0]: Whitespace(" ")
-            ],
-            content: 2:24-2:32 FuncDecl.Arrow(
-              arrowSymbol: SyntaxNode(
-                leadingTrivia: [
-                  [0]: Whitespace(" ")
-                ],
-                content: 2:24-2:25 ()
-              ),
-              returns: SyntaxNode(
-                leadingTrivia: [
-                  [0]: Whitespace(" ")
-                ],
-                content: 2:27-2:32 Expr.identifier(
+          arrow: FuncDecl.Arrow(
+            arrowSymbol: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 2:24-2:25 ()
+            ),
+            returns: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 2:27-2:32 Expr(
+                payload: Expr.Payload.identifier(
                   Identifier(value: "String")
-                )
+                ),
+                annotation: EmptyAnnotation()
               )
             )
           ),
@@ -126,70 +127,44 @@ ModuleFile(
                   [0]: Whitespace("\n  ")
                 ],
                 content: 3:2-7:2 ExprBlock.Element.expr(
-                  Expr.ifThenElse(
-                    IfThenElse(
-                      ifKeyword: SyntaxNode(
-                        leadingTrivia: [
-                          [0]: Whitespace("\n  ")
-                        ],
-                        content: 3:2-3:3 ()
-                      ),
-                      condition: SyntaxNode(
-                        leadingTrivia: [
-                          [0]: Whitespace(" ")
-                        ],
-                        content: 3:5-3:13 Expr.identifier(
-                          Identifier(value: "condition")
-                        )
-                      ),
-                      thenBlock: ExprBlock(
-                        openBrace: SyntaxNode(
-                          leadingTrivia: [
-                            [0]: Whitespace(" ")
-                          ],
-                          content: 3:15-3:15 ()
-                        ),
-                        elements: [
-                          [0]: SyntaxNode(
-                            leadingTrivia: [
-                              [0]: Whitespace("\n    ")
-                            ],
-                            content: 4:4-4:9 ExprBlock.Element.expr(
-                              Expr.literal(
-                                Literal.string("true")
-                              )
-                            )
-                          )
-                        ],
-                        closeBrace: SyntaxNode(
+                  Expr(
+                    payload: Expr.Payload.ifThenElse(
+                      IfThenElse(
+                        ifKeyword: SyntaxNode(
                           leadingTrivia: [
                             [0]: Whitespace("\n  ")
                           ],
-                          content: 5:2-5:2 ()
-                        )
-                      ),
-                      elseBranch: ElseBranch(
-                        elseKeyword: SyntaxNode(
+                          content: 3:2-3:3 ()
+                        ),
+                        condition: SyntaxNode(
                           leadingTrivia: [
                             [0]: Whitespace(" ")
                           ],
-                          content: 5:4-5:7 ()
+                          content: 3:5-3:13 Expr(
+                            payload: Expr.Payload.identifier(
+                              Identifier(value: "condition")
+                            ),
+                            annotation: EmptyAnnotation()
+                          )
                         ),
-                        elseBlock: ExprBlock(
+                        thenBlock: ExprBlock(
                           openBrace: SyntaxNode(
                             leadingTrivia: [
                               [0]: Whitespace(" ")
                             ],
-                            content: 5:9-5:9 ()
+                            content: 3:15-3:15 ()
                           ),
                           elements: [
                             [0]: SyntaxNode(
                               leadingTrivia: [
                                 [0]: Whitespace("\n    ")
                               ],
-                              content: 6:4-6:10 ExprBlock.Element.expr(
-                                Expr.literal(
-                                  Literal.string("false")
+                              content: 4:4-4:9 ExprBlock.Element.expr(
+                                Expr(
+                                  payload: Expr.Payload.literal(
+                                    Literal.string("true")
+                                  ),
+                                  annotation: EmptyAnnotation()
                                 )
                               )
                             )
@@ -198,11 +173,49 @@ ModuleFile(
                             leadingTrivia: [
                               [0]: Whitespace("\n  ")
                             ],
-                            content: 7:2-7:2 ()
+                            content: 5:2-5:2 ()
+                          )
+                        ),
+                        elseBranch: IfThenElse.ElseBranch(
+                          elseKeyword: SyntaxNode(
+                            leadingTrivia: [
+                              [0]: Whitespace(" ")
+                            ],
+                            content: 5:4-5:7 ()
+                          ),
+                          elseBlock: ExprBlock(
+                            openBrace: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace(" ")
+                              ],
+                              content: 5:9-5:9 ()
+                            ),
+                            elements: [
+                              [0]: SyntaxNode(
+                                leadingTrivia: [
+                                  [0]: Whitespace("\n    ")
+                                ],
+                                content: 6:4-6:10 ExprBlock.Element.expr(
+                                  Expr(
+                                    payload: Expr.Payload.literal(
+                                      Literal.string("false")
+                                    ),
+                                    annotation: EmptyAnnotation()
+                                  )
+                                )
+                              )
+                            ],
+                            closeBrace: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace("\n  ")
+                              ],
+                              content: 7:2-7:2 ()
+                            )
                           )
                         )
                       )
-                    )
+                    ),
+                    annotation: EmptyAnnotation()
                   )
                 )
               )

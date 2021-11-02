@@ -1,67 +1,41 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-0:34 Expr.ifThenElse(
-    IfThenElse(
-      ifKeyword: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:0-0:1 ()
-      ),
-      condition: SyntaxNode(
-        leadingTrivia: [
-          [0]: Whitespace(" ")
-        ],
-        content: 0:3-0:6 Expr.literal(
-          Literal.bool(true)
-        )
-      ),
-      thenBlock: ExprBlock(
-        openBrace: SyntaxNode(
+  content: 0:0-0:34 Expr(
+    payload: Expr.Payload.ifThenElse(
+      IfThenElse(
+        ifKeyword: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:0-0:1 ()
+        ),
+        condition: SyntaxNode(
           leadingTrivia: [
             [0]: Whitespace(" ")
           ],
-          content: 0:8-0:8 ()
-        ),
-        elements: [
-          [0]: SyntaxNode(
-            leadingTrivia: [
-              [0]: Whitespace(" ")
-            ],
-            content: 0:10-0:15 ExprBlock.Element.expr(
-              Expr.literal(
-                Literal.string("true")
-              )
-            )
+          content: 0:3-0:6 Expr(
+            payload: Expr.Payload.literal(
+              Literal.bool(true)
+            ),
+            annotation: EmptyAnnotation()
           )
-        ],
-        closeBrace: SyntaxNode(
-          leadingTrivia: [
-            [0]: Whitespace(" ")
-          ],
-          content: 0:17-0:17 ()
-        )
-      ),
-      elseBranch: ElseBranch(
-        elseKeyword: SyntaxNode(
-          leadingTrivia: [
-            [0]: Whitespace(" ")
-          ],
-          content: 0:19-0:22 ()
         ),
-        elseBlock: ExprBlock(
+        thenBlock: ExprBlock(
           openBrace: SyntaxNode(
             leadingTrivia: [
               [0]: Whitespace(" ")
             ],
-            content: 0:24-0:24 ()
+            content: 0:8-0:8 ()
           ),
           elements: [
             [0]: SyntaxNode(
               leadingTrivia: [
                 [0]: Whitespace(" ")
               ],
-              content: 0:26-0:32 ExprBlock.Element.expr(
-                Expr.literal(
-                  Literal.string("false")
+              content: 0:10-0:15 ExprBlock.Element.expr(
+                Expr(
+                  payload: Expr.Payload.literal(
+                    Literal.string("true")
+                  ),
+                  annotation: EmptyAnnotation()
                 )
               )
             )
@@ -70,10 +44,48 @@ SyntaxNode(
             leadingTrivia: [
               [0]: Whitespace(" ")
             ],
-            content: 0:34-0:34 ()
+            content: 0:17-0:17 ()
+          )
+        ),
+        elseBranch: IfThenElse.ElseBranch(
+          elseKeyword: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
+            content: 0:19-0:22 ()
+          ),
+          elseBlock: ExprBlock(
+            openBrace: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 0:24-0:24 ()
+            ),
+            elements: [
+              [0]: SyntaxNode(
+                leadingTrivia: [
+                  [0]: Whitespace(" ")
+                ],
+                content: 0:26-0:32 ExprBlock.Element.expr(
+                  Expr(
+                    payload: Expr.Payload.literal(
+                      Literal.string("false")
+                    ),
+                    annotation: EmptyAnnotation()
+                  )
+                )
+              )
+            ],
+            closeBrace: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 0:34-0:34 ()
+            )
           )
         )
       )
-    )
+    ),
+    annotation: EmptyAnnotation()
   )
 )

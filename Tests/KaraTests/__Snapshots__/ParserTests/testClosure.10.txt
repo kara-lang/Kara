@@ -1,164 +1,185 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-3:0 Expr.closure(
-    Closure(
-      openBrace: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:0-0:0 ()
-      ),
-      parameters: [
-        [0]: Closure.Parameter(
-          identifier: SyntaxNode(
-            leadingTrivia: [],
-            content: 0:1-0:1 Identifier(value: "x")
-          ),
-          typeAnnotation: nil,
-          comma: SyntaxNode(
-            leadingTrivia: [],
-            content: 0:2-0:2 ()
-          )
+  content: 0:0-3:0 Expr(
+    payload: Expr.Payload.closure(
+      Closure(
+        openBrace: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:0-0:0 ()
         ),
-        [1]: Closure.Parameter(
-          identifier: SyntaxNode(
-            leadingTrivia: [],
-            content: 0:3-0:3 Identifier(value: "y")
+        parameters: [
+          [0]: Closure.Parameter(
+            identifier: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:1-0:1 Identifier(value: "x")
+            ),
+            typeSignature: nil,
+            comma: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:2-0:2 ()
+            )
           ),
-          typeAnnotation: nil,
-          comma: SyntaxNode(
-            leadingTrivia: [],
-            content: 0:4-0:4 ()
+          [1]: Closure.Parameter(
+            identifier: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:3-0:3 Identifier(value: "y")
+            ),
+            typeSignature: nil,
+            comma: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:4-0:4 ()
+            )
+          ),
+          [2]: Closure.Parameter(
+            identifier: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:5-0:5 Identifier(value: "z")
+            ),
+            typeSignature: nil,
+            comma: nil
           )
-        ),
-        [2]: Closure.Parameter(
-          identifier: SyntaxNode(
-            leadingTrivia: [],
-            content: 0:5-0:5 Identifier(value: "z")
-          ),
-          typeAnnotation: nil,
-          comma: nil
-        )
-      ],
-      inKeyword: SyntaxNode(
-        leadingTrivia: [
-          [0]: Whitespace(" ")
         ],
-        content: 0:7-0:8 ()
-      ),
-      body: [
-        [0]: SyntaxNode(
+        inKeyword: SyntaxNode(
           leadingTrivia: [
-            [0]: Whitespace("\n    ")
+            [0]: Whitespace(" ")
           ],
-          content: 1:4-1:23 ExprBlock.Element.declaration(
-            Declaration.binding(
-              BindingDecl(
-                modifiers: [],
-                bindingKeyword: SyntaxNode(
-                  leadingTrivia: [],
-                  content: 1:4-1:6 ()
-                ),
-                identifier: SyntaxNode(
-                  leadingTrivia: [
-                    [0]: Whitespace(" ")
-                  ],
-                  content: 1:8-1:8 Identifier(value: "a")
-                ),
-                typeAnnotation: nil,
-                value: BindingDecl.Value(
-                  equalsSign: SyntaxNode(
-                    leadingTrivia: [
-                      [0]: Whitespace(" ")
-                    ],
-                    content: 1:10-1:10 ()
+          content: 0:7-0:8 ()
+        ),
+        body: [
+          [0]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n    ")
+            ],
+            content: 1:4-1:23 ExprBlock.Element.declaration(
+              Declaration.binding(
+                BindingDecl(
+                  modifiers: [],
+                  bindingKeyword: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 1:4-1:6 ()
                   ),
-                  expr: SyntaxNode(
+                  identifier: SyntaxNode(
                     leadingTrivia: [
                       [0]: Whitespace(" ")
                     ],
-                    content: 1:12-1:23 Expr.application(
-                      FuncApplication(
-                        function: SyntaxNode(
-                          leadingTrivia: [
-                            [0]: Whitespace(" ")
-                          ],
-                          content: 1:12-1:14 Expr.identifier(
-                            Identifier(value: "sum")
+                    content: 1:8-1:8 Identifier(value: "a")
+                  ),
+                  typeSignature: nil,
+                  value: BindingDecl.Value(
+                    equalsSign: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 1:10-1:10 ()
+                    ),
+                    expr: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 1:12-1:23 Expr(
+                        payload: Expr.Payload.application(
+                          FuncApplication(
+                            function: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace(" ")
+                              ],
+                              content: 1:12-1:14 Expr(
+                                payload: Expr.Payload.identifier(
+                                  Identifier(value: "sum")
+                                ),
+                                annotation: EmptyAnnotation()
+                              )
+                            ),
+                            arguments: DelimitedSequence(
+                              start: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 1:15-1:15 ()
+                              ),
+                              elements: [
+                                [0]: DelimitedSequence.Element(
+                                  content: SyntaxNode(
+                                    leadingTrivia: [],
+                                    content: 1:16-1:16 Expr(
+                                      payload: Expr.Payload.identifier(
+                                        Identifier(value: "x")
+                                      ),
+                                      annotation: EmptyAnnotation()
+                                    )
+                                  ),
+                                  separator: SyntaxNode(
+                                    leadingTrivia: [],
+                                    content: 1:17-1:17 ()
+                                  )
+                                ),
+                                [1]: DelimitedSequence.Element(
+                                  content: SyntaxNode(
+                                    leadingTrivia: [
+                                      [0]: Whitespace(" ")
+                                    ],
+                                    content: 1:19-1:19 Expr(
+                                      payload: Expr.Payload.identifier(
+                                        Identifier(value: "y")
+                                      ),
+                                      annotation: EmptyAnnotation()
+                                    )
+                                  ),
+                                  separator: SyntaxNode(
+                                    leadingTrivia: [],
+                                    content: 1:20-1:20 ()
+                                  )
+                                ),
+                                [2]: DelimitedSequence.Element(
+                                  content: SyntaxNode(
+                                    leadingTrivia: [
+                                      [0]: Whitespace(" ")
+                                    ],
+                                    content: 1:22-1:22 Expr(
+                                      payload: Expr.Payload.identifier(
+                                        Identifier(value: "z")
+                                      ),
+                                      annotation: EmptyAnnotation()
+                                    )
+                                  ),
+                                  separator: nil
+                                )
+                              ],
+                              end: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 1:23-1:23 ()
+                              )
+                            )
                           )
                         ),
-                        arguments: DelimitedSequence(
-                          start: SyntaxNode(
-                            leadingTrivia: [],
-                            content: 1:15-1:15 ()
-                          ),
-                          elements: [
-                            [0]: DelimitedSequence.Element(
-                              content: SyntaxNode(
-                                leadingTrivia: [],
-                                content: 1:16-1:16 Expr.identifier(
-                                  Identifier(value: "x")
-                                )
-                              ),
-                              separator: SyntaxNode(
-                                leadingTrivia: [],
-                                content: 1:17-1:17 ()
-                              )
-                            ),
-                            [1]: DelimitedSequence.Element(
-                              content: SyntaxNode(
-                                leadingTrivia: [
-                                  [0]: Whitespace(" ")
-                                ],
-                                content: 1:19-1:19 Expr.identifier(
-                                  Identifier(value: "y")
-                                )
-                              ),
-                              separator: SyntaxNode(
-                                leadingTrivia: [],
-                                content: 1:20-1:20 ()
-                              )
-                            ),
-                            [2]: DelimitedSequence.Element(
-                              content: SyntaxNode(
-                                leadingTrivia: [
-                                  [0]: Whitespace(" ")
-                                ],
-                                content: 1:22-1:22 Expr.identifier(
-                                  Identifier(value: "z")
-                                )
-                              ),
-                              separator: nil
-                            )
-                          ],
-                          end: SyntaxNode(
-                            leadingTrivia: [],
-                            content: 1:23-1:23 ()
-                          )
-                        )
+                        annotation: EmptyAnnotation()
                       )
                     )
                   )
                 )
               )
             )
-          )
-        ),
-        [1]: SyntaxNode(
-          leadingTrivia: [
-            [0]: Whitespace("    ")
-          ],
-          content: 2:4-2:4 ExprBlock.Element.expr(
-            Expr.identifier(
-              Identifier(value: "a")
+          ),
+          [1]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("    ")
+            ],
+            content: 2:4-2:4 ExprBlock.Element.expr(
+              Expr(
+                payload: Expr.Payload.identifier(
+                  Identifier(value: "a")
+                ),
+                annotation: EmptyAnnotation()
+              )
             )
           )
-        )
-      ],
-      closeBrace: SyntaxNode(
-        leadingTrivia: [
-          [0]: Whitespace("\n")
         ],
-        content: 3:0-3:0 ()
+        closeBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("\n")
+          ],
+          content: 3:0-3:0 ()
+        )
       )
-    )
+    ),
+    annotation: EmptyAnnotation()
   )
 )
