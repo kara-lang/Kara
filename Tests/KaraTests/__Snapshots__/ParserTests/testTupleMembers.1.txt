@@ -1,21 +1,27 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-0:2 Expr.member(
-    MemberAccess(
-      base: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:0-0:0 Expr.identifier(
-          Identifier(value: "a")
+  content: 0:0-0:2 Expr(
+    payload: Expr.Payload.member(
+      MemberAccess(
+        base: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:0-0:0 Expr(
+            payload: Expr.Payload.identifier(
+              Identifier(value: "a")
+            ),
+            annotation: EmptyAnnotation()
+          )
+        ),
+        dot: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:1-0:1 ()
+        ),
+        member: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:2-0:2 Member.tupleElement(1)
         )
-      ),
-      dot: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:1-0:1 ()
-      ),
-      member: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:2-0:2 MemberAccess.Member.tupleElement(1)
       )
-    )
+    ),
+    annotation: EmptyAnnotation()
   )
 )

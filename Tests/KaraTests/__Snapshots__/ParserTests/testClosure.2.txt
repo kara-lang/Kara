@@ -1,31 +1,37 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-0:4 Expr.closure(
-    Closure(
-      openBrace: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:0-0:0 ()
-      ),
-      parameters: [],
-      inKeyword: nil,
-      body: [
-        [0]: SyntaxNode(
+  content: 0:0-0:4 Expr(
+    payload: Expr.Payload.closure(
+      Closure(
+        openBrace: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:0-0:0 ()
+        ),
+        parameters: [],
+        inKeyword: nil,
+        body: [
+          [0]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace(" ")
+            ],
+            content: 0:2-0:2 ExprBlock.Element.expr(
+              Expr(
+                payload: Expr.Payload.literal(
+                  Literal.int32(1)
+                ),
+                annotation: EmptyAnnotation()
+              )
+            )
+          )
+        ],
+        closeBrace: SyntaxNode(
           leadingTrivia: [
             [0]: Whitespace(" ")
           ],
-          content: 0:2-0:2 ExprBlock.Element.expr(
-            Expr.literal(
-              Literal.int32(1)
-            )
-          )
+          content: 0:4-0:4 ()
         )
-      ],
-      closeBrace: SyntaxNode(
-        leadingTrivia: [
-          [0]: Whitespace(" ")
-        ],
-        content: 0:4-0:4 ()
       )
-    )
+    ),
+    annotation: EmptyAnnotation()
   )
 )

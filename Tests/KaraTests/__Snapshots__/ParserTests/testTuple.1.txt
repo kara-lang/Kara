@@ -1,16 +1,19 @@
 SyntaxNode(
   leadingTrivia: [],
-  content: 0:0-0:1 Expr.tuple(
-    DelimitedSequence(
-      start: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:0-0:0 ()
-      ),
-      elements: [],
-      end: SyntaxNode(
-        leadingTrivia: [],
-        content: 0:1-0:1 ()
+  content: 0:0-0:1 Expr(
+    payload: Expr.Payload.tuple(
+      DelimitedSequence(
+        start: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:0-0:0 ()
+        ),
+        elements: [],
+        end: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:1-0:1 ()
+        )
       )
-    )
+    ),
+    annotation: EmptyAnnotation()
   )
 )

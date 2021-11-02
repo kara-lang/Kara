@@ -16,6 +16,24 @@ public struct IfThenElse<A: Annotation> {
 
   // FIXME: handle multiple `else if` branches
   public let elseBranch: ElseBranch?
+
+  public func addAnnotation<NewAnnotation>(
+    condition conditionTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
+    thenBlock thenBlockTransform: (ExprBlock<A>) throws -> ExprBlock<NewAnnotation>,
+    elseBlock elseBlockTransform: (ExprBlock<A>) throws -> ExprBlock<NewAnnotation>
+  ) rethrows -> IfThenElse<NewAnnotation> {
+    try .init(
+      ifKeyword: ifKeyword,
+      condition: condition.map(conditionTransform),
+      thenBlock: thenBlockTransform(thenBlock),
+      elseBranch: elseBranch.map {
+        try .init(
+          elseKeyword: $0.elseKeyword,
+          elseBlock: elseBlockTransform($0.elseBlock)
+        )
+      }
+    )
+  }
 }
 
 private let elseBranchParser = Keyword.else.parser

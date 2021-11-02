@@ -74,7 +74,7 @@ SyntaxNode(
                               ],
                               content: 2:8-2:8 Identifier(value: "a")
                             ),
-                            typeAnnotation: BindingDecl.TypeAnnotation(
+                            typeSignature: BindingDecl.TypeSignature(
                               colon: SyntaxNode(
                                 leadingTrivia: [],
                                 content: 2:9-2:9 ()
@@ -83,8 +83,11 @@ SyntaxNode(
                                 leadingTrivia: [
                                   [0]: Whitespace(" ")
                                 ],
-                                content: 2:11-2:16 Expr.identifier(
-                                  Identifier(value: "Double")
+                                content: 2:11-2:16 Expr(
+                                  payload: Expr.Payload.identifier(
+                                    Identifier(value: "Double")
+                                  ),
+                                  annotation: EmptyAnnotation()
                                 )
                               )
                             ),
@@ -123,7 +126,7 @@ SyntaxNode(
                   ],
                   content: 4:6-4:6 Identifier(value: "a")
                 ),
-                typeAnnotation: BindingDecl.TypeAnnotation(
+                typeSignature: BindingDecl.TypeSignature(
                   colon: SyntaxNode(
                     leadingTrivia: [],
                     content: 4:7-4:7 ()
@@ -132,8 +135,11 @@ SyntaxNode(
                     leadingTrivia: [
                       [0]: Whitespace(" ")
                     ],
-                    content: 4:9-4:11 Expr.identifier(
-                      Identifier(value: "Int")
+                    content: 4:9-4:11 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "Int")
+                      ),
+                      annotation: EmptyAnnotation()
                     )
                   )
                 ),
@@ -172,7 +178,7 @@ SyntaxNode(
                   ],
                   content: 5:6-5:6 Identifier(value: "b")
                 ),
-                typeAnnotation: BindingDecl.TypeAnnotation(
+                typeSignature: BindingDecl.TypeSignature(
                   colon: SyntaxNode(
                     leadingTrivia: [],
                     content: 5:7-5:7 ()
@@ -181,8 +187,11 @@ SyntaxNode(
                     leadingTrivia: [
                       [0]: Whitespace(" ")
                     ],
-                    content: 5:9-5:12 Expr.identifier(
-                      Identifier(value: "Bool")
+                    content: 5:9-5:12 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "Bool")
+                      ),
+                      annotation: EmptyAnnotation()
                     )
                   )
                 ),
@@ -221,7 +230,7 @@ SyntaxNode(
                   ],
                   content: 6:6-6:6 Identifier(value: "c")
                 ),
-                typeAnnotation: BindingDecl.TypeAnnotation(
+                typeSignature: BindingDecl.TypeSignature(
                   colon: SyntaxNode(
                     leadingTrivia: [],
                     content: 6:7-6:7 ()
@@ -230,8 +239,11 @@ SyntaxNode(
                     leadingTrivia: [
                       [0]: Whitespace(" ")
                     ],
-                    content: 6:9-6:14 Expr.identifier(
-                      Identifier(value: "String")
+                    content: 6:9-6:14 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "String")
+                      ),
+                      annotation: EmptyAnnotation()
                     )
                   )
                 ),
@@ -301,7 +313,7 @@ SyntaxNode(
                               ],
                               content: 9:8-9:8 Identifier(value: "a")
                             ),
-                            typeAnnotation: BindingDecl.TypeAnnotation(
+                            typeSignature: BindingDecl.TypeSignature(
                               colon: SyntaxNode(
                                 leadingTrivia: [],
                                 content: 9:9-9:9 ()
@@ -310,8 +322,11 @@ SyntaxNode(
                                 leadingTrivia: [
                                   [0]: Whitespace(" ")
                                 ],
-                                content: 9:11-9:15 Expr.identifier(
-                                  Identifier(value: "Float")
+                                content: 9:11-9:15 Expr(
+                                  payload: Expr.Payload.identifier(
+                                    Identifier(value: "Float")
+                                  ),
+                                  annotation: EmptyAnnotation()
                                 )
                               )
                             ),
@@ -350,7 +365,7 @@ SyntaxNode(
                   ],
                   content: 12:6-12:11 Identifier(value: "inner1")
                 ),
-                typeAnnotation: BindingDecl.TypeAnnotation(
+                typeSignature: BindingDecl.TypeSignature(
                   colon: SyntaxNode(
                     leadingTrivia: [],
                     content: 12:12-12:12 ()
@@ -359,8 +374,11 @@ SyntaxNode(
                     leadingTrivia: [
                       [0]: Whitespace(" ")
                     ],
-                    content: 12:14-12:19 Expr.identifier(
-                      Identifier(value: "Inner1")
+                    content: 12:14-12:19 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "Inner1")
+                      ),
+                      annotation: EmptyAnnotation()
                     )
                   )
                 ),
@@ -387,7 +405,7 @@ SyntaxNode(
                   ],
                   content: 13:6-13:11 Identifier(value: "inner2")
                 ),
-                typeAnnotation: BindingDecl.TypeAnnotation(
+                typeSignature: BindingDecl.TypeSignature(
                   colon: SyntaxNode(
                     leadingTrivia: [],
                     content: 13:12-13:12 ()
@@ -396,8 +414,11 @@ SyntaxNode(
                     leadingTrivia: [
                       [0]: Whitespace(" ")
                     ],
-                    content: 13:14-13:19 Expr.identifier(
-                      Identifier(value: "Inner2")
+                    content: 13:14-13:19 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "Inner2")
+                      ),
+                      annotation: EmptyAnnotation()
                     )
                   )
                 ),

@@ -29,6 +29,22 @@ public struct StructLiteral<A: Annotation>: SyntaxNodeContainer {
   public var end: SyntaxNode<Empty> {
     elements.end
   }
+
+  public func addAnnotation<NewAnnotation>(
+    type typeTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
+    value valueTransform: (Expr<A>) throws -> Expr<NewAnnotation>
+  ) rethrows -> StructLiteral<NewAnnotation> {
+    try .init(
+      type: type.map(typeTransform),
+      elements: elements.map {
+        try .init(
+          property: $0.property,
+          colon: $0.colon,
+          value: $0.value.map(valueTransform)
+        )
+      }
+    )
+  }
 }
 
 let structLiteralElementParser = identifierParser()

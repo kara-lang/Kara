@@ -13,6 +13,16 @@ public struct MemberAccess<A: Annotation> {
   public let base: SyntaxNode<Expr<A>>
   public let dot: SyntaxNode<Empty>
   public let member: SyntaxNode<Member>
+
+  public func addAnnotation<NewAnnotation>(
+    _ transform: (Expr<A>) throws -> Expr<NewAnnotation>
+  ) rethrows -> MemberAccess<NewAnnotation> {
+    try .init(
+      base: base.map(transform),
+      dot: dot,
+      member: member
+    )
+  }
 }
 
 let memberAccessParser =

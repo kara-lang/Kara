@@ -78,8 +78,11 @@ ModuleFile(
                       leadingTrivia: [
                         [0]: Whitespace(" ")
                       ],
-                      content: 2:18-2:21 Expr.identifier(
-                        Identifier(value: "Bool")
+                      content: 2:18-2:21 Expr(
+                        payload: Expr.Payload.identifier(
+                          Identifier(value: "Bool")
+                        ),
+                        annotation: EmptyAnnotation()
                       )
                     )
                   )
@@ -92,24 +95,22 @@ ModuleFile(
               content: 2:22-2:22 ()
             )
           ),
-          arrow: SyntaxNode(
-            leadingTrivia: [
-              [0]: Whitespace(" ")
-            ],
-            content: 2:24-2:29 FuncDecl.Arrow(
-              arrowSymbol: SyntaxNode(
-                leadingTrivia: [
-                  [0]: Whitespace(" ")
-                ],
-                content: 2:24-2:25 ()
-              ),
-              returns: SyntaxNode(
-                leadingTrivia: [
-                  [0]: Whitespace(" ")
-                ],
-                content: 2:27-2:29 Expr.identifier(
+          arrow: FuncDecl.Arrow(
+            arrowSymbol: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 2:24-2:25 ()
+            ),
+            returns: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 2:27-2:29 Expr(
+                payload: Expr.Payload.identifier(
                   Identifier(value: "Int")
-                )
+                ),
+                annotation: EmptyAnnotation()
               )
             )
           ),
@@ -126,8 +127,11 @@ ModuleFile(
                   [0]: Whitespace(" ")
                 ],
                 content: 2:33-2:34 ExprBlock.Element.expr(
-                  Expr.literal(
-                    Literal.int32(42)
+                  Expr(
+                    payload: Expr.Payload.literal(
+                      Literal.int32(42)
+                    ),
+                    annotation: EmptyAnnotation()
                   )
                 )
               )

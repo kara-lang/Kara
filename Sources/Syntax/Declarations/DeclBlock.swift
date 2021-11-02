@@ -8,6 +8,16 @@ public struct DeclBlock<A: Annotation> {
   public let openBrace: SyntaxNode<Empty>
   public let elements: [SyntaxNode<Declaration<A>>]
   public let closeBrace: SyntaxNode<Empty>
+
+  func addAnnotation<NewAnnotation: Annotation>(
+    _ transform: (Declaration<A>) throws -> Declaration<NewAnnotation>
+  ) rethrows -> DeclBlock<NewAnnotation> {
+    try .init(
+      openBrace: openBrace,
+      elements: elements.map { try $0.map(transform) },
+      closeBrace: closeBrace
+    )
+  }
 }
 
 extension DeclBlock: SyntaxNodeContainer {

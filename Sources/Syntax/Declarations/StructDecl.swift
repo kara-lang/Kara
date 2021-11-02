@@ -9,17 +9,22 @@ public struct StructDecl<A: Annotation> {
   public let structKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<Identifier>
   public let declarations: SyntaxNode<DeclBlock<A>>
+
+  public func addAnnotation<NewAnnotation: Annotation>(
+    _ transform: (Declaration<A>) throws -> Declaration<NewAnnotation>
+  ) rethrows -> StructDecl<NewAnnotation> {
+    try .init(
+      modifiers: modifiers,
+      structKeyword: structKeyword,
+      identifier: identifier,
+      declarations: declarations.map { try $0.addAnnotation(transform) }
+    )
+  }
 }
 
 extension StructDecl: SyntaxNodeContainer {
   public var start: SyntaxNode<Empty> { modifiers.first?.empty ?? structKeyword }
   public var end: SyntaxNode<Empty> { declarations.end }
-}
-
-extension StructDecl: CustomStringConvertible {
-  public var description: String {
-    "struct \(identifier) {}"
-  }
 }
 
 let structParser =
