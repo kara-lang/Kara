@@ -302,11 +302,14 @@ struct ConstraintSystem {
         annotation: type
       )
 
+    case let .leadingDot(l):
+      return .init(
+        payload: .leadingDot(l),
+        annotation: fresh()
+      )
+
     case .unit:
       return .init(payload: .unit, annotation: .unit)
-
-    case .leadingDot:
-      fatalError()
     }
   }
 }

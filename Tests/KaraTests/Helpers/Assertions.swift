@@ -43,6 +43,17 @@ func assertSnapshot<T>(
   assertSnapshot(matching: stringDump, as: .lines, file: file, testName: testName, line: line)
 }
 
+func assertSnapshot(
+  _ annotatedExpr: Expr<TypeAnnotation>,
+  file: StaticString = #file,
+  testName: String = #function,
+  line: UInt = #line
+) {
+  var stringDump = ""
+  customDump(annotatedExpr, to: &stringDump)
+  assertSnapshot(matching: stringDump, as: .lines, file: file, testName: testName, line: line)
+}
+
 func assertError<T, E: Error & Equatable>(
   _ expression: @autoclosure () throws -> T,
   _ expectedError: E,

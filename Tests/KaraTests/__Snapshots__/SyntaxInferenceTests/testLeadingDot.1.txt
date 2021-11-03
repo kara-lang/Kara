@@ -1,0 +1,66 @@
+Expr(
+  payload: Expr.Payload.application(
+    FuncApplication(
+      function: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:8 Expr(
+          payload: Expr.Payload.identifier(
+            Identifier(value: "stringify")
+          ),
+          annotation: Type.arrow(
+            [
+              [0]: Type.constructor(
+                Identifier(value: "Int32"),
+                []
+              )
+            ],
+            Type.constructor(
+              Identifier(value: "String"),
+              []
+            )
+          )
+        )
+      ),
+      arguments: DelimitedSequence(
+        start: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:9-0:9 ()
+        ),
+        elements: [
+          [0]: DelimitedSequence.Element(
+            content: SyntaxNode(
+              leadingTrivia: [],
+              content: 0:10-0:13 Expr(
+                payload: Expr.Payload.leadingDot(
+                  LeadingDot(
+                    dot: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 0:10-0:10 ()
+                    ),
+                    member: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 0:11-0:13 Identifier(value: "max")
+                    )
+                  )
+                ),
+                annotation: Type.constructor(
+                  Identifier(value: "Int32"),
+                  []
+                )
+              )
+            ),
+            separator: nil
+          )
+        ],
+        end: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:14-0:14 ()
+        )
+      )
+    )
+  ),
+  annotation: Type.constructor(
+    Identifier(value: "String"),
+    []
+  )
+)

@@ -10,13 +10,13 @@ import XCTest
 extension String {
   func inferParsedExpr(
     environment: ModuleEnvironment<EmptyAnnotation>
-  ) throws -> Type {
+  ) throws -> Expr<TypeAnnotation> {
     var state = ParsingState(source: self)
     guard let expr = exprParser.parse(&state) else {
       throw ParsingError.unknown(startIndex..<endIndex)
     }
 
-    return try expr.content.content.annotate(environment).annotation
+    return try expr.content.content.annotate(environment)
   }
 }
 
@@ -41,8 +41,8 @@ final class SyntaxInferenceTests: XCTestCase {
       ])
     )
 
-    try XCTAssertNoDifference("increment(0)".inferParsedExpr(environment: e), .int32)
-    try XCTAssertNoDifference("stringify(0)".inferParsedExpr(environment: e), .string)
+    try XCTAssertNoDifference("increment(0)".inferParsedExpr(environment: e).annotation, .int32)
+    try XCTAssertNoDifference("stringify(0)".inferParsedExpr(environment: e).annotation, .string)
     XCTAssertThrowsError(try "increment(false)".inferParsedExpr(environment: ModuleEnvironment()))
     XCTAssertThrowsError(try "increment(false)".inferParsedExpr(environment: e))
   }
@@ -61,7 +61,7 @@ final class SyntaxInferenceTests: XCTestCase {
         """
         { x in decode(stringify(increment(x))) }
         """
-        .inferParsedExpr(environment: e), .int32 --> .int32
+        .inferParsedExpr(environment: e).annotation, .int32 --> .int32
     )
 
     assertError(
@@ -106,7 +106,7 @@ final class SyntaxInferenceTests: XCTestCase {
             )
           )
         }
-        """.inferParsedExpr(environment: e), [.int32, .int32] --> .int32
+        """.inferParsedExpr(environment: e).annotation, [.int32, .int32] --> .int32
     )
   }
 
@@ -128,7 +128,7 @@ final class SyntaxInferenceTests: XCTestCase {
             sum(int, int)
           )
         }
-        """.inferParsedExpr(environment: e),
+        """.inferParsedExpr(environment: e).annotation,
       [.string, .int32] --> .int32
     )
   }
@@ -144,15 +144,15 @@ final class SyntaxInferenceTests: XCTestCase {
     ])
 
     XCTAssertNoDifference(
-      try #""Hello, ".appending("World!")"#.inferParsedExpr(environment: e),
+      try #""Hello, ".appending("World!")"#.inferParsedExpr(environment: e).annotation,
       .string
     )
     XCTAssertNoDifference(
-      try #""Test".count"#.inferParsedExpr(environment: e),
+      try #""Test".count"#.inferParsedExpr(environment: e).annotation,
       .int32
     )
     assertError(
-      try #""Test".description"#.inferParsedExpr(environment: e),
+      try #""Test".description"#.inferParsedExpr(environment: e).annotation,
       TypeError.unknownMember(baseTypeID: "String", .identifier("description"))
     )
   }
@@ -168,11 +168,11 @@ final class SyntaxInferenceTests: XCTestCase {
     ])
 
     XCTAssertNoDifference(
-      try #""Test".count.magnitude"#.inferParsedExpr(environment: e),
+      try #""Test".count.magnitude"#.inferParsedExpr(environment: e).annotation,
       .int32
     )
     assertError(
-      try #""Test".magnitude.count"#.inferParsedExpr(environment: e),
+      try #""Test".magnitude.count"#.inferParsedExpr(environment: e).annotation,
       TypeError.unknownMember(baseTypeID: "String", .identifier("magnitude"))
     )
   }
@@ -194,12 +194,12 @@ final class SyntaxInferenceTests: XCTestCase {
     ]
 
     XCTAssertNoDifference(
-      try #"if true { "true" } else { "false" } "#.inferParsedExpr(environment: .init(types: m)),
+      try #"if true { "true" } else { "false" } "#.inferParsedExpr(environment: .init(types: m)).annotation,
       .string
     )
     XCTAssertNoDifference(
       try #"if foo { bar } else { baz }  "#
-        .inferParsedExpr(environment: .init(schemes: .init(bindings: e), types: m)),
+        .inferParsedExpr(environment: .init(schemes: .init(bindings: e), types: m)).annotation,
       .double
     )
     XCTAssertNoDifference(
@@ -210,7 +210,7 @@ final class SyntaxInferenceTests: XCTestCase {
         } else {
           "is not integer"
         }
-        """#.inferParsedExpr(environment: .init(schemes: .init(bindings: e), types: m)),
+        """#.inferParsedExpr(environment: .init(schemes: .init(bindings: e), types: m)).annotation,
       .string
     )
     XCTAssertNoDifference(
@@ -221,7 +221,7 @@ final class SyntaxInferenceTests: XCTestCase {
         } else {
           "is not integer"
         }
-        """#.inferParsedExpr(environment: .init(schemes: .init(bindings: e), types: m)),
+        """#.inferParsedExpr(environment: .init(schemes: .init(bindings: e), types: m)).annotation,
       .string
     )
     assertError(
@@ -245,6 +245,23 @@ final class SyntaxInferenceTests: XCTestCase {
         }
         """#.inferParsedExpr(environment: .init(types: m)),
       TypeError.unificationFailure(.int32, .bool)
+    )
+  }
+
+  func testLeadingDot() throws {
+    let m: TypeEnvironment<EmptyAnnotation> = [
+      "Int32": .init(staticMembers: .init(bindings: [
+        "max": (nil, .init(.int32)),
+      ])),
+    ]
+
+    let e: SchemeEnvironment<EmptyAnnotation>.Bindings = [
+      "stringify": (nil, .init(.int32 --> .string)),
+    ]
+
+    assertSnapshot(
+      try #"stringify(.max)"#
+        .inferParsedExpr(environment: .init(schemes: .init(bindings: e), types: m))
     )
   }
 }
