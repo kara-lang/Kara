@@ -80,7 +80,7 @@ struct ConstraintSystem {
     orThrow error: TypeError
   ) throws -> Type {
     guard let scheme = schemes.bindings[id]?.scheme ?? schemes.functions[id]?.scheme else {
-      guard types[id] != nil else {
+      guard types[id] != nil || id == "Type" else {
         throw error
       }
       return .type
@@ -97,7 +97,16 @@ struct ConstraintSystem {
   }
 
   mutating func annotate(funcDecl: FuncDecl<EmptyAnnotation>) throws -> FuncDecl<TypeAnnotation> {
-    try funcDecl.addAnnotation(
+    // Preserve old environment to be restored after inference in extended environment has finished.
+    let old = environment
+
+    defer { self.environment = old }
+
+    let ids = funcDecl.parameters.elementsContent.map(\.internalName.content.content)
+    let parameterTypes = try funcDecl.parameterTypes(environment)
+    environment.schemes.insert(bindings: zip(ids, parameterTypes.map { (nil, Scheme($0)) }))
+
+    return try funcDecl.addAnnotation(
       parameterType: { try annotate(expr: $0) },
       arrow: { try annotate(expr: $0) },
       body: { try annotate(block: $0) }
