@@ -5,7 +5,7 @@
 import Syntax
 
 extension Type {
-  func eval(_ environment: ModuleEnvironment) -> NormalForm {
+  func eval<A: Annotation>(_ environment: ModuleEnvironment<A>) -> NormalForm {
     switch self {
     case let .tuple(types):
       return .tuple(types.map { $0.eval(environment) })
@@ -22,8 +22,8 @@ extension Type {
   }
 }
 
-extension Expr.Payload where A == EmptyAnnotation {
-  func eval(_ environment: ModuleEnvironment) throws -> NormalForm {
+extension Expr.Payload {
+  func eval(_ environment: ModuleEnvironment<A>) throws -> NormalForm {
     switch self {
     case let .identifier(i):
       if case let (binding?, _)? = environment.schemes.bindings[i] {
@@ -113,8 +113,10 @@ extension Expr.Payload where A == EmptyAnnotation {
   }
 }
 
-extension Array where Element == SyntaxNode<ExprBlock<EmptyAnnotation>.Element> {
-  func eval(_ environment: ModuleEnvironment) throws -> NormalForm {
+extension Array {
+  func eval<A>(_ environment: ModuleEnvironment<A>) throws -> NormalForm
+    where Element == SyntaxNode<ExprBlock<A>.Element>
+  {
     var modifiedEnvironment = environment
 
     for (i, element) in enumerated() {
@@ -134,8 +136,8 @@ extension Array where Element == SyntaxNode<ExprBlock<EmptyAnnotation>.Element> 
   }
 }
 
-extension MemberAccess where A == EmptyAnnotation {
-  func eval(_ environment: ModuleEnvironment) throws -> NormalForm {
+extension MemberAccess {
+  func eval(_ environment: ModuleEnvironment<A>) throws -> NormalForm {
     let base = try self.base.content.content.payload.eval(environment)
     switch (base, member.content.content) {
     case let (.tuple(elements), .tupleElement(i)):

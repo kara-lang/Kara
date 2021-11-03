@@ -25,9 +25,9 @@ struct Scheme {
   }
 }
 
-extension SyntaxNode where Content == Expr<EmptyAnnotation> {
-  func evalToType(_ environment: ModuleEnvironment) throws -> Type {
-    let normalForm = try content.content.payload.eval(environment)
+extension Expr {
+  func evalToType(_ environment: ModuleEnvironment<A>, _ range: SourceRange<Empty>) throws -> Type {
+    let normalForm = try payload.eval(environment)
     if let type = normalForm.type {
       return type
     } else if case let .identifier(i) = normalForm {
@@ -38,16 +38,20 @@ extension SyntaxNode where Content == Expr<EmptyAnnotation> {
   }
 }
 
-extension FuncDecl where A == EmptyAnnotation {
-  func returnType(_ environment: ModuleEnvironment) throws -> Type {
-    try arrow?.returns.evalToType(environment) ?? .unit
+extension FuncDecl {
+  func returnType(_ environment: ModuleEnvironment<A>) throws -> Type {
+    guard let node = arrow?.returns else { return .unit }
+
+    return try node.content.content.evalToType(environment, node.range)
   }
 
-  func parameterTypes(_ environment: ModuleEnvironment) throws -> [Type] {
-    try parameters.elementsContent.map { try $0.type.evalToType(environment) }
+  func parameterTypes(_ environment: ModuleEnvironment<A>) throws -> [Type] {
+    try parameters.elementsContent.map {
+      try $0.type.content.content.evalToType(environment, $0.type.range)
+    }
   }
 
-  func scheme(_ environment: ModuleEnvironment) throws -> Scheme {
+  func scheme(_ environment: ModuleEnvironment<A>) throws -> Scheme {
     try .init(
       .arrow(parameterTypes(environment), returnType(environment)),
       variables: []
@@ -55,12 +59,12 @@ extension FuncDecl where A == EmptyAnnotation {
   }
 }
 
-extension BindingDecl where A == EmptyAnnotation {
-  func type(_ environment: ModuleEnvironment) throws -> Type? {
+extension BindingDecl {
+  func type(_ environment: ModuleEnvironment<A>) throws -> Type? {
     try typeSignature?.signature.content.content.payload.eval(environment).type
   }
 
-  func scheme(_ environment: ModuleEnvironment) throws -> Scheme? {
+  func scheme(_ environment: ModuleEnvironment<A>) throws -> Scheme? {
     try type(environment).map { Scheme($0) }
   }
 }

@@ -27,7 +27,7 @@ extension TypeAnnotation: Annotation {}
 
 extension Expr where A == EmptyAnnotation {
   func annotate(
-    _ environment: ModuleEnvironment
+    _ environment: ModuleEnvironment<EmptyAnnotation>
   ) throws -> Expr<TypeAnnotation> {
     var system = ConstraintSystem(environment)
     let annotated = try system.annotate(expr: self)
@@ -42,7 +42,7 @@ extension Expr where A == EmptyAnnotation {
 
 extension FuncDecl where A == EmptyAnnotation {
   func annotate(
-    _ environment: ModuleEnvironment
+    _ environment: ModuleEnvironment<EmptyAnnotation>
   ) throws -> FuncDecl<TypeAnnotation> {
     var system = ConstraintSystem(environment)
     let annotated = try system.annotate(funcDecl: self)

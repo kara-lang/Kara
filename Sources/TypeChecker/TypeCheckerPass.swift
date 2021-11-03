@@ -6,7 +6,7 @@ import Basic
 import Syntax
 
 extension FuncDecl where A == EmptyAnnotation {
-  func typeCheck(_ environment: ModuleEnvironment) throws -> FuncDecl<TypeAnnotation> {
+  func typeCheck(_ environment: ModuleEnvironment<EmptyAnnotation>) throws -> FuncDecl<TypeAnnotation> {
     var functionEnvironment = environment
 
     // FIXME: this call to `parameterTypes` is possibly duplicate,
@@ -32,7 +32,7 @@ extension FuncDecl where A == EmptyAnnotation {
 }
 
 extension BindingDecl where A == EmptyAnnotation {
-  func typeCheck(_ environment: ModuleEnvironment) throws -> BindingDecl<TypeAnnotation> {
+  func typeCheck(_ environment: ModuleEnvironment<EmptyAnnotation>) throws -> BindingDecl<TypeAnnotation> {
     let annotated = try addAnnotation(
       typeSignature: { try $0.annotate(environment) },
       value: { try $0.annotate(environment) }
@@ -53,7 +53,7 @@ extension BindingDecl where A == EmptyAnnotation {
 }
 
 extension Declaration where A == EmptyAnnotation {
-  func typeCheck(_ environment: ModuleEnvironment) throws -> Declaration<TypeAnnotation> {
+  func typeCheck(_ environment: ModuleEnvironment<EmptyAnnotation>) throws -> Declaration<TypeAnnotation> {
     switch self {
     case let .function(f):
       return try .function(f.typeCheck(environment))

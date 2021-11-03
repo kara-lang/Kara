@@ -9,7 +9,7 @@ import XCTest
 
 extension String {
   func inferParsedExpr(
-    environment: ModuleEnvironment
+    environment: ModuleEnvironment<EmptyAnnotation>
   ) throws -> Type {
     var state = ParsingState(source: self)
     guard let expr = exprParser.parse(&state) else {
@@ -34,7 +34,7 @@ func --> (argument: Type, returned: Type) -> Type {
 
 final class SyntaxInferenceTests: XCTestCase {
   func testApplication() throws {
-    let e = ModuleEnvironment(
+    let e = ModuleEnvironment<EmptyAnnotation>(
       schemes: .init(functions: [
         "increment": ([], nil, .init(.int32 --> .int32)),
         "stringify": ([], nil, .init(.int32 --> .string)),
@@ -48,7 +48,7 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testClosure() throws {
-    let e = ModuleEnvironment(
+    let e = ModuleEnvironment<EmptyAnnotation>(
       schemes: .init(functions: [
         "increment": ([], nil, .init(.int32 --> .int32)),
         "stringify": ([], nil, .init(.int32 --> .string)),
@@ -83,7 +83,7 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testClosureWithMultipleArguments() throws {
-    let e = ModuleEnvironment(
+    let e = ModuleEnvironment<EmptyAnnotation>(
       schemes: .init(functions: [
         "sum": ([], nil, .init([.int32, .int32] --> .int32)),
         "stringify": ([], nil, .init([.int32, .int32] --> .string)),
@@ -111,7 +111,7 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testClosureWithMultipleArgumentsDifferentTypes() throws {
-    let e = ModuleEnvironment(
+    let e = ModuleEnvironment<EmptyAnnotation>(
       schemes: .init(functions: [
         "concatenate": ([], nil, .init([.int32, .string] --> .string)),
         "sum": ([], nil, .init([.int32, .int32] --> .int32)),
@@ -134,7 +134,7 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testMember() throws {
-    let e = ModuleEnvironment(types: [
+    let e = ModuleEnvironment<EmptyAnnotation>(types: [
       "String": .init(
         members: .init(bindings: [
           "appending": (nil, .init(.string --> .string)),
@@ -158,7 +158,7 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testMemberOfMember() throws {
-    let e = ModuleEnvironment(types: [
+    let e = ModuleEnvironment<EmptyAnnotation>(types: [
       "String": .init(members: .init(bindings: [
         "count": (nil, .init(.int32)),
       ])),
@@ -178,7 +178,7 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testIfThenElse() throws {
-    let m: TypeEnvironment = [
+    let m: TypeEnvironment<EmptyAnnotation> = [
       "Int32": .init(members: .init(bindings: [
         "isInteger": (nil, .init(.bool)),
         "isIntegerFunc": (nil, .init([] --> .bool)),
@@ -186,7 +186,7 @@ final class SyntaxInferenceTests: XCTestCase {
       ])),
     ]
 
-    let e: SchemeEnvironment.Bindings = [
+    let e: SchemeEnvironment<EmptyAnnotation>.Bindings = [
       "foo": (nil, .init(.bool)),
       "bar": (nil, .init(.double)),
       "baz": (nil, .init(.double)),
