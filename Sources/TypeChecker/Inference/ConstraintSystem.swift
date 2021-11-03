@@ -80,7 +80,7 @@ struct ConstraintSystem {
     orThrow error: TypeError
   ) throws -> Type {
     guard let scheme = schemes.bindings[id]?.scheme ?? schemes.functions[id]?.scheme else {
-      guard types[id] != nil else {
+      guard types[id] != nil || id == "Type" else {
         throw error
       }
       return .type
@@ -96,7 +96,26 @@ struct ConstraintSystem {
     return scheme.type.apply(Dictionary(uniqueKeysWithValues: substitution))
   }
 
-  private mutating func annotate(declaration: Declaration<EmptyAnnotation>) throws -> Declaration<TypeAnnotation> {
+  mutating func annotate(funcDecl: FuncDecl<EmptyAnnotation>) throws -> FuncDecl<TypeAnnotation> {
+    // Preserve old environment to be restored after inference in extended environment has finished.
+    let old = environment
+
+    defer { self.environment = old }
+
+    let ids = funcDecl.parameters.elementsContent.map(\.internalName.content.content)
+    let parameterTypes = try funcDecl.parameterTypes(environment)
+    environment.schemes.insert(bindings: zip(ids, parameterTypes.map { (nil, Scheme($0)) }))
+
+    return try funcDecl.addAnnotation(
+      parameterType: { try annotate(expr: $0) },
+      arrow: { try annotate(expr: $0) },
+      body: { try annotate(block: $0) }
+    )
+  }
+
+  private mutating func annotate(
+    declaration: Declaration<EmptyAnnotation>
+  ) throws -> Declaration<TypeAnnotation> {
     switch declaration {
     case let .binding(b):
       return try .binding(
@@ -107,13 +126,7 @@ struct ConstraintSystem {
       )
 
     case let .function(f):
-      return try .function(
-        f.addAnnotation(
-          parameterType: { try annotate(expr: $0) },
-          arrow: { try annotate(expr: $0) },
-          body: { try annotate(block: $0) }
-        )
-      )
+      return try .function(annotate(funcDecl: f))
     case let .struct(s):
       return try .struct(
         s.addAnnotation { try annotate(declaration: $0) }
@@ -153,7 +166,7 @@ struct ConstraintSystem {
 
     return try (closure.addAnnotation(
       parameter: { try annotate(expr: $0) },
-      body: { _ in try annotate(block: closure.exprBlock).elements }
+      body: { try annotate(block: $0) }
     ), parameterTypes)
   }
 

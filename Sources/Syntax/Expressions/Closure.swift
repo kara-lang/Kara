@@ -37,13 +37,13 @@ public struct Closure<A: Annotation> {
 
   public func addAnnotation<NewAnnotation: Annotation>(
     parameter parameterTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
-    body bodyTransform: (Body) throws -> Closure<NewAnnotation>.Body
+    body bodyTransform: (ExprBlock<A>) throws -> ExprBlock<NewAnnotation>
   ) rethrows -> Closure<NewAnnotation> {
     try .init(
       openBrace: openBrace,
       parameters: parameters.map { try $0.addAnnotation(parameterTransform) },
       inKeyword: inKeyword,
-      body: bodyTransform(body),
+      body: bodyTransform(exprBlock).elements,
       closeBrace: closeBrace
     )
   }

@@ -116,6 +116,149 @@ extension Constraint: Substitutable {
   }
 }
 
+extension ExprBlock: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> ExprBlock<TypeAnnotation> {
+    addAnnotation(expr: { $0.apply(sub) }, declaration: { $0.apply(sub) })
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    elements.map(\.content.content).reduce(into: .init()) {
+      switch $1 {
+      case let .expr(e):
+        return $0.formUnion(e.freeTypeVariables)
+      case let .declaration(d):
+        return $0.formUnion(d.freeTypeVariables)
+      }
+    }
+  }
+}
+
+extension FuncApplication: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> FuncApplication<TypeAnnotation> {
+    addAnnotation(function: { $0.apply(sub) }, argument: { $0.apply(sub) })
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    arguments.elementsContent.reduce(into: function.freeTypeVariables) {
+      $0.formUnion($1.freeTypeVariables)
+    }
+  }
+}
+
+extension Closure: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> Closure<TypeAnnotation> {
+    addAnnotation(
+      parameter: { $0.apply(sub) },
+      body: { $0.apply(sub) }
+    )
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    parameters.compactMap(\.typeSignature).reduce(into: exprBlock.freeTypeVariables) {
+      $0.formUnion($1.freeTypeVariables)
+    }
+  }
+}
+
+extension IfThenElse: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> IfThenElse<Type> {
+    addAnnotation(
+      condition: { $0.apply(sub) },
+      thenBlock: { $0.apply(sub) },
+      elseBlock: { $0.apply(sub) }
+    )
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    var result = condition.freeTypeVariables
+
+    result.formUnion(thenBlock.freeTypeVariables)
+    if let elseBlock = elseBranch?.elseBlock {
+      result.formUnion(elseBlock.freeTypeVariables)
+    }
+    return result
+  }
+}
+
+extension MemberAccess: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> MemberAccess<Type> {
+    addAnnotation { $0.apply(sub) }
+  }
+
+  var freeTypeVariables: Set<TypeVariable> { base.freeTypeVariables }
+}
+
+extension DelimitedSequence: Substitutable where Content: Substitutable {
+  func apply(_ sub: Substitution) -> DelimitedSequence<Content> {
+    map { $0.apply(sub) }
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    elementsContent.map(\.freeTypeVariables).reduce(into: Set()) {
+      $0.formUnion($1)
+    }
+  }
+}
+
+extension StructLiteral: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> StructLiteral<Type> {
+    addAnnotation(
+      type: { $0.apply(sub) },
+      value: { $0.apply(sub) }
+    )
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    elements.elementsContent.map(\.value.freeTypeVariables).reduce(into: type.freeTypeVariables) {
+      $0.formUnion($1)
+    }
+  }
+}
+
+extension Expr.Payload: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> Expr<TypeAnnotation>.Payload {
+    switch self {
+    case .identifier, .leadingDot, .unit, .literal:
+      return self
+    case let .application(a):
+      return .application(a.apply(sub))
+    case let .closure(c):
+      return .closure(c.apply(sub))
+    case let .ifThenElse(i):
+      return .ifThenElse(i.apply(sub))
+    case let .member(m):
+      return .member(m.apply(sub))
+    case let .tuple(t):
+      return .tuple(t.apply(sub))
+    case let .block(b):
+      return .block(b.apply(sub))
+    case let .structLiteral(s):
+      return .structLiteral(s.apply(sub))
+    }
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    switch self {
+    case .identifier, .literal, .unit, .leadingDot:
+      return Set()
+    case let .application(a):
+      return a.freeTypeVariables
+    case let .closure(c):
+      return c.freeTypeVariables
+    case let .ifThenElse(i):
+      return i.freeTypeVariables
+    case let .member(m):
+      return m.freeTypeVariables
+    case let .tuple(t):
+      return t.freeTypeVariables
+    case let .block(b):
+      return b.freeTypeVariables
+    case let .structLiteral(s):
+      return s.freeTypeVariables
+    }
+  }
+}
+
 extension Expr: Substitutable where A == TypeAnnotation {
   func apply(_ sub: Substitution) -> Expr<TypeAnnotation> {
     .init(payload: payload, annotation: annotation.apply(sub))
@@ -123,5 +266,115 @@ extension Expr: Substitutable where A == TypeAnnotation {
 
   var freeTypeVariables: Set<TypeVariable> {
     annotation.freeTypeVariables
+  }
+}
+
+extension BindingDecl: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> BindingDecl<A> {
+    addAnnotation(typeSignature: { $0.apply(sub) }, value: { $0.apply(sub) })
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    typeSignature?.signature.freeTypeVariables ?? Set()
+  }
+}
+
+extension FuncDecl.Parameter: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> Self {
+    addAnnotation { $0.apply(sub) }
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    type.freeTypeVariables
+  }
+}
+
+extension FuncDecl: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> FuncDecl<A> {
+    addAnnotation(
+      parameterType: { $0.apply(sub) },
+      arrow: { $0.apply(sub) },
+      body: { $0.apply(sub) }
+    )
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    parameters.freeTypeVariables
+      .union(arrow?.returns.freeTypeVariables ?? Set())
+      .union(body?.freeTypeVariables ?? Set())
+  }
+}
+
+extension DeclBlock: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> DeclBlock<A> {
+    addAnnotation { $0.apply(sub) }
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    elements.reduce(into: Set()) {
+      $0.formUnion($1.freeTypeVariables)
+    }
+  }
+}
+
+extension StructDecl: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> StructDecl<A> {
+    addAnnotation { $0.apply(sub) }
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    declarations.freeTypeVariables
+  }
+}
+
+extension EnumDecl: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> EnumDecl<A> {
+    addAnnotation { $0.apply(sub) }
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    declarations.freeTypeVariables
+  }
+}
+
+extension TraitDecl: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> TraitDecl<A> {
+    addAnnotation { $0.apply(sub) }
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    declarations.freeTypeVariables
+  }
+}
+
+extension Declaration: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> Declaration<Type> {
+    switch self {
+    case let .binding(b):
+      return .binding(b.apply(sub))
+    case let .function(f):
+      return .function(f.apply(sub))
+    case let .struct(s):
+      return .struct(s.apply(sub))
+    case let .enum(e):
+      return .enum(e.apply(sub))
+    case let .trait(t):
+      return .trait(t.apply(sub))
+    }
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    switch self {
+    case let .binding(b):
+      return b.freeTypeVariables
+    case let .function(f):
+      return f.freeTypeVariables
+    case let .struct(s):
+      return s.freeTypeVariables
+    case let .enum(e):
+      return e.freeTypeVariables
+    case let .trait(t):
+      return t.freeTypeVariables
+    }
   }
 }

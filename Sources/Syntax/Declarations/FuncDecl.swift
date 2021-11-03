@@ -10,6 +10,17 @@ public struct FuncDecl<A: Annotation>: ModifiersContainer {
     public let internalName: SyntaxNode<Identifier>
     public let colon: SyntaxNode<Empty>
     public let type: SyntaxNode<Expr<A>>
+
+    public func addAnnotation<NewAnnotation: Annotation>(
+      _ transform: (Expr<A>) throws -> Expr<NewAnnotation>
+    ) rethrows -> FuncDecl<NewAnnotation>.Parameter {
+      try .init(
+        externalName: externalName,
+        internalName: internalName,
+        colon: colon,
+        type: type.map { try transform($0) }
+      )
+    }
   }
 
   public struct Arrow: SyntaxNodeContainer {

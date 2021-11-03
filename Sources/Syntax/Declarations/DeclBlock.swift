@@ -9,7 +9,7 @@ public struct DeclBlock<A: Annotation> {
   public let elements: [SyntaxNode<Declaration<A>>]
   public let closeBrace: SyntaxNode<Empty>
 
-  func addAnnotation<NewAnnotation: Annotation>(
+  public func addAnnotation<NewAnnotation: Annotation>(
     _ transform: (Declaration<A>) throws -> Declaration<NewAnnotation>
   ) rethrows -> DeclBlock<NewAnnotation> {
     try .init(

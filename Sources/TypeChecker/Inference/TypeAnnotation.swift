@@ -21,7 +21,7 @@ extension Literal {
   }
 }
 
-typealias TypeAnnotation = Type
+public typealias TypeAnnotation = Type
 
 extension TypeAnnotation: Annotation {}
 
@@ -30,13 +30,28 @@ extension Expr where A == EmptyAnnotation {
     _ environment: ModuleEnvironment
   ) throws -> Expr<TypeAnnotation> {
     var system = ConstraintSystem(environment)
-    let annotatedExpr = try system.annotate(expr: self)
+    let annotated = try system.annotate(expr: self)
 
     let solver = Solver(
       substitution: [:],
       system: system
     )
-    return try annotatedExpr.apply(solver.solve())
+    return try annotated.apply(solver.solve())
+  }
+}
+
+extension FuncDecl where A == EmptyAnnotation {
+  func annotate(
+    _ environment: ModuleEnvironment
+  ) throws -> FuncDecl<TypeAnnotation> {
+    var system = ConstraintSystem(environment)
+    let annotated = try system.annotate(funcDecl: self)
+
+    let solver = Solver(
+      substitution: [:],
+      system: system
+    )
+    return try annotated.apply(solver.solve())
   }
 }
 

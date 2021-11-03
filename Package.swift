@@ -47,7 +47,7 @@ let package = Package(
     ),
     .target(
       name: "JSCodegen",
-      dependencies: ["Basic", "Syntax"]
+      dependencies: ["Basic", "Syntax", "TypeChecker"]
     ),
     .target(
       name: "Driver",
