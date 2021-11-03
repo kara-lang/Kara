@@ -99,6 +99,6 @@ let exprParser: AnyParser<ParsingState, SyntaxNode<Expr<EmptyAnnotation>>> =
         }
       }
     }
-    // Required to give `exprParser` an explicit type signature, otherwise this won't compile due to mutual
+    // We're required to give `exprParser` an explicit type signature, otherwise this won't compile due to mutual
     // recursion with subexpression parsers.
     .eraseToAnyParser()

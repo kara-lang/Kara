@@ -20,7 +20,11 @@ struct SchemeEnvironment<A: Annotation> {
   mutating func insert(_ b: BindingDecl<A>, _ topLevel: ModuleEnvironment<A>) throws {
     let identifier = b.identifier.content.content
     guard let scheme = try b.scheme(topLevel) else {
-      throw TypeError.topLevelAnnotationMissing(identifier)
+      if let typeSignature = b.typeSignature {
+        throw TypeError.exprIsNotType(typeSignature.signature.range)
+      } else {
+        throw TypeError.topLevelAnnotationMissing(identifier)
+      }
     }
 
     guard bindings[identifier] == nil else {

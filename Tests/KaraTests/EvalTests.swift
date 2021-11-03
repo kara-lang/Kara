@@ -8,36 +8,48 @@ import CustomDump
 import XCTest
 
 final class EvalTests: XCTestCase {
-  func testLiterals() {
-    assertEval("5", .literal(5))
-    assertEval("true", .literal(true))
+  func testLiterals() throws {
+    try assertEval("5", .literal(5))
+    try assertEval("true", .literal(true))
   }
 
-  func testClosures() {
-    assertEval("{ x in x }(42)", .literal(42))
-    assertEval("{ x, y in y }(0, 42)", .literal(42))
-    assertEval("{ x, y, z in if z { x } else { y }}(0, 42, false)", .literal(42))
+  func testClosures() throws {
+    try assertEval("{ x in x }(42)", .literal(42))
+    try assertEval("{ x, y in y }(0, 42)", .literal(42))
+    try assertEval("{ x, y, z in if z { x } else { y }}(0, 42, false)", .literal(42))
   }
 
-  func testTuples() {
-    assertEval("(0, 42, false).1", .literal(42))
+  func testTuples() throws {
+    try assertEval("(0, 42, false).1", .literal(42))
   }
 
-  func testStructLiterals() {
-    assertEvalThrows("S [a: 0, b: 42, c: false].b", TypeError.unbound("S"))
-    assertEval(
+  func testStructLiterals() throws {
+//    assertEvalThrows("S [a: 0, b: 42, c: false].b", TypeError.unbound("S"))
+    try assertEval(
       """
       {
-      struct S {}
+      struct Int32 {}
+      enum Bool {}
+      struct S {
+        let a: Int32
+        let b: Int32
+        let c: Bool
+      }
       S [a: 0, b: 42, c: false].b
       }
       """,
       .closure(parameters: [], body: .literal(42))
     )
-    assertEval(
+    try assertEval(
       """
       {
-      struct S {}
+      struct Int32 {}
+      enum Bool {}
+      struct S {
+        let a: Int32
+        let b: Int32
+        let c: Bool
+      }
       S [a: 0, b: 42, c: false].c
       }
       """,
@@ -45,21 +57,33 @@ final class EvalTests: XCTestCase {
     )
   }
 
-  func testTypeAliases() {
-    assertEval(
+  func testTypeAliases() throws {
+    try assertEval(
       """
       {
-      struct S {}
+      struct Int32 {}
+      enum Bool {}
+      struct S {
+        let a: Int32
+        let b: Int32
+        let c: Bool
+      }
       let SAlias: Type = S
       SAlias [a: 0, b: 42, c: false].a
       }
       """,
       .closure(parameters: [], body: .literal(0))
     )
-    assertEval(
+    try assertEval(
       """
       {
-      struct S {}
+      struct Int32 {}
+      enum Bool {}
+      struct S {
+        let a: Int32
+        let b: Int32
+        let c: Bool
+      }
       func SAlias() -> Type { S }
       SAlias() [a: 0, b: 42, c: false].a
       }
@@ -78,8 +102,8 @@ final class EvalTests: XCTestCase {
     )
   }
 
-  func testMemberAccess() {
-    assertEval(
+  func testMemberAccess() throws {
+    try assertEval(
       """
       {
         struct Int {}
@@ -92,8 +116,8 @@ final class EvalTests: XCTestCase {
     )
   }
 
-  func testEnvironmentCapture() {
-    assertEval(
+  func testEnvironmentCapture() throws {
+    try assertEval(
       """
       {
         struct Int {}
@@ -106,8 +130,8 @@ final class EvalTests: XCTestCase {
     )
   }
 
-  func testMemberFunctions() {
-    assertEval(
+  func testMemberFunctions() throws {
+    try assertEval(
       """
       {
         struct String {}
@@ -133,6 +157,23 @@ final class EvalTests: XCTestCase {
       }
       """,
       .closure(parameters: [], body: .literal("static"))
+    )
+  }
+
+  func testLeadingDot() throws {
+    try assertEval(
+      """
+      {
+        enum Bool {}
+        struct Int32 { static let max: Int32 = 2147483647 }
+        func f(condition: Bool, x: Int32, y: Int32) {
+          if condition { x } else { y }
+        }
+
+        (f(true, .max, 0), f(false, .max, 0))
+      }
+      """,
+      .closure(parameters: [], body: .tuple([.literal(2_147_483_647), .literal(0)]))
     )
   }
 }

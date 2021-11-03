@@ -22,12 +22,12 @@ extension Type {
   }
 }
 
-extension Expr.Payload {
+extension Expr {
   func eval(_ environment: ModuleEnvironment<A>) throws -> NormalForm {
-    switch self {
+    switch payload {
     case let .identifier(i):
       if case let (binding?, _)? = environment.schemes.bindings[i] {
-        return try binding.payload.eval(environment)
+        return try binding.eval(environment)
       } else if case let (parameters, body?, _)? = environment.schemes.functions[i] {
         return try .closure(parameters: parameters, body: body.elements.eval(environment))
       } else if environment.types[i] != nil {
@@ -42,12 +42,12 @@ extension Expr.Payload {
     case let .application(a):
       let arguments = a.arguments.elementsContent
 
-      let nf = try a.function.content.content.payload.eval(environment)
+      let nf = try a.function.content.content.eval(environment)
       switch nf {
       case let .closure(parameters, body):
         precondition(arguments.count == parameters.count)
         return try body.apply(
-          .init(uniqueKeysWithValues: zip(parameters, arguments.map { try $0.payload.eval(environment) }))
+          .init(uniqueKeysWithValues: zip(parameters, arguments.map { try $0.eval(environment) }))
         )
 
       default:
@@ -66,7 +66,7 @@ extension Expr.Payload {
     case let .ifThenElse(i):
       let thenBranch = try i.thenBlock.elements.eval(environment)
       let elseBranch = try i.elseBranch?.elseBlock.elements.eval(environment) ?? .tuple([])
-      switch try i.condition.content.content.payload.eval(environment) {
+      switch try i.condition.content.content.eval(environment) {
       case let .literal(.bool(condition)):
         return condition ? thenBranch : elseBranch
 
@@ -81,13 +81,13 @@ extension Expr.Payload {
       return try m.eval(environment)
 
     case let .tuple(t):
-      return try .tuple(t.elementsContent.map { try $0.payload.eval(environment) })
+      return try .tuple(t.elementsContent.map { try $0.eval(environment) })
 
     case let .block(b):
       return try b.elements.eval(environment)
 
     case let .structLiteral(s):
-      switch try s.type.content.content.payload.eval(environment) {
+      switch try s.type.content.content.eval(environment) {
       case let .identifier(i):
         throw TypeError.unbound(i)
       case let .typeConstructor(i, _):
@@ -95,7 +95,7 @@ extension Expr.Payload {
           i,
           .init(
             uniqueKeysWithValues: s.elements.elementsContent.map {
-              try ($0.property.content.content, $0.value.content.content.payload.eval(environment))
+              try ($0.property.content.content, $0.value.content.content.eval(environment))
             }
           )
         )
@@ -104,11 +104,23 @@ extension Expr.Payload {
         fatalError()
       }
 
+    case let .leadingDot(l):
+      guard case let .constructor(typeID, _) = annotation as? TypeAnnotation else {
+        fatalError()
+      }
+
+      if case let (parameters, body?, _)? = environment.types[typeID]!.staticMembers
+        .functions[l.member.content.content]
+      {
+        return try .closure(parameters: parameters, body: body.elements.eval(environment))
+      } else if case let (value?, _)? = environment.types[typeID]!.staticMembers.bindings[l.member.content.content] {
+        return try value.eval(environment)
+      } else {
+        fatalError()
+      }
+
     case .unit:
       return .tuple([])
-
-    case .leadingDot:
-      fatalError()
     }
   }
 }
@@ -122,7 +134,7 @@ extension Array {
     for (i, element) in enumerated() {
       switch element.content.content {
       case let .expr(e) where i == count - 1:
-        return try e.payload.eval(modifiedEnvironment)
+        return try e.eval(modifiedEnvironment)
 
       case let .declaration(d):
         try modifiedEnvironment.insert(d)
@@ -138,7 +150,7 @@ extension Array {
 
 extension MemberAccess {
   func eval(_ environment: ModuleEnvironment<A>) throws -> NormalForm {
-    let base = try self.base.content.content.payload.eval(environment)
+    let base = try self.base.content.content.eval(environment)
     switch (base, member.content.content) {
     case let (.tuple(elements), .tupleElement(i)):
       return elements[i]
@@ -157,7 +169,7 @@ extension MemberAccess {
       if case let (parameters, body?, _)? = environment.types[typeID]!.staticMembers.functions[member] {
         return try .closure(parameters: parameters, body: body.elements.eval(environment))
       } else if case let (value?, _)? = environment.types[typeID]!.staticMembers.bindings[member] {
-        return try value.payload.eval(environment)
+        return try value.eval(environment)
       } else {
         fatalError()
       }

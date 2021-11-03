@@ -145,7 +145,10 @@ struct ConstraintSystem {
   private mutating func annotate(block: ExprBlock<EmptyAnnotation>) throws -> ExprBlock<TypeAnnotation> {
     try block.addAnnotation(
       expr: { try annotate(expr: $0) },
-      declaration: { try annotate(declaration: $0) }
+      declaration: {
+        try environment.insert($0)
+        return try annotate(declaration: $0)
+      }
     )
   }
 
@@ -245,9 +248,21 @@ struct ConstraintSystem {
         guard case let .identifier(identifier) = member else {
           throw TypeError.unknownMember(baseTypeID: typeID, member)
         }
+
+        let isStatic = typeID == "Type"
+        let lookupTypeID: Identifier
+        if isStatic {
+          guard case let .identifier(baseTypeID) = memberAccess.base.content.content.payload else {
+            throw TypeError.unknownMember(baseTypeID: typeID, member)
+          }
+          lookupTypeID = baseTypeID
+        } else {
+          lookupTypeID = typeID
+        }
+
         return try .init(
           payload: .member(annotated),
-          annotation: lookup(identifier, in: typeID, isStatic: false)
+          annotation: lookup(identifier, in: lookupTypeID, isStatic: isStatic)
         )
 
       case let .variable(v):
@@ -288,7 +303,7 @@ struct ConstraintSystem {
 
     case let .structLiteral(structLiteral):
       let typeExpr = structLiteral.type
-      guard let type = try typeExpr.content.content.payload.eval(environment).type else {
+      guard let type = try typeExpr.content.content.eval(environment).type else {
         throw TypeError.exprIsNotType(typeExpr.range)
       }
 

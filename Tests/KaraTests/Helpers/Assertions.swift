@@ -97,13 +97,19 @@ func assertNotFullyConsumed(
   }
 }
 
-func assertEval(_ source: ParsingState, _ normalForm: NormalForm, file: StaticString = #file, line: UInt = #line) {
+func assertEval(
+  _ source: ParsingState,
+  _ normalForm: NormalForm,
+  file: StaticString = #file,
+  line: UInt = #line
+) throws {
   var source = source
   let parsingResult = exprParser.parse(&source)
   assertFullyConsumed(source)
   let e = ModuleEnvironment<EmptyAnnotation>()
+  let annotated = try parsingResult?.content.content.annotate(e)
   try XCTAssertNoDifference(
-    parsingResult?.content.content.payload.eval(e),
+    annotated?.eval(ModuleEnvironment<TypeAnnotation>()),
     normalForm,
     file: file,
     line: line
@@ -120,5 +126,5 @@ func assertEvalThrows<E: Error & Equatable>(
   let parsingResult = exprParser.parse(&source)
   assertFullyConsumed(source)
   let e = ModuleEnvironment<EmptyAnnotation>()
-  try assertError(parsingResult?.content.content.payload.eval(e), error, file: file, line: line)
+  try assertError(parsingResult?.content.content.eval(e), error, file: file, line: line)
 }

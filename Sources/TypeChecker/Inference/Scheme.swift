@@ -27,7 +27,7 @@ struct Scheme {
 
 extension Expr {
   func evalToType(_ environment: ModuleEnvironment<A>, _ range: SourceRange<Empty>) throws -> Type {
-    let normalForm = try payload.eval(environment)
+    let normalForm = try eval(environment)
     if let type = normalForm.type {
       return type
     } else if case let .identifier(i) = normalForm {
@@ -61,7 +61,7 @@ extension FuncDecl {
 
 extension BindingDecl {
   func type(_ environment: ModuleEnvironment<A>) throws -> Type? {
-    try typeSignature?.signature.content.content.payload.eval(environment).type
+    try typeSignature?.signature.content.content.eval(environment).type
   }
 
   func scheme(_ environment: ModuleEnvironment<A>) throws -> Scheme? {
