@@ -67,7 +67,7 @@ extension Declaration where A == EmptyAnnotation {
     case let .enum(e):
       return try .enum(e.addAnnotation { try $0.typeCheck(environment) })
 
-    case .trait:
+    case .trait, .enumCase:
       fatalError()
     }
   }

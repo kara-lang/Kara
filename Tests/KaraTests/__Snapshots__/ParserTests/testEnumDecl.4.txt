@@ -1,0 +1,77 @@
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-3:0 EnumDecl(
+    modifiers: [],
+    enumKeyword: SyntaxNode(
+      leadingTrivia: [],
+      content: 0:0-0:3 ()
+    ),
+    identifier: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
+      content: 0:5-0:7 Identifier(value: "Foo")
+    ),
+    declarations: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace("\n")
+      ],
+      content: 1:0-3:0 DeclBlock(
+        openBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("\n")
+          ],
+          content: 1:0-1:0 ()
+        ),
+        elements: [
+          [0]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n  ")
+            ],
+            content: 2:2-2:12 Declaration.enum(
+              EnumDecl(
+                modifiers: [],
+                enumKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("\n  ")
+                  ],
+                  content: 2:2-2:5 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 2:7-2:9 Identifier(value: "Bar")
+                ),
+                declarations: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 2:11-2:12 DeclBlock(
+                    openBrace: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 2:11-2:11 ()
+                    ),
+                    elements: [],
+                    closeBrace: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 2:12-2:12 ()
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ],
+        closeBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("\n")
+          ],
+          content: 3:0-3:0 ()
+        )
+      )
+    )
+  )
+)

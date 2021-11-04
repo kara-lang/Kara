@@ -25,53 +25,6 @@ final class ParserTests: XCTestCase {
     XCTAssertNoDifference(literalParser.parse("3.14"), 3.14)
   }
 
-  func testStructDecl() throws {
-    assertSnapshot(structParser.parse("struct Foo {}"))
-    assertSnapshot(structParser.parse("struct  Bar{}"))
-
-    assertSnapshot(structParser.parse("""
-    struct
-    Baz
-    {
-    }
-    """))
-
-    assertSnapshot(structParser.parse("""
-    struct Foo
-    {
-      struct Bar {}
-    }
-    """))
-
-    XCTAssertNil(structParser.parse("structBlorg{}").output)
-
-    assertSnapshot(structParser.parse("""
-    struct StoredProperties {
-      let a: Int    // `a` comment
-      let b: Bool   // `b` comment
-      let c: String // `c` comment
-    }
-    """))
-
-    assertSnapshot(structParser.parse("""
-    struct StoredProperties {
-      struct Inner1 {
-        let a: Double
-      }
-      let a: Int    // `a` comment
-      let b: Bool   // `b` comment
-      let c: String // `c` comment
-
-      struct Inner2 {
-        let a: Float
-      }
-
-      let inner1: Inner1
-      let inner2: Inner2
-    }
-    """))
-  }
-
   func testIdentifiers() {
     XCTAssertNil(identifierParser().parse("123abc").output)
     assertSnapshot(identifierParser().parse("abc123"))
@@ -231,6 +184,100 @@ final class ParserTests: XCTestCase {
       )
     )
     assertSnapshot(funcDeclParser.parse("static public func f(x: Int) -> Int { x }"))
+  }
+
+  func testStructDecl() throws {
+    assertSnapshot(structParser.parse("struct Foo {}"))
+    assertSnapshot(structParser.parse("struct  Bar{}"))
+
+    assertSnapshot(structParser.parse("""
+    struct
+    Baz
+    {
+    }
+    """))
+
+    assertSnapshot(structParser.parse("""
+    struct Foo
+    {
+      struct Bar {}
+    }
+    """))
+
+    XCTAssertNil(structParser.parse("structBlorg{}").output)
+
+    assertSnapshot(structParser.parse("""
+    struct StoredProperties {
+      let a: Int    // `a` comment
+      let b: Bool   // `b` comment
+      let c: String // `c` comment
+    }
+    """))
+
+    assertSnapshot(structParser.parse("""
+    struct StoredProperties {
+      struct Inner1 {
+        let a: Double
+      }
+      let a: Int    // `a` comment
+      let b: Bool   // `b` comment
+      let c: String // `c` comment
+
+      struct Inner2 {
+        let a: Float
+      }
+
+      let inner1: Inner1
+      let inner2: Inner2
+    }
+    """))
+  }
+
+  func testEnumDecl() {
+    assertSnapshot(enumParser.parse("enum Foo {}"))
+    assertSnapshot(enumParser.parse("enum  Bar{}"))
+
+    assertSnapshot(enumParser.parse("""
+    enum
+    Baz
+    {
+    }
+    """))
+
+    assertSnapshot(enumParser.parse("""
+    enum Foo
+    {
+      enum Bar {}
+    }
+    """))
+
+    XCTAssertNil(enumParser.parse("enumBlorg{}").output)
+
+    assertSnapshot(enumParser.parse("""
+    enum Cases {
+      case a    // `a` comment
+      case b/*bb*/(Bool)   // `b` comment
+      case c(Int/*c1*/,/*c2*/String) // `c` comment
+    }
+    """))
+
+    assertSnapshot(enumParser.parse("""
+    enum EnumWithMembers {
+      struct Inner1 {
+        let a: Double
+      }
+      case a    // `a` comment
+      case b(Bool)   // `b` comment
+      case c(Int, String) // `c` comment
+
+      enum Inner2 {
+        case a(Float)
+      }
+
+      func inner1() -> Inner1 { Inner1[a: 42.0] }
+      func inner2() -> Inner2 { .a(42.0) }
+    }
+    """))
   }
 
   func testModuleFile() {

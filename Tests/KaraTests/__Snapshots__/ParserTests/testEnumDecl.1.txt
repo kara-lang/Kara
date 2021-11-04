@@ -1,0 +1,34 @@
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-0:10 EnumDecl(
+    modifiers: [],
+    enumKeyword: SyntaxNode(
+      leadingTrivia: [],
+      content: 0:0-0:3 ()
+    ),
+    identifier: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
+      content: 0:5-0:7 Identifier(value: "Foo")
+    ),
+    declarations: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
+      content: 0:9-0:10 DeclBlock(
+        openBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:9-0:9 ()
+        ),
+        elements: [],
+        closeBrace: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:10-0:10 ()
+        )
+      )
+    )
+  )
+)

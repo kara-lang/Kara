@@ -347,6 +347,18 @@ extension TraitDecl: Substitutable where A == TypeAnnotation {
   }
 }
 
+extension EnumCase: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> EnumCase<A> {
+    addAnnotation { $0.apply(sub) }
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    associatedValues?.elementsContent.reduce(into: Set()) {
+      $0.formUnion($1.freeTypeVariables)
+    } ?? Set()
+  }
+}
+
 extension Declaration: Substitutable where A == TypeAnnotation {
   func apply(_ sub: Substitution) -> Declaration<Type> {
     switch self {
@@ -360,6 +372,8 @@ extension Declaration: Substitutable where A == TypeAnnotation {
       return .enum(e.apply(sub))
     case let .trait(t):
       return .trait(t.apply(sub))
+    case let .enumCase(e):
+      return .enumCase(e.apply(sub))
     }
   }
 
@@ -375,6 +389,8 @@ extension Declaration: Substitutable where A == TypeAnnotation {
       return e.freeTypeVariables
     case let .trait(t):
       return t.freeTypeVariables
+    case let .enumCase(e):
+      return e.freeTypeVariables
     }
   }
 }

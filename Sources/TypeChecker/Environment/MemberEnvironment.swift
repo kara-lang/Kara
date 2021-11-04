@@ -63,7 +63,7 @@ struct MemberEnvironment<A: Annotation> {
       }
       types[typeIdentifier] = try e.extend(topLevel)
 
-    case .trait:
+    case .trait, .enumCase:
       // FIXME: handle trait declarations
       fatalError()
     }

@@ -1,0 +1,637 @@
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-14:0 EnumDecl(
+    modifiers: [],
+    enumKeyword: SyntaxNode(
+      leadingTrivia: [],
+      content: 0:0-0:3 ()
+    ),
+    identifier: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
+      content: 0:5-0:19 Identifier(value: "EnumWithMembers")
+    ),
+    declarations: SyntaxNode(
+      leadingTrivia: [
+        [0]: Whitespace(" ")
+      ],
+      content: 0:21-14:0 DeclBlock(
+        openBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace(" ")
+          ],
+          content: 0:21-0:21 ()
+        ),
+        elements: [
+          [0]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n  ")
+            ],
+            content: 1:2-3:2 Declaration.struct(
+              StructDecl(
+                modifiers: [],
+                structKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("\n  ")
+                  ],
+                  content: 1:2-1:7 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 1:9-1:14 Identifier(value: "Inner1")
+                ),
+                declarations: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 1:16-3:2 DeclBlock(
+                    openBrace: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 1:16-1:16 ()
+                    ),
+                    elements: [
+                      [0]: SyntaxNode(
+                        leadingTrivia: [
+                          [0]: Whitespace("\n    ")
+                        ],
+                        content: 2:4-2:8 Declaration.binding(
+                          BindingDecl(
+                            modifiers: [],
+                            bindingKeyword: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace("\n    ")
+                              ],
+                              content: 2:4-2:6 ()
+                            ),
+                            identifier: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace(" ")
+                              ],
+                              content: 2:8-2:8 Identifier(value: "a")
+                            ),
+                            typeSignature: BindingDecl.TypeSignature(
+                              colon: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 2:9-2:9 ()
+                              ),
+                              signature: SyntaxNode(
+                                leadingTrivia: [
+                                  [0]: Whitespace(" ")
+                                ],
+                                content: 2:11-2:16 Expr(
+                                  payload: Expr.Payload.identifier(
+                                    Identifier(value: "Double")
+                                  ),
+                                  annotation: EmptyAnnotation()
+                                )
+                              )
+                            ),
+                            value: nil
+                          )
+                        )
+                      )
+                    ],
+                    closeBrace: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace("\n  ")
+                      ],
+                      content: 3:2-3:2 ()
+                    )
+                  )
+                )
+              )
+            )
+          ),
+          [1]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n  ")
+            ],
+            content: 4:2-4:7 Declaration.enumCase(
+              EnumCase(
+                modifiers: [],
+                caseKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("\n  ")
+                  ],
+                  content: 4:2-4:5 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 4:7-4:7 Identifier(value: "a")
+                ),
+                associatedValues: nil
+              )
+            )
+          ),
+          [2]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("    "),
+              [1]: Comment(
+                kind: Comment.Kind.singleLine,
+                isDocComment: false,
+                content: " `a` comment"
+              ),
+              [2]: Whitespace("\n  ")
+            ],
+            content: 5:2-5:13 Declaration.enumCase(
+              EnumCase(
+                modifiers: [],
+                caseKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("    "),
+                    [1]: Comment(
+                      kind: Comment.Kind.singleLine,
+                      isDocComment: false,
+                      content: " `a` comment"
+                    ),
+                    [2]: Whitespace("\n  ")
+                  ],
+                  content: 5:2-5:5 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 5:7-5:7 Identifier(value: "b")
+                ),
+                associatedValues: DelimitedSequence(
+                  start: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 5:8-5:8 ()
+                  ),
+                  elements: [
+                    [0]: DelimitedSequence.Element(
+                      content: SyntaxNode(
+                        leadingTrivia: [],
+                        content: 5:9-5:12 Expr(
+                          payload: Expr.Payload.identifier(
+                            Identifier(value: "Bool")
+                          ),
+                          annotation: EmptyAnnotation()
+                        )
+                      ),
+                      separator: nil
+                    )
+                  ],
+                  end: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 5:13-5:13 ()
+                  )
+                )
+              )
+            )
+          ),
+          [3]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("   "),
+              [1]: Comment(
+                kind: Comment.Kind.singleLine,
+                isDocComment: false,
+                content: " `b` comment"
+              ),
+              [2]: Whitespace("\n  ")
+            ],
+            content: 6:2-6:20 Declaration.enumCase(
+              EnumCase(
+                modifiers: [],
+                caseKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("   "),
+                    [1]: Comment(
+                      kind: Comment.Kind.singleLine,
+                      isDocComment: false,
+                      content: " `b` comment"
+                    ),
+                    [2]: Whitespace("\n  ")
+                  ],
+                  content: 6:2-6:5 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 6:7-6:7 Identifier(value: "c")
+                ),
+                associatedValues: DelimitedSequence(
+                  start: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 6:8-6:8 ()
+                  ),
+                  elements: [
+                    [0]: DelimitedSequence.Element(
+                      content: SyntaxNode(
+                        leadingTrivia: [],
+                        content: 6:9-6:11 Expr(
+                          payload: Expr.Payload.identifier(
+                            Identifier(value: "Int")
+                          ),
+                          annotation: EmptyAnnotation()
+                        )
+                      ),
+                      separator: SyntaxNode(
+                        leadingTrivia: [],
+                        content: 6:12-6:12 ()
+                      )
+                    ),
+                    [1]: DelimitedSequence.Element(
+                      content: SyntaxNode(
+                        leadingTrivia: [
+                          [0]: Whitespace(" ")
+                        ],
+                        content: 6:14-6:19 Expr(
+                          payload: Expr.Payload.identifier(
+                            Identifier(value: "String")
+                          ),
+                          annotation: EmptyAnnotation()
+                        )
+                      ),
+                      separator: nil
+                    )
+                  ],
+                  end: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 6:20-6:20 ()
+                  )
+                )
+              )
+            )
+          ),
+          [4]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace(" "),
+              [1]: Comment(
+                kind: Comment.Kind.singleLine,
+                isDocComment: false,
+                content: " `c` comment"
+              ),
+              [2]: Whitespace("\n\n  ")
+            ],
+            content: 8:2-10:2 Declaration.enum(
+              EnumDecl(
+                modifiers: [],
+                enumKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" "),
+                    [1]: Comment(
+                      kind: Comment.Kind.singleLine,
+                      isDocComment: false,
+                      content: " `c` comment"
+                    ),
+                    [2]: Whitespace("\n\n  ")
+                  ],
+                  content: 8:2-8:5 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 8:7-8:12 Identifier(value: "Inner2")
+                ),
+                declarations: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 8:14-10:2 DeclBlock(
+                    openBrace: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 8:14-8:14 ()
+                    ),
+                    elements: [
+                      [0]: SyntaxNode(
+                        leadingTrivia: [
+                          [0]: Whitespace("\n    ")
+                        ],
+                        content: 9:4-9:16 Declaration.enumCase(
+                          EnumCase(
+                            modifiers: [],
+                            caseKeyword: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace("\n    ")
+                              ],
+                              content: 9:4-9:7 ()
+                            ),
+                            identifier: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace(" ")
+                              ],
+                              content: 9:9-9:9 Identifier(value: "a")
+                            ),
+                            associatedValues: DelimitedSequence(
+                              start: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 9:10-9:10 ()
+                              ),
+                              elements: [
+                                [0]: DelimitedSequence.Element(
+                                  content: SyntaxNode(
+                                    leadingTrivia: [],
+                                    content: 9:11-9:15 Expr(
+                                      payload: Expr.Payload.identifier(
+                                        Identifier(value: "Float")
+                                      ),
+                                      annotation: EmptyAnnotation()
+                                    )
+                                  ),
+                                  separator: nil
+                                )
+                              ],
+                              end: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 9:16-9:16 ()
+                              )
+                            )
+                          )
+                        )
+                      )
+                    ],
+                    closeBrace: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace("\n  ")
+                      ],
+                      content: 10:2-10:2 ()
+                    )
+                  )
+                )
+              )
+            )
+          ),
+          [5]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n\n  ")
+            ],
+            content: 12:2-12:44 Declaration.function(
+              FuncDecl(
+                modifiers: [],
+                funcKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("\n\n  ")
+                  ],
+                  content: 12:2-12:5 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 12:7-12:12 Identifier(value: "inner1")
+                ),
+                parameters: DelimitedSequence(
+                  start: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 12:13-12:13 ()
+                  ),
+                  elements: [],
+                  end: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 12:14-12:14 ()
+                  )
+                ),
+                arrow: FuncDecl.Arrow(
+                  arrowSymbol: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 12:16-12:17 ()
+                  ),
+                  returns: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 12:19-12:24 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "Inner1")
+                      ),
+                      annotation: EmptyAnnotation()
+                    )
+                  )
+                ),
+                body: ExprBlock(
+                  openBrace: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 12:26-12:26 ()
+                  ),
+                  elements: [
+                    [0]: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 12:28-12:42 ExprBlock.Element.expr(
+                        Expr(
+                          payload: Expr.Payload.structLiteral(
+                            StructLiteral(
+                              type: SyntaxNode(
+                                leadingTrivia: [
+                                  [0]: Whitespace(" ")
+                                ],
+                                content: 12:28-12:33 Expr(
+                                  payload: Expr.Payload.identifier(
+                                    Identifier(value: "Inner1")
+                                  ),
+                                  annotation: EmptyAnnotation()
+                                )
+                              ),
+                              elements: DelimitedSequence(
+                                start: SyntaxNode(
+                                  leadingTrivia: [],
+                                  content: 12:34-12:34 ()
+                                ),
+                                elements: [
+                                  [0]: DelimitedSequence.Element(
+                                    content: SyntaxNode(
+                                      leadingTrivia: [],
+                                      content: 12:35-12:41 StructLiteral.Element(
+                                        property: SyntaxNode(
+                                          leadingTrivia: [],
+                                          content: 12:35-12:35 Identifier(value: "a")
+                                        ),
+                                        colon: SyntaxNode(
+                                          leadingTrivia: [],
+                                          content: 12:36-12:36 ()
+                                        ),
+                                        value: SyntaxNode(
+                                          leadingTrivia: [
+                                            [0]: Whitespace(" ")
+                                          ],
+                                          content: 12:38-12:41 Expr(
+                                            payload: Expr.Payload.literal(
+                                              Literal.double(42.0)
+                                            ),
+                                            annotation: EmptyAnnotation()
+                                          )
+                                        )
+                                      )
+                                    ),
+                                    separator: nil
+                                  )
+                                ],
+                                end: SyntaxNode(
+                                  leadingTrivia: [],
+                                  content: 12:42-12:42 ()
+                                )
+                              )
+                            )
+                          ),
+                          annotation: EmptyAnnotation()
+                        )
+                      )
+                    )
+                  ],
+                  closeBrace: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 12:44-12:44 ()
+                  )
+                )
+              )
+            )
+          ),
+          [6]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n  ")
+            ],
+            content: 13:2-13:37 Declaration.function(
+              FuncDecl(
+                modifiers: [],
+                funcKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("\n  ")
+                  ],
+                  content: 13:2-13:5 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 13:7-13:12 Identifier(value: "inner2")
+                ),
+                parameters: DelimitedSequence(
+                  start: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 13:13-13:13 ()
+                  ),
+                  elements: [],
+                  end: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 13:14-13:14 ()
+                  )
+                ),
+                arrow: FuncDecl.Arrow(
+                  arrowSymbol: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 13:16-13:17 ()
+                  ),
+                  returns: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 13:19-13:24 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "Inner2")
+                      ),
+                      annotation: EmptyAnnotation()
+                    )
+                  )
+                ),
+                body: ExprBlock(
+                  openBrace: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 13:26-13:26 ()
+                  ),
+                  elements: [
+                    [0]: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 13:28-13:35 ExprBlock.Element.expr(
+                        Expr(
+                          payload: Expr.Payload.application(
+                            FuncApplication(
+                              function: SyntaxNode(
+                                leadingTrivia: [
+                                  [0]: Whitespace(" ")
+                                ],
+                                content: 13:28-13:29 Expr(
+                                  payload: Expr.Payload.leadingDot(
+                                    LeadingDot(
+                                      dot: SyntaxNode(
+                                        leadingTrivia: [
+                                          [0]: Whitespace(" ")
+                                        ],
+                                        content: 13:28-13:28 ()
+                                      ),
+                                      member: SyntaxNode(
+                                        leadingTrivia: [],
+                                        content: 13:29-13:29 Identifier(value: "a")
+                                      )
+                                    )
+                                  ),
+                                  annotation: EmptyAnnotation()
+                                )
+                              ),
+                              arguments: DelimitedSequence(
+                                start: SyntaxNode(
+                                  leadingTrivia: [],
+                                  content: 13:30-13:30 ()
+                                ),
+                                elements: [
+                                  [0]: DelimitedSequence.Element(
+                                    content: SyntaxNode(
+                                      leadingTrivia: [],
+                                      content: 13:31-13:34 Expr(
+                                        payload: Expr.Payload.literal(
+                                          Literal.double(42.0)
+                                        ),
+                                        annotation: EmptyAnnotation()
+                                      )
+                                    ),
+                                    separator: nil
+                                  )
+                                ],
+                                end: SyntaxNode(
+                                  leadingTrivia: [],
+                                  content: 13:35-13:35 ()
+                                )
+                              )
+                            )
+                          ),
+                          annotation: EmptyAnnotation()
+                        )
+                      )
+                    )
+                  ],
+                  closeBrace: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 13:37-13:37 ()
+                  )
+                )
+              )
+            )
+          )
+        ],
+        closeBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("\n")
+          ],
+          content: 14:0-14:0 ()
+        )
+      )
+    )
+  )
+)

@@ -4,9 +4,13 @@
 
 import Syntax
 
-/// A type that represents an evaluated in-memory expression that doesn't have a corresponding
-/// syntax node in a source file. Compared to `enum Expr` in `Syntax` module,
-/// no syntactic information is stored here such as source location or trivia.
+/** A type that represents an evaluated in-memory expression that doesn't have a corresponding
+ syntax node in a source file. Compared to `enum Expr` in `Syntax` module,
+ no syntactic information is stored here such as source location or trivia. Note that
+ evaluation is only partial. For example, unapplied closures can't be fully evaluated without
+ their arguments. Because of that we need to be able to represent unsubstituted identifiers
+ within closure bodies with `NormalForm`.
+ */
 enum NormalForm: Hashable {
   case identifier(Identifier)
   case literal(Literal)

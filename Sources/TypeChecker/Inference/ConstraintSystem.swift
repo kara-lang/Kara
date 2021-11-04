@@ -139,6 +139,9 @@ struct ConstraintSystem {
       return try .trait(
         t.addAnnotation { try annotate(declaration: $0) }
       )
+
+    case .enumCase:
+      fatalError()
     }
   }
 

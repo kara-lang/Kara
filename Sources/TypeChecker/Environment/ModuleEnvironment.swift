@@ -7,12 +7,22 @@ import Syntax
 /** Mapping from a type identifier to an environment with its members. */
 typealias TypeEnvironment<A: Annotation> = [Identifier: MemberEnvironment<A>]
 
-typealias StructLiteralEnvironment = [Identifier: Set<StructLiteralField>]
-
-struct StructLiteralField: Hashable {
+struct NormalizedStructField: Hashable {
   let identifier: SourceRange<Identifier>
   let typeAnnotation: NormalForm
 }
+
+/// Mapping from a struct field identifier to its evaluated type signature.
+typealias StructFields = [SourceRange<Identifier>: NormalForm]
+
+/// Mapping from a struct name identifier to its fields usable in struct literals.
+typealias StructLiteralEnvironment = [Identifier: StructFields]
+
+/// Mapping from an enum case identifier to an array of types of its associated values.
+typealias EnumCases = [SourceRange<Identifier>: [NormalForm]]
+
+/// Mapping from an enum name identifier to its cases.
+typealias EnumCasesEnvironment = [Identifier: EnumCases]
 
 struct ModuleEnvironment<A: Annotation> {
   /// Mapping of identifiers to their schemes available in this declaration.
@@ -24,14 +34,19 @@ struct ModuleEnvironment<A: Annotation> {
   /// Environment of struct literals available in this declaration.
   private(set) var structLiterals: StructLiteralEnvironment
 
+  /// Environment of enums with their cases available in this declaration
+  private(set) var enumCases: EnumCasesEnvironment
+
   init(
     schemes: SchemeEnvironment<A> = .init(),
     types: TypeEnvironment<A> = [:],
-    structLiterals: StructLiteralEnvironment = [:]
+    structLiterals: StructLiteralEnvironment = [:],
+    enumCases: EnumCasesEnvironment = [:]
   ) {
     self.schemes = schemes
     self.types = types
     self.structLiterals = structLiterals
+    self.enumCases = enumCases
   }
 
   /// Create a new module environment for a given module
@@ -70,7 +85,7 @@ struct ModuleEnvironment<A: Annotation> {
       }
       types[typeIdentifier] = try e.extend(self)
 
-    case .trait:
+    case .trait, .enumCase:
       // FIXME: handle trait declarations
       fatalError()
     }

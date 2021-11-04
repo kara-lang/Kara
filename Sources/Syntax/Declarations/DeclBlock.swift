@@ -29,9 +29,9 @@ let declBlockParser = openBraceParser
   .take(
     Many(
       // FIXME: require separation by a newline
-      Lazy { declarationParser }
+      Lazy { declarationParser.debug() }
     )
   )
-  .take(closeBraceParser)
+  .take(closeBraceParser.debug())
   .map(DeclBlock.init)
   .map(\.syntaxNode)

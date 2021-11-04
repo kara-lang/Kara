@@ -10,6 +10,7 @@ public enum Declaration<A: Annotation> {
   case `struct`(StructDecl<A>)
   case `enum`(EnumDecl<A>)
   case trait(TraitDecl<A>)
+  case enumCase(EnumCase<A>)
 }
 
 let declarationParser: AnyParser<ParsingState, SyntaxNode<Declaration<EmptyAnnotation>>> =
@@ -18,6 +19,7 @@ let declarationParser: AnyParser<ParsingState, SyntaxNode<Declaration<EmptyAnnot
     .orElse(enumParser.map { $0.map(Declaration.enum) })
     .orElse(traitParser.map { $0.map(Declaration.trait) })
     .orElse(bindingParser.map { $0.map(Declaration<EmptyAnnotation>.binding) })
+    .orElse(enumCaseParser.map { $0.map(Declaration.enumCase) })
     // Required to give `declarationParser` an explicit type signature, otherwise this won't compile due to mutual
     // recursion with subexpression parsers.
     .eraseToAnyParser()
