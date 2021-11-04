@@ -3,6 +3,9 @@ import class Foundation.Bundle
 import XCTest
 
 final class KaraTests: XCTestCase {
+  // FIXME: re-enable this test on Windows after this SAP bug is
+  // fixed https://github.com/apple/swift-argument-parser/issues/369
+  #if !os(Windows)
   func testExample() throws {
     // This is an example of a functional test case.
     // Use XCTAssert and related functions to verify your tests produce the correct
@@ -62,4 +65,5 @@ final class KaraTests: XCTestCase {
     return Bundle.main.bundleURL
     #endif
   }
+  #endif
 }
