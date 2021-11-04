@@ -21,6 +21,7 @@ extension Literal {
   }
 }
 
+/// Annotation added to expressions, declarations, and their environment after type inference pass has been applied.
 public typealias TypeAnnotation = Type
 
 extension TypeAnnotation: Annotation {}

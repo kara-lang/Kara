@@ -9,6 +9,8 @@ public protocol Annotation {}
 
 public struct EmptyAnnotation: Annotation {}
 
+/// Syntax node representing an expression. It can also have an optional annotation attached to it, otherwise
+/// `EmptyAnnotation` type is used as a generic argument passed to `Expr` type constructor.
 public struct Expr<A: Annotation> {
   public init(payload: Payload, annotation: A) {
     self.payload = payload
@@ -30,10 +32,12 @@ public struct Expr<A: Annotation> {
   }
 
   public let payload: Payload
-  public var annotation: A
+  public let annotation: A
 }
 
 public extension Expr where A == EmptyAnnotation {
+  /// Trivial helper initializer for initializing expressions with empty annotations.
+  /// - Parameter payload: the actual expression to be stored without any annotation.
   init(_ payload: Expr<EmptyAnnotation>.Payload) {
     self.payload = payload
     annotation = .init()
@@ -46,6 +50,13 @@ extension Expr: ExpressibleByIntegerLiteral where A == EmptyAnnotation {
   }
 }
 
+/// Helper type used to avoid left recursion when parsing. Complex expressions such as member access `a.b`,
+/// function application `f(x)`, and struct literals `S [a: b]` contain subexpressions as their first part. If we
+/// naively parse subexpressions recursively, this will lead to an infinite loop. Therefore, we need to split the
+/// parsing process into two stages:
+/// 1. Parse expressions that don't have subexpressions as their first part.
+/// 2. Optionally parse possible tails of complex expressions that may have subexpressions as their first part.
+/// The result of step 2 (if present) is stored in `ExprSyntaxTail` and then concatenated with the result from step 1.
 enum ExprSyntaxTail {
   case memberAccess(dot: SyntaxNode<Empty>, SyntaxNode<Member>)
   case applicationArguments(DelimitedSequence<Expr<EmptyAnnotation>>)

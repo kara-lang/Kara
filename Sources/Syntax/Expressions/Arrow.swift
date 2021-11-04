@@ -4,6 +4,7 @@
 
 import Parsing
 
+/// `A -> B` type expressions.
 struct Arrow<A: Annotation> {
   let head: SyntaxNode<Expr<A>>
   let arrowSymbol: SyntaxNode<Empty>

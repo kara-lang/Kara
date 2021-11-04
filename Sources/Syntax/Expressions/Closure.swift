@@ -4,6 +4,20 @@
 
 import Parsing
 
+/** Closure expressions are always delimited by braces. Possible forms are:
+ 1. Empty closure `{}` of type `() -> ()`.
+ 2. Closures with parameters `{ a, b in x }` of type `(A, B) -> X`. Trailing commas for parameter names such as
+ `{ a, b, in x }` are allowed.
+ 3. Multi-line closures that can contain multiple declarations with them. Expression on the last line of the closure
+ is returned as a result, for example:
+ ```
+ { a, b in
+   struct C { let a: Int}
+   let c = { C[a: a] }
+   c().a
+ }
+ ```
+ */
 public struct Closure<A: Annotation> {
   public typealias Body = [SyntaxNode<ExprBlock<A>.Element>]
 

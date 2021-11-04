@@ -8,7 +8,7 @@ import Parsing
  with optional separators between them. Delimiters and separators are expressed as syntax nodes to allow for leading
  trivia between any of the elements and their separators and delimiters in the sequence.
  Examples of such sequences are tuples (delimited by parens), arrays (square brackets), function application arguments
- (parens), generic parameters and arguments (angle brackets), etc.
+ (parens) etc.
  */
 public struct DelimitedSequence<Content>: SyntaxNodeContainer {
   public struct Element {
