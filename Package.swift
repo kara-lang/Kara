@@ -22,7 +22,11 @@ let package = Package(
       url: "https://github.com/pointfreeco/swift-parsing.git",
       .upToNextMinor(from: "0.3.1")
     ),
-    .package(name: "SnapshotTesting", url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.9.0"),
+    .package(
+      name: "SnapshotTesting",
+      url: "https://github.com/MaxDesiatov/swift-snapshot-testing.git",
+      .branch("windows")
+    ),
     .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "0.2.0"),
   ],
   targets: [
