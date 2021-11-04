@@ -5,7 +5,7 @@
 import Parsing
 
 /** `ExprBlock` is not directly representable with any syntax, but is used indirectly as storage for `Closure`,
- `FuncDecl`, `IfThenElse` and `Switch` bodies.
+ `FuncDecl`, and `IfThenElse` bodies.
  */
 public struct ExprBlock<A: Annotation> {
   public enum Element {
