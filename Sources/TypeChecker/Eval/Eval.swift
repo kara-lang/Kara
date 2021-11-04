@@ -121,6 +121,9 @@ extension Expr {
 
     case .unit:
       return .tuple([])
+
+    case .switch:
+      fatalError()
     }
   }
 }

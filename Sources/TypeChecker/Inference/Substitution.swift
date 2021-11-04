@@ -215,6 +215,22 @@ extension StructLiteral: Substitutable where A == TypeAnnotation {
   }
 }
 
+extension Switch: Substitutable where A == TypeAnnotation {
+  func apply(_ sub: Substitution) -> Switch<Type> {
+    addAnnotation(
+      subject: { $0.apply(sub) },
+      pattern: { $0.apply(sub) },
+      body: { $0.apply(sub) }
+    )
+  }
+
+  var freeTypeVariables: Set<TypeVariable> {
+    caseBlocks.map(\.exprBlock.freeTypeVariables).reduce(into: subject.freeTypeVariables) {
+      $0.formUnion($1)
+    }
+  }
+}
+
 extension Expr.Payload: Substitutable where A == TypeAnnotation {
   func apply(_ sub: Substitution) -> Expr<TypeAnnotation>.Payload {
     switch self {
@@ -234,6 +250,8 @@ extension Expr.Payload: Substitutable where A == TypeAnnotation {
       return .block(b.apply(sub))
     case let .structLiteral(s):
       return .structLiteral(s.apply(sub))
+    case let .switch(s):
+      return .switch(s.apply(sub))
     }
   }
 
@@ -254,6 +272,8 @@ extension Expr.Payload: Substitutable where A == TypeAnnotation {
     case let .block(b):
       return b.freeTypeVariables
     case let .structLiteral(s):
+      return s.freeTypeVariables
+    case let .switch(s):
       return s.freeTypeVariables
     }
   }

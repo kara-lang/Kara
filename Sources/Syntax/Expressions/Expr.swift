@@ -23,6 +23,7 @@ public struct Expr<A: Annotation> {
     case closure(Closure<A>)
     case literal(Literal)
     case ifThenElse(IfThenElse<A>)
+    case `switch`(Switch<A>)
     case member(MemberAccess<A>)
     case tuple(DelimitedSequence<Expr<A>>)
     case block(ExprBlock<A>)
@@ -70,6 +71,7 @@ let exprParser: AnyParser<ParsingState, SyntaxNode<Expr<EmptyAnnotation>>> =
     .orElse(tupleExprParser.map { $0.syntaxNode.map(Expr.Payload.tuple) })
     .orElse(closureParser.map { $0.map(Expr.Payload.closure) })
     .orElse(leadingDotParser.map { $0.map(Expr.Payload.leadingDot) })
+    .orElse(switchParser.map { $0.map(Expr.Payload.switch) })
     .map { $0.map(Expr<EmptyAnnotation>.init) }
 
     // Structuring the parser this way with `map` and `Many` to avoid left recursion for certain

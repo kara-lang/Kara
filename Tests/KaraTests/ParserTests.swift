@@ -159,6 +159,46 @@ final class ParserTests: XCTestCase {
     assertSnapshot(exprParser.parse("./*foo*/a./*bar*/b/*baz*/.c"))
   }
 
+  func testSwitch() {
+    XCTAssertNil(exprParser.parse("switch {}").output)
+    assertSnapshot(exprParser.parse("switch x {}"))
+    assertSnapshot(
+      exprParser.parse(
+        """
+        switch x{
+        case true:
+        case false:
+        }
+        """
+      )
+    )
+    assertSnapshot(
+      exprParser.parse(
+        """
+        switch/*switch comment*/y{
+        case 1:
+          "one"
+        case 42:
+          "forty two"
+        }
+        """
+      )
+    )
+
+    assertSnapshot(
+      exprParser.parse(
+        """
+        switch x.y.z {
+        case let .binding(a, b):
+          "a and b"
+        case .anotherCase:
+          "another case"
+        }
+        """
+      )
+    )
+  }
+
   func testFuncDecl() {
     assertSnapshot(funcDeclParser.parse("func f(x: Int) -> Int { x }"))
     assertSnapshot(funcDeclParser.parse(#"func f(x y: Bool) -> String { if y { "x" } else { "not x" } }"#))

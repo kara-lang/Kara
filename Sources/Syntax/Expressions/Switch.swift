@@ -4,12 +4,16 @@
 
 import Parsing
 
-struct Switch<A: Annotation> {
+public struct Switch<A: Annotation> {
   public struct CaseBlock {
     public typealias Body = [SyntaxNode<ExprBlock<A>.Element>]
     public let pattern: CasePattern<A>
     public let colon: SyntaxNode<Empty>
     public let body: Body
+
+    public var exprBlock: ExprBlock<A> {
+      .init(openBrace: pattern.caseKeyword, elements: body, closeBrace: body.last?.empty ?? colon)
+    }
   }
 
   public let switchKeyword: SyntaxNode<Empty>
@@ -17,6 +21,31 @@ struct Switch<A: Annotation> {
   public let openBrace: SyntaxNode<Empty>
   public let caseBlocks: [CaseBlock]
   public let closeBrace: SyntaxNode<Empty>
+
+  public func addAnnotation<NewAnnotation: Annotation>(
+    subject subjectTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
+    pattern patternTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
+    body bodyTransform: (ExprBlock<A>) throws -> ExprBlock<NewAnnotation>
+  ) rethrows -> Switch<NewAnnotation> {
+    try .init(
+      switchKeyword: switchKeyword,
+      subject: subject.map(subjectTransform),
+      openBrace: openBrace,
+      caseBlocks: caseBlocks.map {
+        try .init(
+          pattern: $0.pattern.addAnnotation(patternTransform),
+          colon: $0.colon,
+          body: bodyTransform($0.exprBlock).elements
+        )
+      },
+      closeBrace: closeBrace
+    )
+  }
+}
+
+extension Switch: SyntaxNodeContainer {
+  public var start: SyntaxNode<Empty> { switchKeyword }
+  public var end: SyntaxNode<Empty> { closeBrace }
 }
 
 private let caseBlockParser =
@@ -27,8 +56,9 @@ private let caseBlockParser =
 
 let switchParser =
   Keyword.switch.parser
-    .take(exprParser)
+    .take(Lazy { exprParser })
     .take(openBraceParser)
     .take(Many(caseBlockParser))
     .take(closeBraceParser)
     .map(Switch.init)
+    .map(\.syntaxNode)

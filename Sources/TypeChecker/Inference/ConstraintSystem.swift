@@ -328,6 +328,9 @@ struct ConstraintSystem {
 
     case .unit:
       return .init(payload: .unit, annotation: .unit)
+
+    case .switch:
+      fatalError()
     }
   }
 }

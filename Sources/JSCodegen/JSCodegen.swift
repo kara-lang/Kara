@@ -207,7 +207,7 @@ extension Expr.Payload {
 //      return #"Symbol.for("Kara.\#(t.description)")"#
     case .unit:
       return "undefined"
-    case .leadingDot:
+    case .leadingDot, .switch:
       fatalError()
     }
   }
