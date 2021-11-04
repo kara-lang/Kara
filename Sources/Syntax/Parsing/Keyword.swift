@@ -20,6 +20,7 @@ enum Keyword: String, CaseIterable {
   case `true`
   case `false`
   case `case`
+  case `switch`
 
   var parser: SyntaxNodeParser<Terminal, Empty> {
     .init(Terminal(rawValue))
