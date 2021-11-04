@@ -10,13 +10,13 @@ let package = Package(
     // Dependencies declare other packages that this package depends on.
     .package(
       url: "https://github.com/apple/swift-argument-parser.git",
-      .upToNextMinor(from: "0.5.0")
+      .upToNextMinor(from: "1.0.1")
     ),
-    .package(
-      name: "Benchmark",
-      url: "https://github.com/google/swift-benchmark.git",
-      from: "0.1.1"
-    ),
+//    .package(
+//      name: "Benchmark",
+//      url: "https://github.com/google/swift-benchmark.git",
+//      from: "0.1.1"
+//    ),
     .package(
       name: "swift-parsing",
       url: "https://github.com/pointfreeco/swift-parsing.git",
@@ -85,10 +85,10 @@ let package = Package(
       name: "kara",
       dependencies: ["Driver"]
     ),
-    .target(
-      name: "kara-benchmark",
-      dependencies: ["Benchmark"]
-    ),
+//    .target(
+//      name: "kara-benchmark",
+//      dependencies: ["Benchmark"]
+//    ),
     .testTarget(
       name: "KaraTests",
       dependencies: [
