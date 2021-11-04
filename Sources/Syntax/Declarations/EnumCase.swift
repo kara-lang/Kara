@@ -35,7 +35,7 @@ extension EnumCase: SyntaxNodeContainer {
 
 let enumCaseParser =
   Many(declModifierParser)
-    .take(Keyword.case.parser.debug())
+    .take(Keyword.case.parser)
     .take(identifierParser(requiresLeadingTrivia: true))
     .take(Optional.parser(of: tupleExprParser))
     .map(EnumCase.init)
