@@ -264,4 +264,46 @@ final class SyntaxInferenceTests: XCTestCase {
         .inferParsedExpr(environment: .init(schemes: .init(bindings: e), types: m))
     )
   }
+
+  func testSwitch() throws {
+    let b: SchemeEnvironment<EmptyAnnotation>.Bindings = [
+      "x": (nil, .init(.bool)),
+      "y": (nil, .init(.int32)),
+    ]
+
+    try assertSnapshot(
+      """
+      switch x{
+      case true:
+      case false:
+      }
+      """
+      .inferParsedExpr(environment: .init(schemes: .init(bindings: b)))
+    )
+
+    try assertSnapshot(
+      """
+      switch/*switch comment*/y{
+      case 1:
+        "one"
+      case 42:
+        "forty two"
+      }
+      """
+      .inferParsedExpr(environment: .init(schemes: .init(bindings: b)))
+    )
+
+    try assertError(
+      """
+      switch/*switch comment*/y{
+      case false:
+        "one"
+      case 42:
+        "forty two"
+      }
+      """
+      .inferParsedExpr(environment: .init(schemes: .init(bindings: b))),
+      TypeError.unificationFailure(.int32, .bool)
+    )
+  }
 }

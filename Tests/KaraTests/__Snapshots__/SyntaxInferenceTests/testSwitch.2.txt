@@ -1,0 +1,138 @@
+Expr(
+  payload: Expr.Payload.switch(
+    Switch(
+      switchKeyword: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:5 ()
+      ),
+      subject: SyntaxNode(
+        leadingTrivia: [
+          [0]: Comment(
+            kind: Comment.Kind.multipleLines,
+            isDocComment: false,
+            content: "switch comment"
+          )
+        ],
+        content: 0:24-0:24 Expr(
+          payload: Expr.Payload.identifier(
+            Identifier(value: "y")
+          ),
+          annotation: Type.constructor(
+            Identifier(value: "Int32"),
+            []
+          )
+        )
+      ),
+      openBrace: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:25-0:25 ()
+      ),
+      caseBlocks: [
+        [0]: Switch.CaseBlock(
+          casePattern: CasePattern(
+            caseKeyword: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace("\n")
+              ],
+              content: 1:0-1:3 ()
+            ),
+            bindingKeyword: nil,
+            pattern: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 1:5-1:5 Expr(
+                payload: Expr.Payload.literal(
+                  Literal.int32(1)
+                ),
+                annotation: Type.constructor(
+                  Identifier(value: "Int32"),
+                  []
+                )
+              )
+            )
+          ),
+          colon: SyntaxNode(
+            leadingTrivia: [],
+            content: 1:6-1:6 ()
+          ),
+          body: [
+            [0]: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace("\n  ")
+              ],
+              content: 2:2-2:6 ExprBlock.Element.expr(
+                Expr(
+                  payload: Expr.Payload.literal(
+                    Literal.string("one")
+                  ),
+                  annotation: Type.constructor(
+                    Identifier(value: "String"),
+                    []
+                  )
+                )
+              )
+            )
+          ]
+        ),
+        [1]: Switch.CaseBlock(
+          casePattern: CasePattern(
+            caseKeyword: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace("\n")
+              ],
+              content: 3:0-3:3 ()
+            ),
+            bindingKeyword: nil,
+            pattern: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 3:5-3:6 Expr(
+                payload: Expr.Payload.literal(
+                  Literal.int32(42)
+                ),
+                annotation: Type.constructor(
+                  Identifier(value: "Int32"),
+                  []
+                )
+              )
+            )
+          ),
+          colon: SyntaxNode(
+            leadingTrivia: [],
+            content: 3:7-3:7 ()
+          ),
+          body: [
+            [0]: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace("\n  ")
+              ],
+              content: 4:2-4:12 ExprBlock.Element.expr(
+                Expr(
+                  payload: Expr.Payload.literal(
+                    Literal.string("forty two")
+                  ),
+                  annotation: Type.constructor(
+                    Identifier(value: "String"),
+                    []
+                  )
+                )
+              )
+            )
+          ]
+        )
+      ],
+      closeBrace: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace("\n")
+        ],
+        content: 5:0-5:0 ()
+      )
+    )
+  ),
+  annotation: Type.constructor(
+    Identifier(value: "String"),
+    []
+  )
+)

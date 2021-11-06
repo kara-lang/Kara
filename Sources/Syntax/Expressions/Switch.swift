@@ -7,12 +7,12 @@ import Parsing
 public struct Switch<A: Annotation> {
   public struct CaseBlock {
     public typealias Body = [SyntaxNode<ExprBlock<A>.Element>]
-    public let pattern: CasePattern<A>
+    public let casePattern: CasePattern<A>
     public let colon: SyntaxNode<Empty>
     public let body: Body
 
     public var exprBlock: ExprBlock<A> {
-      .init(openBrace: pattern.caseKeyword, elements: body, closeBrace: body.last?.empty ?? colon)
+      .init(openBrace: casePattern.caseKeyword, elements: body, closeBrace: body.last?.empty ?? colon)
     }
   }
 
@@ -33,7 +33,7 @@ public struct Switch<A: Annotation> {
       openBrace: openBrace,
       caseBlocks: caseBlocks.map {
         try .init(
-          pattern: $0.pattern.addAnnotation(patternTransform),
+          casePattern: $0.casePattern.addAnnotation(patternTransform),
           colon: $0.colon,
           body: bodyTransform($0.exprBlock).elements
         )

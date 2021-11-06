@@ -28,7 +28,7 @@ SyntaxNode(
         ),
         caseBlocks: [
           [0]: Switch.CaseBlock(
-            pattern: CasePattern(
+            casePattern: CasePattern(
               caseKeyword: SyntaxNode(
                 leadingTrivia: [
                   [0]: Whitespace("\n")
@@ -69,7 +69,7 @@ SyntaxNode(
             ]
           ),
           [1]: Switch.CaseBlock(
-            pattern: CasePattern(
+            casePattern: CasePattern(
               caseKeyword: SyntaxNode(
                 leadingTrivia: [
                   [0]: Whitespace("\n")

@@ -109,7 +109,7 @@ struct ConstraintSystem {
     return try funcDecl.addAnnotation(
       parameterType: { try annotate(expr: $0) },
       arrow: { try annotate(expr: $0) },
-      body: { try annotate(block: $0) }
+      body: { try annotate(exprBlock: $0) }
     )
   }
 
@@ -145,8 +145,8 @@ struct ConstraintSystem {
     }
   }
 
-  private mutating func annotate(block: ExprBlock<EmptyAnnotation>) throws -> ExprBlock<TypeAnnotation> {
-    try block.addAnnotation(
+  private mutating func annotate(exprBlock: ExprBlock<EmptyAnnotation>) throws -> ExprBlock<TypeAnnotation> {
+    try exprBlock.addAnnotation(
       expr: { try annotate(expr: $0) },
       declaration: {
         try environment.insert($0)
@@ -172,7 +172,7 @@ struct ConstraintSystem {
 
     return try (closure.addAnnotation(
       parameter: { try annotate(expr: $0) },
-      body: { try annotate(block: $0) }
+      body: { try annotate(exprBlock: $0) }
     ), parameterTypes)
   }
 
@@ -216,8 +216,8 @@ struct ConstraintSystem {
     case let .ifThenElse(ifThenElse):
       let annotated = try ifThenElse.addAnnotation(
         condition: { try annotate(expr: $0) },
-        thenBlock: { try annotate(block: $0) },
-        elseBlock: { try annotate(block: $0) }
+        thenBlock: { try annotate(exprBlock: $0) },
+        elseBlock: { try annotate(exprBlock: $0) }
       )
       let resultType = try annotated.thenBlock.getLastExprType()
 
@@ -298,7 +298,7 @@ struct ConstraintSystem {
       )
 
     case let .block(block):
-      let annotatedBlock = try annotate(block: block)
+      let annotatedBlock = try annotate(exprBlock: block)
       return try .init(
         payload: .block(annotatedBlock),
         annotation: annotatedBlock.getLastExprType()
@@ -326,11 +326,39 @@ struct ConstraintSystem {
         annotation: fresh()
       )
 
+    case let .switch(s):
+      let annotated = try s.addAnnotation(
+        subject: { try annotate(expr: $0) },
+        pattern: { try annotate(expr: $0) },
+        body: { try annotate(exprBlock: $0) }
+      )
+
+      let subjectType = annotated.subject.annotation
+      guard let resultType = try annotated.caseBlocks.first?.exprBlock.getLastExprType() else {
+        return .init(payload: .switch(annotated), annotation: .unit)
+      }
+
+      var resultConstraints = [Constraint]()
+      for caseBlock in annotated.caseBlocks {
+        // Type of every pattern is the same as the type of the subject.
+        constraints.append(.equal(subjectType, caseBlock.casePattern.pattern.annotation))
+
+        // Result type of every case expr block is the ssame for all blocks.
+        try resultConstraints.append(.equal(resultType, caseBlock.exprBlock.getLastExprType()))
+      }
+
+      constraints.append(
+        // Drop the first constraint, which redundantly states that `.equal(resultType, resultType)`
+        contentsOf: resultConstraints.dropFirst()
+      )
+
+      return .init(
+        payload: .switch(annotated),
+        annotation: resultType
+      )
+
     case .unit:
       return .init(payload: .unit, annotation: .unit)
-
-    case .switch:
-      fatalError()
     }
   }
 }
