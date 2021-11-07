@@ -26,7 +26,7 @@ struct TypeEnvironment<A: Annotation> {
     structs[typeIdentifier] != nil || enums[typeIdentifier] != nil
   }
 
-  func shadow(local: TypeEnvironment<A>) -> TypeEnvironment {
+  func shadow(with local: TypeEnvironment<A>) -> TypeEnvironment {
     // Local type environment shadows the top level module environment.
     .init(
       structs: structs.merging(local.structs) { _, new in new },
@@ -42,7 +42,7 @@ struct TypeEnvironment<A: Annotation> {
     }
     // Add an empty environment first to allow members to reference own type.
     structs[typeIdentifier] = .init(members: MemberEnvironment<A>())
-    structs[typeIdentifier] = try s.extend(topLevel)
+    structs[typeIdentifier] = try s.extend(topLevel.shadow(with: self))
   }
 
   mutating func insert(_ e: EnumDecl<A>, _ topLevel: ModuleEnvironment<A>) throws {
@@ -52,6 +52,6 @@ struct TypeEnvironment<A: Annotation> {
     }
     // Add an empty environment first to allow members to reference own type.
     enums[typeIdentifier] = .init(members: MemberEnvironment<A>())
-    enums[typeIdentifier] = try e.extend(topLevel)
+    enums[typeIdentifier] = try e.extend(topLevel.shadow(with: self))
   }
 }

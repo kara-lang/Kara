@@ -68,7 +68,7 @@ struct ConstraintSystem {
     return try lookup(
       member,
       schemes: isStatic ? environment.staticMembers : environment.valueMembers,
-      types: self.environment.types.shadow(local: environment.types),
+      types: self.environment.types.shadow(with: environment.types),
       orThrow: isStatic ?
         .unknownStaticMember(baseTypeID: typeID, .identifier(member)) :
         .unknownMember(baseTypeID: typeID, .identifier(member))
@@ -332,7 +332,7 @@ struct ConstraintSystem {
 
     case let .structLiteral(structLiteral):
       let typeExpr = structLiteral.type
-      guard let type = try typeExpr.content.content.eval(environment).type else {
+      guard let type = try typeExpr.content.content.eval(environment).type(environment) else {
         throw TypeError.exprIsNotType(typeExpr.range)
       }
 

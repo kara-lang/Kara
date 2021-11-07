@@ -70,4 +70,11 @@ struct ModuleEnvironment<A: Annotation> {
       try elements.forEach { try verifyContains($0) }
     }
   }
+
+  func shadow(with local: TypeEnvironment<A>) -> Self {
+    .init(
+      schemes: schemes,
+      types: types.shadow(with: local)
+    )
+  }
 }

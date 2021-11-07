@@ -23,32 +23,38 @@ enum NormalForm: Hashable {
   indirect case arrow([NormalForm], NormalForm)
 
   /// Returns a `Type` representation of `self` if it is inferrred to be a type expression. Returns `nil` otherwise.
-  var type: Type? {
+  func type<A: Annotation>(_ environment: ModuleEnvironment<A>) throws -> Type? {
     switch self {
     case let .tuple(elements):
-      return elements.types.map(Type.tuple)
+      return try elements.types(environment).map(Type.tuple)
 
     case let .typeConstructor(id, args):
-      return args.types.map { .constructor(id, $0) }
+      return try args.types(environment).map { .constructor(id, $0) }
 
     case let .arrow(head, tail):
-      guard let headTypes = head.types, let tailType = tail.type else {
+      guard let headTypes = try head.types(environment), let tailType = try tail.type(environment) else {
         return nil
       }
 
       return .arrow(headTypes, tailType)
 
-    case .closure, .literal, .ifThenElse, .structLiteral, .identifier, .memberAccess:
+    case let .identifier(i):
+      guard environment.schemes[i] != nil else {
+        throw TypeError.unbound(i)
+      }
+      return nil
+
+    case .closure, .literal, .ifThenElse, .structLiteral, .memberAccess:
       return nil
     }
   }
 }
 
 extension Array where Element == NormalForm {
-  var types: [Type]? {
+  func types<A: Annotation>(_ environment: ModuleEnvironment<A>) throws -> [Type]? {
     var elementTypes = [Type]()
     for element in self {
-      guard let type = element.type else {
+      guard let type = try element.type(environment) else {
         return nil
       }
       elementTypes.append(type)

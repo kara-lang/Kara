@@ -17,6 +17,10 @@ struct SchemeEnvironment<A: Annotation> {
   private(set) var bindings: Bindings
   private(set) var functions: Functions
 
+  subscript(_ identifier: Identifier) -> Scheme? {
+    bindings[identifier]?.scheme ?? functions[identifier]?.scheme
+  }
+
   mutating func insert(_ b: BindingDecl<A>, _ topLevel: ModuleEnvironment<A>) throws {
     let identifier = b.identifier.content.content
     guard let scheme = try b.scheme(topLevel) else {
