@@ -14,6 +14,17 @@ public struct Switch<A: Annotation> {
     public var exprBlock: ExprBlock<A> {
       .init(openBrace: casePattern.caseKeyword, elements: body, closeBrace: body.last?.empty ?? colon)
     }
+
+    public func addAnnotation<NewAnnotation: Annotation>(
+      pattern patternTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
+      body bodyTransform: (ExprBlock<A>) throws -> ExprBlock<NewAnnotation>
+    ) rethrows -> Switch<NewAnnotation>.CaseBlock {
+      try .init(
+        casePattern: casePattern.addAnnotation(patternTransform),
+        colon: colon,
+        body: bodyTransform(exprBlock).elements
+      )
+    }
   }
 
   public let switchKeyword: SyntaxNode<Empty>
@@ -24,20 +35,13 @@ public struct Switch<A: Annotation> {
 
   public func addAnnotation<NewAnnotation: Annotation>(
     subject subjectTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
-    pattern patternTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
-    body bodyTransform: (ExprBlock<A>) throws -> ExprBlock<NewAnnotation>
+    caseBlock caseBlockTransform: (CaseBlock) throws -> Switch<NewAnnotation>.CaseBlock
   ) rethrows -> Switch<NewAnnotation> {
     try .init(
       switchKeyword: switchKeyword,
       subject: subject.map(subjectTransform),
       openBrace: openBrace,
-      caseBlocks: caseBlocks.map {
-        try .init(
-          casePattern: $0.casePattern.addAnnotation(patternTransform),
-          colon: $0.colon,
-          body: bodyTransform($0.exprBlock).elements
-        )
-      },
+      caseBlocks: caseBlocks.map(caseBlockTransform),
       closeBrace: closeBrace
     )
   }

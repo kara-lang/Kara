@@ -60,16 +60,18 @@ struct ConstraintSystem {
     in typeID: Identifier,
     isStatic: Bool
   ) throws -> Type {
-    guard let environment = environment.types[typeID] else {
+    guard let environment = environment.types.structs[typeID]?.members ?? environment.types.enums[typeID]?.members
+    else {
       throw TypeError.unknownType(typeID)
     }
 
     return try lookup(
       member,
-      schemes: isStatic ? environment.staticMembers : environment.members,
-      // Local type environment shadows the top level module environment.
-      types: self.environment.types.merging(environment.types) { _, new in new },
-      orThrow: .unknownMember(baseTypeID: typeID, .identifier(member))
+      schemes: isStatic ? environment.staticMembers : environment.valueMembers,
+      types: self.environment.types.shadow(local: environment.types),
+      orThrow: isStatic ?
+        .unknownStaticMember(baseTypeID: typeID, .identifier(member)) :
+        .unknownMember(baseTypeID: typeID, .identifier(member))
     )
   }
 
@@ -80,7 +82,7 @@ struct ConstraintSystem {
     orThrow error: TypeError
   ) throws -> Type {
     guard let scheme = schemes.bindings[id]?.scheme ?? schemes.functions[id]?.scheme else {
-      guard types[id] != nil || id == "Type" else {
+      guard types.contains(id) || id == "Type" else {
         throw error
       }
       return .type
@@ -104,7 +106,7 @@ struct ConstraintSystem {
 
     let ids = funcDecl.parameters.elementsContent.map(\.internalName.content.content)
     let parameterTypes = try funcDecl.parameterTypes(environment)
-    environment.schemes.insert(bindings: zip(ids, parameterTypes.map { (nil, Scheme($0)) }))
+    environment.schemes.insert(bindings: zip(ids, parameterTypes.map { Scheme($0) }))
 
     return try funcDecl.addAnnotation(
       parameterType: { try annotate(expr: $0) },
@@ -140,8 +142,8 @@ struct ConstraintSystem {
         t.addAnnotation { try annotate(declaration: $0) }
       )
 
-    case .enumCase:
-      fatalError()
+    case let .enumCase(e):
+      return try .enumCase(e.addAnnotation { try annotate(expr: $0) })
     }
   }
 
@@ -160,7 +162,8 @@ struct ConstraintSystem {
   private mutating func annotate(
     closure: Closure<EmptyAnnotation>
   ) throws -> (Closure<TypeAnnotation>, [Type]) {
-    // Preserve old environment to be restored after inference in extended environment has finished.
+    // Preserve old environment to be restored after inference in the environment extended by closure parameters
+    // has finished.
     let old = environment
 
     defer { self.environment = old }
@@ -168,12 +171,35 @@ struct ConstraintSystem {
     let ids = closure.parameters.map(\.identifier.content.content)
     let parameterTypes = ids.map { _ in fresh() }
 
-    environment.schemes.insert(bindings: zip(ids, parameterTypes.map { (nil, Scheme($0)) }))
+    environment.schemes.insert(bindings: zip(ids, parameterTypes.map { Scheme($0) }))
 
     return try (closure.addAnnotation(
       parameter: { try annotate(expr: $0) },
       body: { try annotate(exprBlock: $0) }
     ), parameterTypes)
+  }
+
+  private mutating func annotate(
+    caseBlock: Switch<EmptyAnnotation>.CaseBlock
+  ) throws -> Switch<TypeAnnotation>.CaseBlock {
+    // Preserve old environment to be restored after inference in the environment extended by case
+    // pattern bindings is finished.
+    let old = environment
+
+    defer { self.environment = old }
+
+    if caseBlock.casePattern.bindingKeyword != nil {
+      environment.schemes.insert(
+        bindings: caseBlock.casePattern.pattern.boundPatternIdentifiers.map { ($0, Scheme(fresh())) }
+      )
+    }
+
+    let annotatedPattern = try annotate(expr: caseBlock.casePattern.pattern.content.content)
+
+    return try caseBlock.addAnnotation(
+      pattern: { _ in annotatedPattern },
+      body: { try annotate(exprBlock: $0) }
+    )
   }
 
   mutating func annotate(expr: Expr<EmptyAnnotation>) throws -> Expr<TypeAnnotation> {
@@ -329,8 +355,9 @@ struct ConstraintSystem {
     case let .switch(s):
       let annotated = try s.addAnnotation(
         subject: { try annotate(expr: $0) },
-        pattern: { try annotate(expr: $0) },
-        body: { try annotate(exprBlock: $0) }
+        caseBlock: {
+          try annotate(caseBlock: $0)
+        }
       )
 
       let subjectType = annotated.subject.annotation
@@ -359,6 +386,31 @@ struct ConstraintSystem {
 
     case .unit:
       return .init(payload: .unit, annotation: .unit)
+    }
+  }
+}
+
+private extension Expr {
+  /// Returns an array of identifiers that can be bound in pattern matching.
+  var boundPatternIdentifiers: [Identifier] {
+    switch payload {
+    case let .identifier(i):
+      return [i]
+    case let .application(a):
+      return a.function.boundPatternIdentifiers + a.arguments.elementsContent.flatMap(\.boundPatternIdentifiers)
+    case let .structLiteral(s):
+      return s.elements.elementsContent.flatMap(\.value.boundPatternIdentifiers)
+    case .leadingDot, .literal, .unit,
+         // Supporting member access to allow fully-qualified enum cases, in addition to leading dot notation.
+         .member:
+      return []
+    case let .tuple(t):
+      return t.elementsContent.flatMap(\.boundPatternIdentifiers)
+    case .closure, .ifThenElse, .switch, .block:
+      // It shouldn't be possible to pattern match on closures, or other complex expressions that contain
+      // expression blocks.
+      // FIXME: throw an error here?
+      fatalError()
     }
   }
 }

@@ -6,11 +6,11 @@ import Syntax
 
 struct MemberEnvironment<A: Annotation> {
   init(
-    members: SchemeEnvironment<A> = .init(),
+    valueMembers: SchemeEnvironment<A> = .init(),
     staticMembers: SchemeEnvironment<A> = .init(),
-    types: TypeEnvironment<A> = [:]
+    types: TypeEnvironment<A> = .init()
   ) {
-    self.members = members
+    self.valueMembers = valueMembers
     self.staticMembers = staticMembers
     self.types = types
   }
@@ -18,15 +18,14 @@ struct MemberEnvironment<A: Annotation> {
   /** Members available on implicitly declared `self` in the current scope, or on a given value of such type
     in any location that has the type available in scope.
    */
-  var members: SchemeEnvironment<A>
+  var valueMembers: SchemeEnvironment<A>
 
   /** Members available on implicitly declared `Self` type in the current scope, via leading dot
    expressions, or via fully qualified type name where such type is available in scope.
    */
   var staticMembers: SchemeEnvironment<A>
 
-  /** Member types on implicitly declared `Self` type in the current scope, or via fully qualified type
-   name where such type is available in scope.
+  /** Member types on implicitly declared `Self` type in the current scope.
    */
   var types: TypeEnvironment<A>
 
@@ -38,30 +37,21 @@ struct MemberEnvironment<A: Annotation> {
       if f.isStatic {
         try staticMembers.insert(f, topLevel)
       } else {
-        try members.insert(f, topLevel)
+        try valueMembers.insert(f, topLevel)
       }
 
     case let .binding(b):
       if b.isStatic {
         try staticMembers.insert(b, topLevel)
       } else {
-        try members.insert(b, topLevel)
+        try valueMembers.insert(b, topLevel)
       }
 
     case let .struct(s):
-      let typeIdentifier = s.identifier.content.content
-
-      guard types[typeIdentifier] == nil else {
-        throw TypeError.typeDeclAlreadyExists(typeIdentifier)
-      }
-      types[typeIdentifier] = try s.extend(topLevel)
+      try types.insert(s, topLevel)
 
     case let .enum(e):
-      let typeIdentifier = e.identifier.content.content
-      guard types[typeIdentifier] == nil else {
-        throw TypeError.typeDeclAlreadyExists(typeIdentifier)
-      }
-      types[typeIdentifier] = try e.extend(topLevel)
+      try types.insert(e, topLevel)
 
     case .trait, .enumCase:
       // FIXME: handle trait declarations
@@ -71,17 +61,19 @@ struct MemberEnvironment<A: Annotation> {
 }
 
 extension StructDecl {
-  func extend(_ topLevel: ModuleEnvironment<A>) throws -> MemberEnvironment<A> {
-    try declarations.elements.map(\.content.content).reduce(into: MemberEnvironment<A>()) {
+  func extend(_ topLevel: ModuleEnvironment<A>) throws -> StructEnvironment<A> {
+    try .init(members: declarations.elements.map(\.content.content).reduce(into: MemberEnvironment<A>()) {
       try $0.insert($1, topLevel)
-    }
+    })
   }
 }
 
 extension EnumDecl {
-  func extend(_ topLevel: ModuleEnvironment<A>) throws -> MemberEnvironment<A> {
-    try declarations.elements.map(\.content.content).reduce(into: MemberEnvironment<A>()) {
-      try $0.insert($1, topLevel)
+  func extend(_ topLevel: ModuleEnvironment<A>) throws -> EnumEnvironment<A> {
+    var result = EnumEnvironment<A>()
+    for declaration in declarations.elements.map(\.content.content) {
+      try result.insert(declaration, topLevel)
     }
+    return result
   }
 }

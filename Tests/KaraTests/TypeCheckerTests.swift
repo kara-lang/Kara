@@ -12,6 +12,15 @@ final class TypeCheckerTests: XCTestCase {
     assertError(
       try driverPass(
         """
+        struct Bool {}
+        enum Bool {}
+        """
+      ),
+      TypeError.typeDeclAlreadyExists("Bool")
+    )
+    assertError(
+      try driverPass(
+        """
         struct Int {}
         enum Bool {}
 

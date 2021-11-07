@@ -134,14 +134,18 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testMember() throws {
-    let e = ModuleEnvironment<EmptyAnnotation>(types: [
-      "String": .init(
-        members: .init(bindings: [
-          "appending": (nil, .init(.string --> .string)),
-          "count": (nil, .init(.int32)),
-        ])
-      ),
-    ])
+    let e = ModuleEnvironment<EmptyAnnotation>(
+      types: .init(structs: [
+        "String": .init(
+          members: .init(
+            valueMembers: .init(bindings: [
+              "appending": (nil, .init(.string --> .string)),
+              "count": (nil, .init(.int32)),
+            ])
+          )
+        ),
+      ])
+    )
 
     XCTAssertNoDifference(
       try #""Hello, ".appending("World!")"#.inferParsedExpr(environment: e).annotation,
@@ -158,14 +162,20 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testMemberOfMember() throws {
-    let e = ModuleEnvironment<EmptyAnnotation>(types: [
-      "String": .init(members: .init(bindings: [
-        "count": (nil, .init(.int32)),
-      ])),
-      "Int32": .init(members: .init(bindings: [
-        "magnitude": (nil, .init(.int32)),
-      ])),
-    ])
+    let e = ModuleEnvironment<EmptyAnnotation>(
+      types: .init(structs: [
+        "String": .init(
+          members: .init(valueMembers: .init(bindings: [
+            "count": (nil, .init(.int32)),
+          ]))
+        ),
+        "Int32": .init(
+          members: .init(valueMembers: .init(bindings: [
+            "magnitude": (nil, .init(.int32)),
+          ]))
+        ),
+      ])
+    )
 
     XCTAssertNoDifference(
       try #""Test".count.magnitude"#.inferParsedExpr(environment: e).annotation,
@@ -178,13 +188,13 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testIfThenElse() throws {
-    let m: TypeEnvironment<EmptyAnnotation> = [
-      "Int32": .init(members: .init(bindings: [
+    let m = TypeEnvironment<EmptyAnnotation>(structs: [
+      "Int32": .init(members: .init(valueMembers: .init(bindings: [
         "isInteger": (nil, .init(.bool)),
         "isIntegerFunc": (nil, .init([] --> .bool)),
         "toDouble": (nil, .init([] --> .double)),
-      ])),
-    ]
+      ]))),
+    ])
 
     let e: SchemeEnvironment<EmptyAnnotation>.Bindings = [
       "foo": (nil, .init(.bool)),
@@ -249,11 +259,13 @@ final class SyntaxInferenceTests: XCTestCase {
   }
 
   func testLeadingDot() throws {
-    let m: TypeEnvironment<EmptyAnnotation> = [
-      "Int32": .init(staticMembers: .init(bindings: [
-        "max": (nil, .init(.int32)),
-      ])),
-    ]
+    let t = TypeEnvironment<EmptyAnnotation>(
+      structs: [
+        "Int32": .init(members: .init(staticMembers: .init(bindings: [
+          "max": (nil, .init(.int32)),
+        ]))),
+      ]
+    )
 
     let e: SchemeEnvironment<EmptyAnnotation>.Bindings = [
       "stringify": (nil, .init(.int32 --> .string)),
@@ -261,7 +273,7 @@ final class SyntaxInferenceTests: XCTestCase {
 
     assertSnapshot(
       try #"stringify(.max)"#
-        .inferParsedExpr(environment: .init(schemes: .init(bindings: e), types: m))
+        .inferParsedExpr(environment: .init(schemes: .init(bindings: e), types: t))
     )
   }
 
@@ -269,7 +281,11 @@ final class SyntaxInferenceTests: XCTestCase {
     let b: SchemeEnvironment<EmptyAnnotation>.Bindings = [
       "x": (nil, .init(.bool)),
       "y": (nil, .init(.int32)),
+      "z": (nil, .init(.constructor("E", []))),
+      "stringify": (nil, .init(.int32 --> .string)),
     ]
+
+    let t = TypeEnvironment<EmptyAnnotation>(structs: ["Int32": .init(), "String": .init()])
 
     try assertSnapshot(
       """
@@ -291,6 +307,25 @@ final class SyntaxInferenceTests: XCTestCase {
       }
       """
       .inferParsedExpr(environment: .init(schemes: .init(bindings: b)))
+    )
+
+    try assertSnapshot(
+      """
+      {
+        enum E {
+          case a(Int32)
+          case b(String)
+        }
+
+        switch z {
+        case let .a(i):
+          stringify(i)
+        case let .b(s):
+          s
+        }
+      }
+      """
+      .inferParsedExpr(environment: .init(schemes: .init(bindings: b), types: t))
     )
 
     try assertError(

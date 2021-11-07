@@ -1,0 +1,497 @@
+Expr(
+  payload: Expr.Payload.closure(
+    Closure(
+      openBrace: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 ()
+      ),
+      parameters: [],
+      inKeyword: nil,
+      body: [
+        [0]: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("\n  ")
+          ],
+          content: 1:2-4:2 ExprBlock.Element.declaration(
+            Declaration.enum(
+              EnumDecl(
+                modifiers: [],
+                enumKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("\n  ")
+                  ],
+                  content: 1:2-1:5 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 1:7-1:7 Identifier(value: "E")
+                ),
+                declarations: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 1:9-4:2 DeclBlock(
+                    openBrace: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 1:9-1:9 ()
+                    ),
+                    elements: [
+                      [0]: SyntaxNode(
+                        leadingTrivia: [
+                          [0]: Whitespace("\n    ")
+                        ],
+                        content: 2:4-2:16 Declaration.enumCase(
+                          EnumCase(
+                            modifiers: [],
+                            caseKeyword: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace("\n    ")
+                              ],
+                              content: 2:4-2:7 ()
+                            ),
+                            identifier: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace(" ")
+                              ],
+                              content: 2:9-2:9 Identifier(value: "a")
+                            ),
+                            associatedValues: DelimitedSequence(
+                              start: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 2:10-2:10 ()
+                              ),
+                              elements: [
+                                [0]: DelimitedSequence.Element(
+                                  content: SyntaxNode(
+                                    leadingTrivia: [],
+                                    content: 2:11-2:15 Expr(
+                                      payload: Expr.Payload.identifier(
+                                        Identifier(value: "Int32")
+                                      ),
+                                      annotation: Type.constructor(
+                                        Identifier(value: "Type"),
+                                        []
+                                      )
+                                    )
+                                  ),
+                                  separator: nil
+                                )
+                              ],
+                              end: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 2:16-2:16 ()
+                              )
+                            )
+                          )
+                        )
+                      ),
+                      [1]: SyntaxNode(
+                        leadingTrivia: [
+                          [0]: Whitespace("\n    ")
+                        ],
+                        content: 3:4-3:17 Declaration.enumCase(
+                          EnumCase(
+                            modifiers: [],
+                            caseKeyword: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace("\n    ")
+                              ],
+                              content: 3:4-3:7 ()
+                            ),
+                            identifier: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace(" ")
+                              ],
+                              content: 3:9-3:9 Identifier(value: "b")
+                            ),
+                            associatedValues: DelimitedSequence(
+                              start: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 3:10-3:10 ()
+                              ),
+                              elements: [
+                                [0]: DelimitedSequence.Element(
+                                  content: SyntaxNode(
+                                    leadingTrivia: [],
+                                    content: 3:11-3:16 Expr(
+                                      payload: Expr.Payload.identifier(
+                                        Identifier(value: "String")
+                                      ),
+                                      annotation: Type.constructor(
+                                        Identifier(value: "Type"),
+                                        []
+                                      )
+                                    )
+                                  ),
+                                  separator: nil
+                                )
+                              ],
+                              end: SyntaxNode(
+                                leadingTrivia: [],
+                                content: 3:17-3:17 ()
+                              )
+                            )
+                          )
+                        )
+                      )
+                    ],
+                    closeBrace: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace("\n  ")
+                      ],
+                      content: 4:2-4:2 ()
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ),
+        [1]: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("  ")
+          ],
+          content: 6:2-11:2 ExprBlock.Element.expr(
+            Expr(
+              payload: Expr.Payload.switch(
+                Switch(
+                  switchKeyword: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace("  ")
+                    ],
+                    content: 6:2-6:7 ()
+                  ),
+                  subject: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 6:9-6:9 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "z")
+                      ),
+                      annotation: Type.constructor(
+                        Identifier(value: "E"),
+                        []
+                      )
+                    )
+                  ),
+                  openBrace: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 6:11-6:11 ()
+                  ),
+                  caseBlocks: [
+                    [0]: Switch.CaseBlock(
+                      casePattern: CasePattern(
+                        caseKeyword: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace("\n  ")
+                          ],
+                          content: 7:2-7:5 ()
+                        ),
+                        bindingKeyword: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace(" ")
+                          ],
+                          content: 7:7-7:9 ()
+                        ),
+                        pattern: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace(" ")
+                          ],
+                          content: 7:11-7:15 Expr(
+                            payload: Expr.Payload.application(
+                              FuncApplication(
+                                function: SyntaxNode(
+                                  leadingTrivia: [
+                                    [0]: Whitespace(" ")
+                                  ],
+                                  content: 7:11-7:12 Expr(
+                                    payload: Expr.Payload.leadingDot(
+                                      LeadingDot(
+                                        dot: SyntaxNode(
+                                          leadingTrivia: [
+                                            [0]: Whitespace(" ")
+                                          ],
+                                          content: 7:11-7:11 ()
+                                        ),
+                                        member: SyntaxNode(
+                                          leadingTrivia: [],
+                                          content: 7:12-7:12 Identifier(value: "a")
+                                        )
+                                      )
+                                    ),
+                                    annotation: Type.arrow(
+                                      [
+                                        [0]: Type.constructor(
+                                          Identifier(value: "Int32"),
+                                          []
+                                        )
+                                      ],
+                                      Type.constructor(
+                                        Identifier(value: "E"),
+                                        []
+                                      )
+                                    )
+                                  )
+                                ),
+                                arguments: DelimitedSequence(
+                                  start: SyntaxNode(
+                                    leadingTrivia: [],
+                                    content: 7:13-7:13 ()
+                                  ),
+                                  elements: [
+                                    [0]: DelimitedSequence.Element(
+                                      content: SyntaxNode(
+                                        leadingTrivia: [],
+                                        content: 7:14-7:14 Expr(
+                                          payload: Expr.Payload.identifier(
+                                            Identifier(value: "i")
+                                          ),
+                                          annotation: Type.constructor(
+                                            Identifier(value: "Int32"),
+                                            []
+                                          )
+                                        )
+                                      ),
+                                      separator: nil
+                                    )
+                                  ],
+                                  end: SyntaxNode(
+                                    leadingTrivia: [],
+                                    content: 7:15-7:15 ()
+                                  )
+                                )
+                              )
+                            ),
+                            annotation: Type.constructor(
+                              Identifier(value: "E"),
+                              []
+                            )
+                          )
+                        )
+                      ),
+                      colon: SyntaxNode(
+                        leadingTrivia: [],
+                        content: 7:16-7:16 ()
+                      ),
+                      body: [
+                        [0]: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace("\n    ")
+                          ],
+                          content: 8:4-8:15 ExprBlock.Element.expr(
+                            Expr(
+                              payload: Expr.Payload.application(
+                                FuncApplication(
+                                  function: SyntaxNode(
+                                    leadingTrivia: [
+                                      [0]: Whitespace("\n    ")
+                                    ],
+                                    content: 8:4-8:12 Expr(
+                                      payload: Expr.Payload.identifier(
+                                        Identifier(value: "stringify")
+                                      ),
+                                      annotation: Type.arrow(
+                                        [
+                                          [0]: Type.constructor(
+                                            Identifier(value: "Int32"),
+                                            []
+                                          )
+                                        ],
+                                        Type.constructor(
+                                          Identifier(value: "String"),
+                                          []
+                                        )
+                                      )
+                                    )
+                                  ),
+                                  arguments: DelimitedSequence(
+                                    start: SyntaxNode(
+                                      leadingTrivia: [],
+                                      content: 8:13-8:13 ()
+                                    ),
+                                    elements: [
+                                      [0]: DelimitedSequence.Element(
+                                        content: SyntaxNode(
+                                          leadingTrivia: [],
+                                          content: 8:14-8:14 Expr(
+                                            payload: Expr.Payload.identifier(
+                                              Identifier(value: "i")
+                                            ),
+                                            annotation: Type.constructor(
+                                              Identifier(value: "Int32"),
+                                              []
+                                            )
+                                          )
+                                        ),
+                                        separator: nil
+                                      )
+                                    ],
+                                    end: SyntaxNode(
+                                      leadingTrivia: [],
+                                      content: 8:15-8:15 ()
+                                    )
+                                  )
+                                )
+                              ),
+                              annotation: Type.constructor(
+                                Identifier(value: "String"),
+                                []
+                              )
+                            )
+                          )
+                        )
+                      ]
+                    ),
+                    [1]: Switch.CaseBlock(
+                      casePattern: CasePattern(
+                        caseKeyword: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace("\n  ")
+                          ],
+                          content: 9:2-9:5 ()
+                        ),
+                        bindingKeyword: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace(" ")
+                          ],
+                          content: 9:7-9:9 ()
+                        ),
+                        pattern: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace(" ")
+                          ],
+                          content: 9:11-9:15 Expr(
+                            payload: Expr.Payload.application(
+                              FuncApplication(
+                                function: SyntaxNode(
+                                  leadingTrivia: [
+                                    [0]: Whitespace(" ")
+                                  ],
+                                  content: 9:11-9:12 Expr(
+                                    payload: Expr.Payload.leadingDot(
+                                      LeadingDot(
+                                        dot: SyntaxNode(
+                                          leadingTrivia: [
+                                            [0]: Whitespace(" ")
+                                          ],
+                                          content: 9:11-9:11 ()
+                                        ),
+                                        member: SyntaxNode(
+                                          leadingTrivia: [],
+                                          content: 9:12-9:12 Identifier(value: "b")
+                                        )
+                                      )
+                                    ),
+                                    annotation: Type.arrow(
+                                      [
+                                        [0]: Type.constructor(
+                                          Identifier(value: "String"),
+                                          []
+                                        )
+                                      ],
+                                      Type.constructor(
+                                        Identifier(value: "E"),
+                                        []
+                                      )
+                                    )
+                                  )
+                                ),
+                                arguments: DelimitedSequence(
+                                  start: SyntaxNode(
+                                    leadingTrivia: [],
+                                    content: 9:13-9:13 ()
+                                  ),
+                                  elements: [
+                                    [0]: DelimitedSequence.Element(
+                                      content: SyntaxNode(
+                                        leadingTrivia: [],
+                                        content: 9:14-9:14 Expr(
+                                          payload: Expr.Payload.identifier(
+                                            Identifier(value: "s")
+                                          ),
+                                          annotation: Type.constructor(
+                                            Identifier(value: "String"),
+                                            []
+                                          )
+                                        )
+                                      ),
+                                      separator: nil
+                                    )
+                                  ],
+                                  end: SyntaxNode(
+                                    leadingTrivia: [],
+                                    content: 9:15-9:15 ()
+                                  )
+                                )
+                              )
+                            ),
+                            annotation: Type.constructor(
+                              Identifier(value: "E"),
+                              []
+                            )
+                          )
+                        )
+                      ),
+                      colon: SyntaxNode(
+                        leadingTrivia: [],
+                        content: 9:16-9:16 ()
+                      ),
+                      body: [
+                        [0]: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace("\n    ")
+                          ],
+                          content: 10:4-10:4 ExprBlock.Element.expr(
+                            Expr(
+                              payload: Expr.Payload.identifier(
+                                Identifier(value: "s")
+                              ),
+                              annotation: Type.constructor(
+                                Identifier(value: "String"),
+                                []
+                              )
+                            )
+                          )
+                        )
+                      ]
+                    )
+                  ],
+                  closeBrace: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace("\n  ")
+                    ],
+                    content: 11:2-11:2 ()
+                  )
+                )
+              ),
+              annotation: Type.constructor(
+                Identifier(value: "String"),
+                []
+              )
+            )
+          )
+        )
+      ],
+      closeBrace: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace("\n")
+        ],
+        content: 12:0-12:0 ()
+      )
+    )
+  ),
+  annotation: Type.arrow(
+    [],
+    Type.constructor(
+      Identifier(value: "String"),
+      []
+    )
+  )
+)

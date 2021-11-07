@@ -219,8 +219,12 @@ extension Switch: Substitutable where A == TypeAnnotation {
   func apply(_ sub: Substitution) -> Switch<Type> {
     addAnnotation(
       subject: { $0.apply(sub) },
-      pattern: { $0.apply(sub) },
-      body: { $0.apply(sub) }
+      caseBlock: {
+        $0.addAnnotation(
+          pattern: { $0.apply(sub) },
+          body: { $0.apply(sub) }
+        )
+      }
     )
   }
 

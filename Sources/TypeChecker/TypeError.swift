@@ -26,4 +26,5 @@ enum TypeError: Error, Equatable {
   case funcDeclBodyMissing(Identifier)
   case typeMismatch(Identifier, expected: Type, actual: Type)
   case exprIsNotType(SourceRange<Empty>)
+  case enumCaseModifiers(SourceRange<Identifier>)
 }

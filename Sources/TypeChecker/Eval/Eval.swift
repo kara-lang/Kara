@@ -30,7 +30,7 @@ extension Expr {
         return try binding.eval(environment)
       } else if case let (parameters, body?, _)? = environment.schemes.functions[i] {
         return try .closure(parameters: parameters, body: body.elements.eval(environment))
-      } else if environment.types[i] != nil {
+      } else if environment.types.contains(i) {
         return .typeConstructor(i, [])
       } else if i == "Type" {
         // FIXME: maybe "Type" should be present in `DeclEnvironment` instead of checking for it directly?
@@ -109,11 +109,13 @@ extension Expr {
         fatalError()
       }
 
-      if case let (parameters, body?, _)? = environment.types[typeID]!.staticMembers
+      if case let (parameters, body?, _)? = environment.types.structs[typeID]!.staticMembers
         .functions[l.member.content.content]
       {
         return try .closure(parameters: parameters, body: body.elements.eval(environment))
-      } else if case let (value?, _)? = environment.types[typeID]!.staticMembers.bindings[l.member.content.content] {
+      } else if case let (value?, _)? = environment.types.structs[typeID]!.staticMembers
+        .bindings[l.member.content.content]
+      {
         return try value.eval(environment)
       } else {
         fatalError()
@@ -159,7 +161,7 @@ extension MemberAccess {
       return elements[i]
 
     case let (.structLiteral(typeID, args), .identifier(member)):
-      if case let (parameters, body?, _)? = environment.types[typeID]!.members.functions[member] {
+      if case let (parameters, body?, _)? = environment.types.structs[typeID]!.valueMembers.functions[member] {
         return try .closure(parameters: parameters, body: body.elements.eval(environment))
       } else {
         return args[member]!
@@ -169,9 +171,9 @@ extension MemberAccess {
       return .memberAccess(.identifier(id), member)
 
     case let (.typeConstructor(typeID, _), .identifier(member)):
-      if case let (parameters, body?, _)? = environment.types[typeID]!.staticMembers.functions[member] {
+      if case let (parameters, body?, _)? = environment.types.structs[typeID]!.staticMembers.functions[member] {
         return try .closure(parameters: parameters, body: body.elements.eval(environment))
-      } else if case let (value?, _)? = environment.types[typeID]!.staticMembers.bindings[member] {
+      } else if case let (value?, _)? = environment.types.structs[typeID]!.staticMembers.bindings[member] {
         return try value.eval(environment)
       } else {
         fatalError()

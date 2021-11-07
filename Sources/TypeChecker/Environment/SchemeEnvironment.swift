@@ -47,11 +47,9 @@ struct SchemeEnvironment<A: Annotation> {
     )
   }
 
-  mutating func insert<T>(bindings sequence: T) where T: Sequence,
-    T.Element == (Identifier, (Expr<A>?, Scheme))
-  {
-    for (id, (value, scheme)) in sequence {
-      bindings[id] = (value, scheme)
+  mutating func insert<T>(bindings sequence: T) where T: Sequence, T.Element == (Identifier, Scheme) {
+    for (id, scheme) in sequence {
+      bindings[id] = (nil, scheme)
     }
   }
 }
