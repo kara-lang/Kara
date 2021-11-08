@@ -40,18 +40,17 @@ extension Expr {
       }
 
     case let .application(a):
-      let arguments = a.arguments.elementsContent
-
-      let nf = try a.function.content.content.eval(environment)
-      switch nf {
+      let function = try a.function.content.content.eval(environment)
+      let arguments = try a.arguments.elementsContent.map { try $0.eval(environment) }
+      switch function {
       case let .closure(parameters, body):
         precondition(arguments.count == parameters.count)
-        return try body.apply(
-          .init(uniqueKeysWithValues: zip(parameters, arguments.map { try $0.eval(environment) }))
+        return body.apply(
+          .init(uniqueKeysWithValues: zip(parameters, arguments))
         )
 
       default:
-        fatalError()
+        return .application(function: function, arguments: arguments)
       }
 
     case let .closure(c):
@@ -125,7 +124,7 @@ extension Expr {
       let subject = try s.subject.content.content.eval(environment)
 
       switch subject {
-      case let .memberAccess(.typeConstructor(typeID, _), .identifier(id)):
+      case let .memberAccess(.typeConstructor(_, _), .identifier(_)):
         fatalError()
       default:
         fatalError()
@@ -178,9 +177,22 @@ extension MemberAccess {
       return .memberAccess(.identifier(id), member)
 
     case let (.typeConstructor(typeID, _), .identifier(member)):
-      if case let (parameters, body?, _)? = environment.types.structs[typeID]!.staticMembers.functions[member] {
+      let memberEnvironment: MemberEnvironment<A>
+      if let structEnvironment = environment.types.structs[typeID] {
+        memberEnvironment = structEnvironment.members
+      } else if let enumEnvironment = environment.types.enums[typeID] {
+        if enumEnvironment.enumCases[member] != nil {
+          return .memberAccess(.identifier(typeID), .identifier(member))
+        }
+
+        memberEnvironment = enumEnvironment.members
+      } else {
+        fatalError()
+      }
+
+      if case let (parameters, body?, _)? = memberEnvironment.staticMembers.functions[member] {
         return try .closure(parameters: parameters, body: body.elements.eval(environment))
-      } else if case let (value?, _)? = environment.types.structs[typeID]!.staticMembers.bindings[member] {
+      } else if case let (value?, _)? = memberEnvironment.staticMembers.bindings[member] {
         return try value.eval(environment)
       } else {
         fatalError()
@@ -244,6 +256,7 @@ extension NormalForm {
 
     case let .arrow(head, tail):
       return .arrow(head.apply(substitution), tail.apply(substitution))
+
     case let .memberAccess(base, member):
       switch (base.apply(substitution), member) {
       case let (.identifier(i), _):
@@ -255,6 +268,9 @@ extension NormalForm {
       default:
         fatalError()
       }
+
+    case let .application(function: function, arguments: arguments):
+      return .application(function: function.apply(substitution), arguments: arguments.apply(substitution))
     }
   }
 }

@@ -369,5 +369,20 @@ final class SyntaxInferenceTests: XCTestCase {
       """.inferParsedExpr(environment: e),
       TypeError.unknownStaticMember(baseTypeID: "E", .identifier("c"))
     )
+
+    try assertError(
+      """
+      {
+        struct E {
+          case a
+          case b(Int32)
+        }
+        E.c
+      }
+      """.inferParsedExpr(environment: e),
+      TypeError.enumCaseOutsideOfEnum(
+        .init(start: .init(column: 9, line: 2), end: .init(column: 9, line: 2), content: "a")
+      )
+    )
   }
 }

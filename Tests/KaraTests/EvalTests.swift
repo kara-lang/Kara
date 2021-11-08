@@ -24,7 +24,7 @@ final class EvalTests: XCTestCase {
   }
 
   func testStructLiterals() throws {
-//    assertEvalThrows("S [a: 0, b: 42, c: false].b", TypeError.unbound("S"))
+    assertEvalThrows("S [a: 0, b: 42, c: false].b", TypeError.unbound("S"))
     try assertEval(
       """
       {
@@ -174,6 +174,33 @@ final class EvalTests: XCTestCase {
       }
       """,
       .closure(parameters: [], body: .tuple([.literal(2_147_483_647), .literal(0)]))
+    )
+  }
+
+  func testEnumCase() throws {
+    try assertEval(
+      """
+      {
+        struct Int32 {}
+        enum E {
+          case a
+          case b(Int32)
+        }
+        (E.a, E.b(42))
+      }
+      """,
+      .closure(
+        parameters: [],
+        body: .tuple(
+          [
+            .memberAccess(.identifier("E"), .identifier("a")),
+            .application(
+              function: .memberAccess(.identifier("E"), .identifier("b")),
+              arguments: [.literal(42)]
+            ),
+          ]
+        )
+      )
     )
   }
 }

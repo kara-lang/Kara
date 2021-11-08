@@ -17,6 +17,7 @@ enum NormalForm: Hashable {
   case tuple([NormalForm])
   case structLiteral(Identifier, [Identifier: NormalForm])
   case typeConstructor(Identifier, [NormalForm])
+  indirect case application(function: NormalForm, arguments: [NormalForm])
   indirect case memberAccess(NormalForm, Member)
   indirect case closure(parameters: [Identifier], body: NormalForm)
   indirect case ifThenElse(condition: Identifier, then: NormalForm, else: NormalForm)
@@ -44,7 +45,7 @@ enum NormalForm: Hashable {
       }
       return nil
 
-    case .closure, .literal, .ifThenElse, .structLiteral, .memberAccess:
+    case .closure, .literal, .ifThenElse, .structLiteral, .memberAccess, .application:
       return nil
     }
   }

@@ -5,11 +5,11 @@
 import Syntax
 
 /// Mapping from an enum case identifier to an array of types of its associated values.
-typealias EnumCases = [SourceRange<Identifier>: [NormalForm]]
+typealias EnumCases = [Identifier: [NormalForm]]
 
 @dynamicMemberLookup
 struct EnumEnvironment<A: Annotation> {
-  init(enumCases: EnumCases = [:], members: MemberEnvironment<A> = .init()) {
+  init(enumCases: EnumCases = .init(), members: MemberEnvironment<A> = .init()) {
     self.enumCases = enumCases
     self.members = members
   }
@@ -37,7 +37,7 @@ struct EnumEnvironment<A: Annotation> {
       throw TypeError.enumCaseModifiers(e.identifier.content)
     }
 
-    enumCases[e.identifier.content] = try e.associatedValues?.elementsContent.map {
+    enumCases[e.identifier.content.content] = try e.associatedValues?.elementsContent.map {
       try $0.eval(topLevel)
     } ?? []
 
