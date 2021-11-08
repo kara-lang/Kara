@@ -33,16 +33,16 @@ struct ModuleEnvironment<A: Annotation> {
   mutating func insert(_ declaration: Declaration<A>) throws {
     switch declaration {
     case let .function(f):
-      try schemes.insert(f, self)
+      try schemes.insert(func: f, self)
 
     case let .binding(b):
-      try schemes.insert(b, self)
+      try schemes.insert(binding: b, self)
 
     case let .struct(s):
-      try types.insert(s, self)
+      try types.insert(struct: s, self)
 
     case let .enum(e):
-      try types.insert(e, self)
+      try types.insert(enum: e, self)
 
     case .trait, .enumCase:
       // FIXME: handle trait declarations

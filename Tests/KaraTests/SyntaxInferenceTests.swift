@@ -341,4 +341,33 @@ final class SyntaxInferenceTests: XCTestCase {
       TypeError.unificationFailure(.int32, .bool)
     )
   }
+
+  func testEnumCase() throws {
+    let e = ModuleEnvironment<EmptyAnnotation>(types: .init(structs: ["Int32": .init(), "String": .init()]))
+    try assertSnapshot(
+      """
+      {
+        enum E {
+          case a
+          case b(Int32)
+        }
+        (E.a, E.b(42), E.b)
+      }
+      """
+      .inferParsedExpr(environment: e)
+    )
+
+    try assertError(
+      """
+      {
+        enum E {
+          case a
+          case b(Int32)
+        }
+        E.c
+      }
+      """.inferParsedExpr(environment: e),
+      TypeError.unknownStaticMember(baseTypeID: "E", .identifier("c"))
+    )
+  }
 }

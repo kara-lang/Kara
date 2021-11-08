@@ -22,9 +22,11 @@ enum TypeError: Error, Equatable {
   case typeDeclAlreadyExists(Identifier)
   case funcDeclAlreadyExists(Identifier)
   case bindingDeclAlreadyExists(Identifier)
+  case enumCaseAlreadyExists(Identifier)
+  case enumCaseModifiers(SourceRange<Identifier>)
+  case enumCaseOutsideOfEnum(SourceRange<Identifier>)
   case multipleInteropModifiers
   case funcDeclBodyMissing(Identifier)
   case typeMismatch(Identifier, expected: Type, actual: Type)
   case exprIsNotType(SourceRange<Empty>)
-  case enumCaseModifiers(SourceRange<Identifier>)
 }

@@ -31,29 +31,42 @@ struct MemberEnvironment<A: Annotation> {
 
   /// Inserts a given declaration type (and members if appropriate) into this environment.
   /// - Parameter declaration: `Declaration` value that will be recursively scanned to produce nested environments.
-  mutating func insert(_ declaration: Declaration<A>, _ topLevel: ModuleEnvironment<A>) throws {
-    switch declaration {
-    case let .function(f):
+  mutating func insert(
+    _ declaration: Declaration<A>,
+    container: Declaration<A>,
+    _ topLevel: ModuleEnvironment<A>
+  ) throws {
+    switch (declaration, container) {
+    case let (.function(f), _):
       if f.isStatic {
-        try staticMembers.insert(f, topLevel)
+        try staticMembers.insert(func: f, topLevel)
       } else {
-        try valueMembers.insert(f, topLevel)
+        try valueMembers.insert(func: f, topLevel)
       }
 
-    case let .binding(b):
+    case let (.binding(b), .struct):
       if b.isStatic {
-        try staticMembers.insert(b, topLevel)
+        try staticMembers.insert(binding: b, topLevel)
       } else {
-        try valueMembers.insert(b, topLevel)
+        try valueMembers.insert(binding: b, topLevel)
       }
 
-    case let .struct(s):
-      try types.insert(s, topLevel)
+    case (.binding, _):
+      fatalError()
 
-    case let .enum(e):
-      try types.insert(e, topLevel)
+    case let (.struct(s), _):
+      try types.insert(struct: s, topLevel)
 
-    case .trait, .enumCase:
+    case let (.enum(e), _):
+      try types.insert(enum: e, topLevel)
+
+    case let (.enumCase(enumCase), .enum(enumDecl)):
+      try staticMembers.insert(enumCase: enumCase, enumTypeID: enumDecl.identifier.content.content, topLevel)
+
+    case let (.enumCase(enumCase), _):
+      throw TypeError.enumCaseOutsideOfEnum(enumCase.identifier.content)
+
+    case (.trait, _):
       // FIXME: handle trait declarations
       fatalError()
     }
@@ -63,7 +76,7 @@ struct MemberEnvironment<A: Annotation> {
 extension StructDecl {
   func extend(_ topLevel: ModuleEnvironment<A>) throws -> StructEnvironment<A> {
     try .init(members: declarations.elements.map(\.content.content).reduce(into: MemberEnvironment<A>()) {
-      try $0.insert($1, topLevel)
+      try $0.insert($1, container: .struct(self), topLevel)
     })
   }
 }
@@ -72,7 +85,7 @@ extension EnumDecl {
   func extend(_ topLevel: ModuleEnvironment<A>) throws -> EnumEnvironment<A> {
     var result = EnumEnvironment<A>()
     for declaration in declarations.elements.map(\.content.content) {
-      try result.insert(declaration, topLevel)
+      try result.insert(declaration, container: .enum(self), topLevel)
     }
     return result
   }

@@ -24,9 +24,13 @@ struct EnumEnvironment<A: Annotation> {
 
   /// Inserts a given declaration type (and members if appropriate) into this environment.
   /// - Parameter declaration: `Declaration` value that will be recursively scanned to produce nested environments.
-  mutating func insert(_ declaration: Declaration<A>, _ topLevel: ModuleEnvironment<A>) throws {
+  mutating func insert(
+    _ declaration: Declaration<A>,
+    container: Declaration<A>,
+    _ topLevel: ModuleEnvironment<A>
+  ) throws {
     guard case let .enumCase(e) = declaration else {
-      return try members.insert(declaration, topLevel)
+      return try members.insert(declaration, container: container, topLevel)
     }
 
     guard e.modifiers.isEmpty else {
@@ -36,5 +40,8 @@ struct EnumEnvironment<A: Annotation> {
     enumCases[e.identifier.content] = try e.associatedValues?.elementsContent.map {
       try $0.eval(topLevel)
     } ?? []
+
+    // Insert the enum case declaration as a static member to allow type inference to work it.
+    try members.insert(declaration, container: container, topLevel)
   }
 }

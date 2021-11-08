@@ -121,11 +121,18 @@ extension Expr {
         fatalError()
       }
 
+    case let .switch(s):
+      let subject = try s.subject.content.content.eval(environment)
+
+      switch subject {
+      case let .memberAccess(.typeConstructor(typeID, _), .identifier(id)):
+        fatalError()
+      default:
+        fatalError()
+      }
+
     case .unit:
       return .tuple([])
-
-    case .switch:
-      fatalError()
     }
   }
 }

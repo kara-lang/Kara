@@ -68,3 +68,19 @@ extension BindingDecl {
     try type(environment).map { Scheme($0) }
   }
 }
+
+extension EnumCase {
+  func scheme(enumTypeID: Identifier, _ environment: ModuleEnvironment<A>) throws -> Scheme {
+    let selfType = Type.constructor(enumTypeID, [])
+
+    guard
+      let associatedValues = try associatedValues?.elementsContent
+      .map({ try $0.eval(environment).type(environment)! })
+    else {
+      // FIXME: support generic enums
+      return Scheme(selfType)
+    }
+
+    return Scheme(.arrow(associatedValues, selfType))
+  }
+}

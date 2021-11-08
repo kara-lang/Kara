@@ -34,7 +34,7 @@ struct TypeEnvironment<A: Annotation> {
     )
   }
 
-  mutating func insert(_ s: StructDecl<A>, _ topLevel: ModuleEnvironment<A>) throws {
+  mutating func insert(struct s: StructDecl<A>, _ topLevel: ModuleEnvironment<A>) throws {
     let typeIdentifier = s.identifier.content.content
 
     guard !contains(typeIdentifier) else {
@@ -45,7 +45,7 @@ struct TypeEnvironment<A: Annotation> {
     structs[typeIdentifier] = try s.extend(topLevel.shadow(with: self))
   }
 
-  mutating func insert(_ e: EnumDecl<A>, _ topLevel: ModuleEnvironment<A>) throws {
+  mutating func insert(enum e: EnumDecl<A>, _ topLevel: ModuleEnvironment<A>) throws {
     let typeIdentifier = e.identifier.content.content
     guard !contains(typeIdentifier) else {
       throw TypeError.typeDeclAlreadyExists(typeIdentifier)
