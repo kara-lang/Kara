@@ -126,6 +126,10 @@ func assertEvalThrows<E: Error & Equatable>(
   let parsingResult = exprParser.parse(&source)
   assertFullyConsumed(source)
   let e = ModuleEnvironment<EmptyAnnotation>()
-  let annotated = try parsingResult?.content.content.annotate(e)
-  try assertError(annotated?.eval(ModuleEnvironment<TypeAnnotation>()), error, file: file, line: line)
+  try assertError(
+    parsingResult?.content.content.annotate(e).eval(ModuleEnvironment<TypeAnnotation>()),
+    error,
+    file: file,
+    line: line
+  )
 }
