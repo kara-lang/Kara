@@ -4,8 +4,8 @@
 
 import Parsing
 
-func statefulWhitespace(isRequired: Bool = false) -> LineCounter {
-  LineCounter(isRequired: isRequired, lookaheadAmount: 1) {
+func statefulWhitespace(isRequired: Bool, consumesNewline: Bool) -> LineCounter {
+  LineCounter(isRequired: isRequired, consumesNewline: consumesNewline, lookaheadAmount: 1) {
     $0.first == .init(ascii: " ")
   }
 }

@@ -5,16 +5,20 @@
 import Parsing
 
 struct LineCounter: Parser {
+  /// Whether this parser is required to consume at least one code unit.
+  let isRequired: Bool
+  /// Whether this parser consumes newline symbols.
+  let consumesNewline: Bool
   let lookaheadAmount: Int
   let lookahead: (UTF8SubSequence) -> Bool
-  init(isRequired: Bool = false, lookaheadAmount: Int, lookahead: @escaping (UTF8SubSequence) -> Bool) {
+  init(isRequired: Bool, consumesNewline: Bool, lookaheadAmount: Int,
+       lookahead: @escaping (UTF8SubSequence) -> Bool)
+  {
     self.isRequired = isRequired
+    self.consumesNewline = consumesNewline
     self.lookaheadAmount = lookaheadAmount
     self.lookahead = lookahead
   }
-
-  /// Whether this parser is required to consume at least one code unit.
-  let isRequired: Bool
 
   func parse(_ state: inout ParsingState) -> SourceRange<UTF8SubSequence>? {
     let substring = state.source.utf8[state.index...]
@@ -28,16 +32,16 @@ struct LineCounter: Parser {
 
     loop: while nextIndex != substring.endIndex {
       let lookaheadResult = lookahead(state.source.utf8[nextIndex...].prefix(lookaheadAmount))
-      switch (lookaheadResult, substring[nextIndex]) {
-      case (_, .init(ascii: "\r")):
+      switch (consumesNewline, lookaheadResult, substring[nextIndex]) {
+      case (true, _, .init(ascii: "\r")):
         state.column += 1
         isCarriageReturn = true
 
-      case (_, .init(ascii: "\n")):
+      case (true, _, .init(ascii: "\n")):
         state.nextLine()
         isCarriageReturn = false
 
-      case (true, _), (_, .init(ascii: "\t")):
+      case (_, true, _), (_, _, .init(ascii: "\t")):
         if isCarriageReturn {
           state.nextLine()
         } else {
@@ -73,4 +77,4 @@ struct LineCounter: Parser {
   }
 }
 
-let newlineParser = LineCounter(isRequired: true, lookaheadAmount: 0, lookahead: { _ in false })
+let newlineParser = LineCounter(isRequired: true, consumesNewline: true, lookaheadAmount: 0, lookahead: { _ in false })

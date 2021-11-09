@@ -33,7 +33,7 @@ let singleLineCommentParser = Terminal("//")
 
 let multipleLinesCommentParser = Terminal("/*")
   .take(
-    LineCounter(isRequired: true, lookaheadAmount: 2) {
+    LineCounter(isRequired: true, consumesNewline: true, lookaheadAmount: 2) {
       Array($0) != [UInt8(ascii: "*"), UInt8(ascii: "/")]
     }
   )

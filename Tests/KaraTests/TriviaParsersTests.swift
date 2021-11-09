@@ -47,15 +47,44 @@ final class TriviaParsersTests: XCTestCase {
   }
 
   func testTrivia() {
-    assertSnapshot(triviaParser(requiresLeadingTrivia: true).parse("// Hello, world!"))
+    assertSnapshot(triviaParser(requiresLeadingTrivia: true, consumesNewline: true).parse("// Hello, world!"))
+    assertSnapshot(triviaParser(requiresLeadingTrivia: true, consumesNewline: true).parse("   // Hello, world!"))
+    assertSnapshot(triviaParser(requiresLeadingTrivia: true, consumesNewline: true).parse(
+      """
 
-    assertSnapshot(triviaParser(requiresLeadingTrivia: true).parse("   // Hello, world!"))
+
+      // Hello, world!
+
+
+      """
+    ))
+    assertSnapshot(triviaParser(requiresLeadingTrivia: true, consumesNewline: false).parse("// Hello, world!"))
+    assertSnapshot(triviaParser(requiresLeadingTrivia: true, consumesNewline: false).parse("   // Hello, world!"))
+    XCTAssertNil(
+      triviaParser(requiresLeadingTrivia: true, consumesNewline: false).parse("\n   // Hello, world!")
+        .output
+    )
+    assertNotFullyConsumed(
+      triviaParser(requiresLeadingTrivia: true, consumesNewline: false)
+        .parse("   // Hello, world!\n").rest
+    )
+    assertFullyConsumed(
+      triviaParser(requiresLeadingTrivia: true, consumesNewline: false)
+        .parse(
+          """
+          /*
+          Hello,
+          world!
+          */
+          """
+        ).rest
+    )
   }
 
   func testStatefulWhitespace() {
     let emptyString = ""
     var state = ParsingState(source: emptyString)
-    let parser = statefulWhitespace()
+    let parser = statefulWhitespace(isRequired: false, consumesNewline: true)
 
     XCTAssertNotNil(parser.parse(&state))
 
@@ -138,7 +167,7 @@ final class TriviaParsersTests: XCTestCase {
   func testRequiredWhitespace() {
     let emptyString = ""
     var state = ParsingState(source: emptyString)
-    let parser = statefulWhitespace(isRequired: true)
+    let parser = statefulWhitespace(isRequired: true, consumesNewline: true)
 
     XCTAssertNil(parser.parse(&state))
 

@@ -43,14 +43,16 @@ struct SyntaxNodeParser<Inner, Content>: Parser
 {
   let inner: Inner
   let requiresLeadingTrivia: Bool
+  let consumesNewline: Bool
 
-  init(_ inner: Inner, requiresLeadingTrivia: Bool = false) {
+  init(_ inner: Inner, requiresLeadingTrivia: Bool = false, consumesNewline: Bool = true) {
     self.inner = inner
     self.requiresLeadingTrivia = requiresLeadingTrivia
+    self.consumesNewline = consumesNewline
   }
 
   func parse(_ input: inout ParsingState) -> SyntaxNode<Content>? {
-    triviaParser(requiresLeadingTrivia: requiresLeadingTrivia)
+    triviaParser(requiresLeadingTrivia: requiresLeadingTrivia, consumesNewline: consumesNewline)
       .take(inner)
       .map { SyntaxNode(leadingTrivia: $0.map(\.content), content: $1) }
       .parse(&input)

@@ -114,7 +114,7 @@ let parametricClosureParser = openBraceParser
   .take(Keyword.in.parser)
   .take(
     Optional.parser(
-      of: triviaParser(requiresLeadingTrivia: true)
+      of: triviaParser(requiresLeadingTrivia: true, consumesNewline: true)
         .take(exprBlockElementsParser)
         .map { trivia, elements -> Closure<EmptyAnnotation>.Body in
           // Append required leading trivia to `ExprBlock` elements.

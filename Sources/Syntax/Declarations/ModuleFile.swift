@@ -20,7 +20,7 @@ public struct ModuleFile<A: Annotation> {
 
 let moduleFileParser =
   Many(declarationParser)
-    .take(triviaParser(requiresLeadingTrivia: false))
+    .take(triviaParser(requiresLeadingTrivia: false, consumesNewline: true))
     .map {
       ModuleFile(declarations: $0, trailingTrivia: $1.map(\.content))
     }.eraseToAnyParser()

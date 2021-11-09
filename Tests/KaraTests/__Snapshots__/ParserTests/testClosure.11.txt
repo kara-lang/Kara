@@ -1,0 +1,109 @@
+SyntaxNode(
+  leadingTrivia: [],
+  content: 0:0-3:0 Expr(
+    payload: Expr.Payload.closure(
+      Closure(
+        openBrace: SyntaxNode(
+          leadingTrivia: [],
+          content: 0:0-0:0 ()
+        ),
+        parameters: [],
+        inKeyword: nil,
+        body: [
+          [0]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("\n    ")
+            ],
+            content: 1:4-1:4 ExprBlock.Element.expr(
+              Expr(
+                payload: Expr.Payload.identifier(
+                  Identifier(value: "f")
+                ),
+                annotation: EmptyAnnotation()
+              )
+            )
+          ),
+          [1]: SyntaxNode(
+            leadingTrivia: [
+              [0]: Whitespace("    ")
+            ],
+            content: 2:4-2:12 ExprBlock.Element.expr(
+              Expr(
+                payload: Expr.Payload.tuple(
+                  DelimitedSequence(
+                    start: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace("    ")
+                      ],
+                      content: 2:4-2:4 ()
+                    ),
+                    elements: [
+                      [0]: DelimitedSequence.Element(
+                        content: SyntaxNode(
+                          leadingTrivia: [],
+                          content: 2:5-2:5 Expr(
+                            payload: Expr.Payload.literal(
+                              Literal.int32(1)
+                            ),
+                            annotation: EmptyAnnotation()
+                          )
+                        ),
+                        separator: SyntaxNode(
+                          leadingTrivia: [],
+                          content: 2:6-2:6 ()
+                        )
+                      ),
+                      [1]: DelimitedSequence.Element(
+                        content: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace(" ")
+                          ],
+                          content: 2:8-2:8 Expr(
+                            payload: Expr.Payload.literal(
+                              Literal.int32(2)
+                            ),
+                            annotation: EmptyAnnotation()
+                          )
+                        ),
+                        separator: SyntaxNode(
+                          leadingTrivia: [],
+                          content: 2:9-2:9 ()
+                        )
+                      ),
+                      [2]: DelimitedSequence.Element(
+                        content: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace(" ")
+                          ],
+                          content: 2:11-2:11 Expr(
+                            payload: Expr.Payload.literal(
+                              Literal.int32(3)
+                            ),
+                            annotation: EmptyAnnotation()
+                          )
+                        ),
+                        separator: nil
+                      )
+                    ],
+                    end: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 2:12-2:12 ()
+                    )
+                  )
+                ),
+                annotation: EmptyAnnotation()
+              )
+            )
+          )
+        ],
+        closeBrace: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("\n")
+          ],
+          content: 3:0-3:0 ()
+        )
+      )
+    ),
+    annotation: EmptyAnnotation()
+  )
+)

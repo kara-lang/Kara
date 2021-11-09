@@ -107,6 +107,16 @@ final class ParserTests: XCTestCase {
         """
       )
     )
+    assertSnapshot(
+      exprParser.parse(
+        """
+        {
+            f
+            (1, 2, 3)
+        }
+        """
+      )
+    )
 
     XCTAssertNil(exprParser.parse("{ x in y in 1 }").output)
     XCTAssertNil(exprParser.parse("{x in1}").output)

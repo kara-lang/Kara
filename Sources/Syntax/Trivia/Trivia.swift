@@ -51,12 +51,12 @@ typealias TriviaParser = Many<
   Always<ParsingState, ()>
 >
 
-func triviaParser(requiresLeadingTrivia: Bool) -> TriviaParser {
+func triviaParser(requiresLeadingTrivia: Bool, consumesNewline: Bool) -> TriviaParser {
   Many(
     commentParser
       .map { $0.map(Trivia.comment) }
       .orElse(
-        statefulWhitespace(isRequired: true)
+        statefulWhitespace(isRequired: true, consumesNewline: consumesNewline)
           .map { $0.map { Trivia.whitespace(String(Substring($0))) } }
       ),
     atLeast: requiresLeadingTrivia ? 1 : 0
