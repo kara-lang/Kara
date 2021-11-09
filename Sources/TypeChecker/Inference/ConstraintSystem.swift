@@ -120,12 +120,19 @@ struct ConstraintSystem {
   ) throws -> Declaration<TypeAnnotation> {
     switch declaration {
     case let .binding(b):
-      return try .binding(
+      let annotated = try
         b.addAnnotation(
           typeSignature: { try annotate(expr: $0) },
           value: { try annotate(expr: $0) }
         )
-      )
+      if
+        let signature = try b.typeSignature?.signature.content.content.eval(environment).type(environment),
+        let valueType = annotated.value?.expr.annotation
+      {
+        constraints.append(.equal(signature, valueType))
+      }
+
+      return .binding(annotated)
 
     case let .function(f):
       return try .function(annotate(funcDecl: f))

@@ -357,6 +357,19 @@ final class SyntaxInferenceTests: XCTestCase {
       .inferParsedExpr(environment: e)
     )
 
+    try assertSnapshot(
+      """
+      {
+        enum E {
+          case a
+        }
+        let x: E = .a
+        x
+      }
+      """
+      .inferParsedExpr(environment: e)
+    )
+
     try assertError(
       """
       {

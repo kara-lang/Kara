@@ -1,0 +1,188 @@
+Expr(
+  payload: Expr.Payload.closure(
+    Closure(
+      openBrace: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 ()
+      ),
+      parameters: [],
+      inKeyword: nil,
+      body: [
+        [0]: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("\n  ")
+          ],
+          content: 1:2-3:2 ExprBlock.Element.declaration(
+            Declaration.enum(
+              EnumDecl(
+                modifiers: [],
+                enumKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("\n  ")
+                  ],
+                  content: 1:2-1:5 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 1:7-1:7 Identifier(value: "E")
+                ),
+                declarations: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 1:9-3:2 DeclBlock(
+                    openBrace: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 1:9-1:9 ()
+                    ),
+                    elements: [
+                      [0]: SyntaxNode(
+                        leadingTrivia: [
+                          [0]: Whitespace("\n    ")
+                        ],
+                        content: 2:4-2:9 Declaration.enumCase(
+                          EnumCase(
+                            modifiers: [],
+                            caseKeyword: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace("\n    ")
+                              ],
+                              content: 2:4-2:7 ()
+                            ),
+                            identifier: SyntaxNode(
+                              leadingTrivia: [
+                                [0]: Whitespace(" ")
+                              ],
+                              content: 2:9-2:9 Identifier(value: "a")
+                            ),
+                            associatedValues: nil
+                          )
+                        )
+                      )
+                    ],
+                    closeBrace: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace("\n  ")
+                      ],
+                      content: 3:2-3:2 ()
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ),
+        [1]: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("  ")
+          ],
+          content: 4:2-4:14 ExprBlock.Element.declaration(
+            Declaration.binding(
+              BindingDecl(
+                modifiers: [],
+                bindingKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("  ")
+                  ],
+                  content: 4:2-4:4 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 4:6-4:6 Identifier(value: "x")
+                ),
+                typeSignature: BindingDecl.TypeSignature(
+                  colon: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 4:7-4:7 ()
+                  ),
+                  signature: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 4:9-4:9 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "E")
+                      ),
+                      annotation: Type.constructor(
+                        Identifier(value: "Type"),
+                        []
+                      )
+                    )
+                  )
+                ),
+                value: BindingDecl.Value(
+                  equalsSign: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 4:11-4:11 ()
+                  ),
+                  expr: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 4:13-4:14 Expr(
+                      payload: Expr.Payload.leadingDot(
+                        LeadingDot(
+                          dot: SyntaxNode(
+                            leadingTrivia: [
+                              [0]: Whitespace(" ")
+                            ],
+                            content: 4:13-4:13 ()
+                          ),
+                          member: SyntaxNode(
+                            leadingTrivia: [],
+                            content: 4:14-4:14 Identifier(value: "a")
+                          )
+                        )
+                      ),
+                      annotation: Type.constructor(
+                        Identifier(value: "E"),
+                        []
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ),
+        [2]: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("  ")
+          ],
+          content: 5:2-5:2 ExprBlock.Element.expr(
+            Expr(
+              payload: Expr.Payload.identifier(
+                Identifier(value: "x")
+              ),
+              annotation: Type.constructor(
+                Identifier(value: "E"),
+                []
+              )
+            )
+          )
+        )
+      ],
+      closeBrace: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace("\n")
+        ],
+        content: 6:0-6:0 ()
+      )
+    )
+  ),
+  annotation: Type.arrow(
+    [],
+    Type.constructor(
+      Identifier(value: "E"),
+      []
+    )
+  )
+)
