@@ -24,7 +24,7 @@ final class EvalTests: XCTestCase {
   }
 
   func testStructLiterals() throws {
-    assertEvalThrows("S [a: 0, b: 42, c: false].b", TypeError.unbound("S"))
+    try assertEvalThrows("S [a: 0, b: 42, c: false].b", TypeError.unbound("S"))
     try assertEval(
       """
       {
@@ -90,7 +90,7 @@ final class EvalTests: XCTestCase {
       """,
       .closure(parameters: [], body: .literal(0))
     )
-    assertEvalThrows(
+    try assertEvalThrows(
       """
       {
       struct S {}
@@ -186,7 +186,8 @@ final class EvalTests: XCTestCase {
           case a
           case b(Int32)
         }
-        (E.a, E.b(42))
+        let x: E = .a
+        (x, E.b(42))
       }
       """,
       .closure(
@@ -201,6 +202,28 @@ final class EvalTests: XCTestCase {
           ]
         )
       )
+    )
+  }
+
+  func testSwitch() throws {
+    try assertEval(
+      """
+      {
+        struct Int32 {}
+        enum E {
+          case a
+          case b(Int32)
+        }
+
+        switch E.a {
+        case .a:
+          "a"
+        case .b:
+          "b"
+        }
+      }
+      """,
+      .closure(parameters: [], body: .literal("a"))
     )
   }
 }

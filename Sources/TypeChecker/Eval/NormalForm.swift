@@ -22,7 +22,9 @@ enum NormalForm: Hashable {
   indirect case closure(parameters: [Identifier], body: NormalForm)
   indirect case ifThenElse(condition: Identifier, then: NormalForm, else: NormalForm)
   indirect case arrow([NormalForm], NormalForm)
+}
 
+extension NormalForm {
   /// Returns a `Type` representation of `self` if it is inferrred to be a type expression. Returns `nil` otherwise.
   func type<A: Annotation>(_ environment: ModuleEnvironment<A>) throws -> Type? {
     switch self {

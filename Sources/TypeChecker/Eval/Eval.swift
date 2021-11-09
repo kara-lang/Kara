@@ -107,24 +107,51 @@ extension Expr {
       guard case let .constructor(typeID, _) = annotation as? TypeAnnotation else {
         fatalError()
       }
+      let staticMembers: SchemeEnvironment<A>
+      if let structEnvironment = environment.types.structs[typeID] {
+        staticMembers = structEnvironment.staticMembers
+      } else if let enumEnvironment = environment.types.enums[typeID] {
+        staticMembers = enumEnvironment.staticMembers
+      } else {
+        fatalError()
+      }
 
-      if case let (parameters, body?, _)? = environment.types.structs[typeID]!.staticMembers
-        .functions[l.member.content.content]
-      {
+      let memberID = l.member.content.content
+      if case let (parameters, body?, _)? = staticMembers.functions[memberID] {
         return try .closure(parameters: parameters, body: body.elements.eval(environment))
-      } else if case let (value?, _)? = environment.types.structs[typeID]!.staticMembers
-        .bindings[l.member.content.content]
-      {
-        return try value.eval(environment)
+      } else if case let (value, _)? = staticMembers.bindings[memberID] {
+        if let value = value {
+          return try value.eval(environment)
+        } else {
+          return .memberAccess(.identifier(typeID), .identifier(memberID))
+        }
       } else {
         fatalError()
       }
 
     case let .switch(s):
       let subject = try s.subject.content.content.eval(environment)
+      let patterns = try s.caseBlocks.map(\.casePattern.pattern.content.content).map { try $0.eval(environment) }
 
       switch subject {
-      case let .memberAccess(.typeConstructor(_, _), .identifier(_)):
+      case let .memberAccess(.identifier(typeID), .identifier(enumCase)):
+        guard
+          environment.types.enums[typeID] != nil,
+          let matchingCaseIndex = patterns.firstIndex(where: {
+            switch $0 {
+            case .memberAccess(.identifier(typeID), .identifier(enumCase)):
+              return true
+            default:
+              return false
+            }
+          })
+        else {
+          fatalError()
+        }
+
+        return try s.caseBlocks[matchingCaseIndex].exprBlock.elements.eval(environment)
+
+      case .memberAccess(.typeConstructor(_, _), .identifier(_)):
         fatalError()
       default:
         fatalError()
