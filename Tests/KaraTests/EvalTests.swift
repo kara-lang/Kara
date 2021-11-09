@@ -120,9 +120,9 @@ final class EvalTests: XCTestCase {
     try assertEval(
       """
       {
-        struct Int {}
-        let x: Int = 42
-        func f() -> Int { x }
+        struct Int32 {}
+        let x: Int32 = 42
+        func f() -> Int32 { x }
         f()
       }
       """,
