@@ -104,7 +104,13 @@ extension Expr {
       }
 
     case let .leadingDot(l):
-      guard case let .constructor(typeID, _) = annotation as? TypeAnnotation else {
+      let typeID: Identifier
+      switch annotation as? TypeAnnotation {
+      case let .constructor(constructorTypeID, _):
+        typeID = constructorTypeID
+      case let .arrow(_, .constructor(resultTypeID, _)):
+        typeID = resultTypeID
+      default:
         fatalError()
       }
       let staticMembers: SchemeEnvironment<A>
@@ -133,29 +139,39 @@ extension Expr {
       let subject = try s.subject.content.content.eval(environment)
       let patterns = try s.caseBlocks.map(\.casePattern.pattern.content.content).map { try $0.eval(environment) }
 
+      let typeID: Identifier
+      let enumCase: Identifier
+      let associatedValues: [NormalForm]
+
       switch subject {
-      case let .memberAccess(.identifier(typeID), .identifier(enumCase)):
-        guard
-          environment.types.enums[typeID] != nil,
-          let matchingCaseIndex = patterns.firstIndex(where: {
-            switch $0 {
-            case .memberAccess(.identifier(typeID), .identifier(enumCase)):
-              return true
-            default:
-              return false
-            }
-          })
-        else {
-          fatalError()
-        }
+      case let .memberAccess(.identifier(baseTypeID), .identifier(memberEnumCase)):
+        typeID = baseTypeID
+        enumCase = memberEnumCase
+        associatedValues = []
+      case let .application(.memberAccess(.identifier(baseTypeID), .identifier(memberEnumCase)), arguments):
+        typeID = baseTypeID
+        enumCase = memberEnumCase
+        associatedValues = arguments
 
-        return try s.caseBlocks[matchingCaseIndex].exprBlock.elements.eval(environment)
-
-      case .memberAccess(.typeConstructor(_, _), .identifier(_)):
-        fatalError()
       default:
         fatalError()
       }
+
+      guard
+        environment.types.enums[typeID] != nil,
+        let matchingCaseIndex = patterns.firstIndex(where: {
+          switch $0 {
+          case .memberAccess(.identifier(typeID), .identifier(enumCase)):
+            return true
+          default:
+            return false
+          }
+        })
+      else {
+        fatalError()
+      }
+
+      return try s.caseBlocks[matchingCaseIndex].exprBlock.elements.eval(environment)
 
     case .unit:
       return .tuple([])

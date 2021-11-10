@@ -187,7 +187,8 @@ final class EvalTests: XCTestCase {
           case b(Int32)
         }
         let x: E = .a
-        (x, E.b(42))
+        let y: E = .b(42)
+        (x, y)
       }
       """,
       .closure(
@@ -210,20 +211,30 @@ final class EvalTests: XCTestCase {
       """
       {
         struct Int32 {}
+        struct String {}
         enum E {
           case a
           case b(Int32)
         }
 
-        switch E.a {
+        let x: String = switch E.a {
         case .a:
           "a"
         case .b:
           "b"
         }
+
+        let y: String = switch E.b(42) {
+        case .a:
+          "a"
+        case .b:
+          "b"
+        }
+
+        (x, y)
       }
       """,
-      .closure(parameters: [], body: .literal("a"))
+      .closure(parameters: [], body: .tuple([.literal("a"), .literal("b")]))
     )
   }
 }
