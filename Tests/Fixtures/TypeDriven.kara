@@ -1,4 +1,4 @@
-protocol Monad {
+trait Monad {
   associatedtype Element
 
   static func new(_: Element) -> Self(Element)
