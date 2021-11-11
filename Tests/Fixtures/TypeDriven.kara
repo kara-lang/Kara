@@ -1,5 +1,5 @@
 trait Monad {
-  associatedtype Element
+  type Element
 
   static func new(_: Element) -> Self(Element)
 
@@ -12,7 +12,7 @@ enum Result(Value, Error) {
 }
 
 extension Result: Monad {
-    typealias Element = Value
+    let Element: Type = Value
 
     static func new(_ v: Value) { .success(v) }
 
