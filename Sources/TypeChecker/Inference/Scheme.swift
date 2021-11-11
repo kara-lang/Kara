@@ -27,10 +27,10 @@ struct Scheme {
 
 extension Expr {
   func evalToType(_ environment: ModuleEnvironment<A>, _ range: SourceRange<Empty>) throws -> Type {
-    let normalForm = try eval(environment)
-    if let type = try normalForm.type(environment) {
+    let kir = try eval(environment)
+    if let type = try kir.type(environment) {
       return type
-    } else if case let .identifier(i) = normalForm {
+    } else if case let .identifier(i) = kir {
       throw TypeError.unbound(i)
     } else {
       throw TypeError.exprIsNotType(range)

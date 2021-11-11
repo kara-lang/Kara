@@ -4,6 +4,7 @@
 
 import CustomDump
 @testable import Driver
+import KIR
 import SnapshotTesting
 @testable import Syntax
 @testable import TypeChecker
@@ -99,7 +100,7 @@ func assertNotFullyConsumed(
 
 func assertEval(
   _ source: ParsingState,
-  _ normalForm: NormalForm,
+  _ kir: KIRExpr,
   file: StaticString = #file,
   line: UInt = #line
 ) throws {
@@ -110,7 +111,7 @@ func assertEval(
   let annotated = try parsingResult?.content.content.annotate(e)
   try XCTAssertNoDifference(
     annotated?.eval(ModuleEnvironment<TypeAnnotation>()),
-    normalForm,
+    kir,
     file: file,
     line: line
   )

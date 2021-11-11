@@ -2,10 +2,11 @@
 //  Created by Max Desiatov on 07/11/2021.
 //
 
+import KIR
 import Syntax
 
 /// Mapping from an enum case identifier to an array of types of its associated values.
-typealias EnumCases = [Identifier: [NormalForm]]
+typealias EnumCases = [Identifier: [KIRExpr]]
 
 @dynamicMemberLookup
 struct EnumEnvironment<A: Annotation> {

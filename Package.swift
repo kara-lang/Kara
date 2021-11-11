@@ -46,8 +46,14 @@ let package = Package(
       ]
     ),
     .target(
+      name: "KIR",
+      dependencies: [
+        "Syntax",
+      ]
+    ),
+    .target(
       name: "TypeChecker",
-      dependencies: ["Syntax"]
+      dependencies: ["KIR", "Syntax"]
     ),
     .target(
       name: "JSCodegen",

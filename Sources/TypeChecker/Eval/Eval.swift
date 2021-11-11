@@ -2,10 +2,11 @@
 //  Created by Max Desiatov on 22/10/2021.
 //
 
+import KIR
 import Syntax
 
 extension Type {
-  func eval<A: Annotation>(_ environment: ModuleEnvironment<A>) -> NormalForm {
+  func eval<A: Annotation>(_ environment: ModuleEnvironment<A>) -> KIRExpr {
     switch self {
     case let .tuple(types):
       return .tuple(types.map { $0.eval(environment) })
@@ -23,7 +24,7 @@ extension Type {
 }
 
 extension Expr {
-  func eval(_ environment: ModuleEnvironment<A>) throws -> NormalForm {
+  func eval(_ environment: ModuleEnvironment<A>) throws -> KIRExpr {
     switch payload {
     case let .identifier(i):
       if case let (binding?, _)? = environment.schemes.bindings[i] {
@@ -141,7 +142,7 @@ extension Expr {
 
       let typeID: Identifier
       let enumCase: Identifier
-      let associatedValues: [NormalForm]
+      let associatedValues: [KIRExpr]
 
       switch subject {
       case let .memberAccess(.identifier(baseTypeID), .identifier(memberEnumCase)):
@@ -180,7 +181,7 @@ extension Expr {
 }
 
 extension Array {
-  func eval<A>(_ environment: ModuleEnvironment<A>) throws -> NormalForm
+  func eval<A>(_ environment: ModuleEnvironment<A>) throws -> KIRExpr
     where Element == SyntaxNode<ExprBlock<A>.Element>
   {
     var modifiedEnvironment = environment
@@ -203,7 +204,7 @@ extension Array {
 }
 
 extension MemberAccess {
-  func eval(_ environment: ModuleEnvironment<A>) throws -> NormalForm {
+  func eval(_ environment: ModuleEnvironment<A>) throws -> KIRExpr {
     let base = try self.base.content.content.eval(environment)
     switch (base, member.content.content) {
     case let (.tuple(elements), .tupleElement(i)):
@@ -247,20 +248,20 @@ extension MemberAccess {
   }
 }
 
-extension Dictionary where Value == NormalForm {
-  func apply(_ substitution: [Identifier: NormalForm]) -> Self {
+extension Dictionary where Value == KIRExpr {
+  func apply(_ substitution: [Identifier: KIRExpr]) -> Self {
     mapValues { $0.apply(substitution) }
   }
 }
 
-extension Array where Element == NormalForm {
-  func apply(_ substitution: [Identifier: NormalForm]) -> Self {
+extension Array where Element == KIRExpr {
+  func apply(_ substitution: [Identifier: KIRExpr]) -> Self {
     map { $0.apply(substitution) }
   }
 }
 
-extension NormalForm {
-  func apply(_ substitution: [Identifier: NormalForm]) -> NormalForm {
+extension KIRExpr {
+  func apply(_ substitution: [Identifier: KIRExpr]) -> KIRExpr {
     switch self {
     case let .identifier(i):
       // FIXME: shouldn't this throw an error?
@@ -314,6 +315,12 @@ extension NormalForm {
 
     case let .application(function: function, arguments: arguments):
       return .application(function: function.apply(substitution), arguments: arguments.apply(substitution))
+
+    case let .enumCase(type, tag, arguments):
+      return .enumCase(type: type.apply(substitution), tag: tag, arguments: arguments.apply(substitution))
+
+    case let .caseMatch(type: type, tag: tag, subject: subject):
+      return .caseMatch(type: type.apply(substitution), tag: tag, subject: subject.apply(substitution))
     }
   }
 }
