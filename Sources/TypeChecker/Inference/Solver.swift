@@ -13,11 +13,11 @@ import Syntax
  with new assumptions.
  */
 struct Solver {
-  private let substitution: Substitution
+  private let substitution: TypeSubstitution
   private let system: ConstraintSystem
 
   init(
-    substitution: Substitution,
+    substitution: TypeSubstitution,
     system: ConstraintSystem
   ) {
     self.substitution = substitution
@@ -34,7 +34,7 @@ struct Solver {
   /** Return a `Substitution` value that satisfies `constraints` within
    the current solver.
    */
-  func solve() throws -> Substitution {
+  func solve() throws -> TypeSubstitution {
     var system = self.system
     guard let constraint = system.removeFirst() else { return substitution }
 

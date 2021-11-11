@@ -4,33 +4,33 @@
 
 import Syntax
 
-typealias Substitution = [TypeVariable: Type]
+typealias TypeSubstitution = [TypeVariable: Type]
 
-extension Substitution {
+extension TypeSubstitution {
   /// It is up to the implementation of the inference algorithm to ensure that
   /// clashes do not occur between substitutions.
-  func compose(_ sub: Substitution) -> Substitution {
+  func compose(_ sub: TypeSubstitution) -> TypeSubstitution {
     sub.mapValues { $0.apply(self) }.merging(self) { value, _ in value }
   }
 }
 
-protocol Substitutable {
-  func apply(_ sub: Substitution) -> Self
+protocol TypeSubstitutable {
+  func apply(_ sub: TypeSubstitution) -> Self
   var freeTypeVariables: Set<TypeVariable> { get }
 }
 
-extension Substitutable {
+extension TypeSubstitutable {
   func occurs(_ typeVariable: TypeVariable) -> Bool {
     freeTypeVariables.contains(typeVariable)
   }
 }
 
-extension TypeVariable: Substitutable {
+extension TypeVariable: TypeSubstitutable {
   var freeTypeVariables: Set<TypeVariable> {
     [self]
   }
 
-  func apply(_ sub: Substitution) -> TypeVariable {
+  func apply(_ sub: TypeSubstitution) -> TypeVariable {
     if case let .variable(v)? = sub[self] {
       return v
     } else {
@@ -39,8 +39,8 @@ extension TypeVariable: Substitutable {
   }
 }
 
-extension Type: Substitutable {
-  func apply(_ sub: Substitution) -> Type {
+extension Type: TypeSubstitutable {
+  func apply(_ sub: TypeSubstitution) -> Type {
     switch self {
     case let .variable(v):
       return sub[v] ?? .variable(v)
@@ -67,8 +67,8 @@ extension Type: Substitutable {
   }
 }
 
-extension Scheme: Substitutable {
-  func apply(_ sub: Substitution) -> Scheme {
+extension Scheme: TypeSubstitutable {
+  func apply(_ sub: TypeSubstitution) -> Scheme {
     let type = self.type.apply(variables.reduce(sub) {
       var result = $0
       result[$1] = nil
@@ -82,8 +82,8 @@ extension Scheme: Substitutable {
   }
 }
 
-extension Array: Substitutable where Element: Substitutable {
-  func apply(_ sub: Substitution) -> [Element] {
+extension Array: TypeSubstitutable where Element: TypeSubstitutable {
+  func apply(_ sub: TypeSubstitution) -> [Element] {
     map { $0.apply(sub) }
   }
 
@@ -92,8 +92,8 @@ extension Array: Substitutable where Element: Substitutable {
   }
 }
 
-extension Constraint: Substitutable {
-  func apply(_ sub: Substitution) -> Constraint {
+extension Constraint: TypeSubstitutable {
+  func apply(_ sub: TypeSubstitution) -> Constraint {
     switch self {
     case let .equal(t1, t2):
       return .equal(t1.apply(sub), t2.apply(sub))
@@ -116,8 +116,8 @@ extension Constraint: Substitutable {
   }
 }
 
-extension ExprBlock: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> ExprBlock<TypeAnnotation> {
+extension ExprBlock: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> ExprBlock<TypeAnnotation> {
     addAnnotation(expr: { $0.apply(sub) }, declaration: { $0.apply(sub) })
   }
 
@@ -133,8 +133,8 @@ extension ExprBlock: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension FuncApplication: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> FuncApplication<TypeAnnotation> {
+extension FuncApplication: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> FuncApplication<TypeAnnotation> {
     addAnnotation(function: { $0.apply(sub) }, argument: { $0.apply(sub) })
   }
 
@@ -145,8 +145,8 @@ extension FuncApplication: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension Closure: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> Closure<TypeAnnotation> {
+extension Closure: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> Closure<TypeAnnotation> {
     addAnnotation(
       parameter: { $0.apply(sub) },
       body: { $0.apply(sub) }
@@ -160,8 +160,8 @@ extension Closure: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension IfThenElse: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> IfThenElse<Type> {
+extension IfThenElse: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> IfThenElse<Type> {
     addAnnotation(
       condition: { $0.apply(sub) },
       thenBlock: { $0.apply(sub) },
@@ -180,16 +180,16 @@ extension IfThenElse: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension MemberAccess: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> MemberAccess<Type> {
+extension MemberAccess: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> MemberAccess<Type> {
     addAnnotation { $0.apply(sub) }
   }
 
   var freeTypeVariables: Set<TypeVariable> { base.freeTypeVariables }
 }
 
-extension DelimitedSequence: Substitutable where Content: Substitutable {
-  func apply(_ sub: Substitution) -> DelimitedSequence<Content> {
+extension DelimitedSequence: TypeSubstitutable where Content: TypeSubstitutable {
+  func apply(_ sub: TypeSubstitution) -> DelimitedSequence<Content> {
     map { $0.apply(sub) }
   }
 
@@ -200,8 +200,8 @@ extension DelimitedSequence: Substitutable where Content: Substitutable {
   }
 }
 
-extension StructLiteral: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> StructLiteral<Type> {
+extension StructLiteral: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> StructLiteral<Type> {
     addAnnotation(
       type: { $0.apply(sub) },
       value: { $0.apply(sub) }
@@ -215,8 +215,8 @@ extension StructLiteral: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension Switch: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> Switch<Type> {
+extension Switch: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> Switch<Type> {
     addAnnotation(
       subject: { $0.apply(sub) },
       caseBlock: {
@@ -235,8 +235,8 @@ extension Switch: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension Expr.Payload: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> Expr<TypeAnnotation>.Payload {
+extension Expr.Payload: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> Expr<TypeAnnotation>.Payload {
     switch self {
     case .identifier, .leadingDot, .unit, .literal:
       return self
@@ -283,8 +283,8 @@ extension Expr.Payload: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension Expr: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> Expr<TypeAnnotation> {
+extension Expr: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> Expr<TypeAnnotation> {
     .init(payload: payload.apply(sub), annotation: annotation.apply(sub))
   }
 
@@ -293,8 +293,8 @@ extension Expr: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension BindingDecl: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> BindingDecl<A> {
+extension BindingDecl: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> BindingDecl<A> {
     addAnnotation(typeSignature: { $0.apply(sub) }, value: { $0.apply(sub) })
   }
 
@@ -303,8 +303,8 @@ extension BindingDecl: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension FuncDecl.Parameter: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> Self {
+extension FuncDecl.Parameter: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> Self {
     addAnnotation { $0.apply(sub) }
   }
 
@@ -313,8 +313,8 @@ extension FuncDecl.Parameter: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension FuncDecl: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> FuncDecl<A> {
+extension FuncDecl: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> FuncDecl<A> {
     addAnnotation(
       parameterType: { $0.apply(sub) },
       arrow: { $0.apply(sub) },
@@ -329,8 +329,8 @@ extension FuncDecl: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension DeclBlock: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> DeclBlock<A> {
+extension DeclBlock: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> DeclBlock<A> {
     addAnnotation { $0.apply(sub) }
   }
 
@@ -341,8 +341,8 @@ extension DeclBlock: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension StructDecl: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> StructDecl<A> {
+extension StructDecl: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> StructDecl<A> {
     addAnnotation { $0.apply(sub) }
   }
 
@@ -351,8 +351,8 @@ extension StructDecl: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension EnumDecl: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> EnumDecl<A> {
+extension EnumDecl: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> EnumDecl<A> {
     addAnnotation { $0.apply(sub) }
   }
 
@@ -361,8 +361,8 @@ extension EnumDecl: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension TraitDecl: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> TraitDecl<A> {
+extension TraitDecl: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> TraitDecl<A> {
     addAnnotation { $0.apply(sub) }
   }
 
@@ -371,8 +371,8 @@ extension TraitDecl: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension EnumCase: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> EnumCase<A> {
+extension EnumCase: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> EnumCase<A> {
     addAnnotation { $0.apply(sub) }
   }
 
@@ -383,8 +383,8 @@ extension EnumCase: Substitutable where A == TypeAnnotation {
   }
 }
 
-extension Declaration: Substitutable where A == TypeAnnotation {
-  func apply(_ sub: Substitution) -> Declaration<Type> {
+extension Declaration: TypeSubstitutable where A == TypeAnnotation {
+  func apply(_ sub: TypeSubstitution) -> Declaration<Type> {
     switch self {
     case let .binding(b):
       return .binding(b.apply(sub))

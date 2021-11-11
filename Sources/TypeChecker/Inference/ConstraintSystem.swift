@@ -40,7 +40,7 @@ struct ConstraintSystem {
     return result
   }
 
-  mutating func apply(_ sub: Substitution) {
+  mutating func apply(_ sub: TypeSubstitution) {
     constraints = constraints.apply(sub)
   }
 

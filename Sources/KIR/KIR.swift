@@ -23,4 +23,14 @@ public enum KIRExpr: Hashable {
   indirect case closure(parameters: [Identifier], body: KIRExpr)
   indirect case ifThenElse(condition: Identifier, then: KIRExpr, else: KIRExpr)
   indirect case arrow([KIRExpr], KIRExpr)
+  indirect case block(KIRExprBlock)
+}
+
+public enum KIRDecl: Hashable {
+  case binding(Identifier, KIRExpr)
+}
+
+public struct KIRExprBlock: Hashable {
+  public let decls: [KIRDecl]
+  public let expr: KIRExpr
 }
