@@ -17,6 +17,8 @@ final class EvalTests: XCTestCase {
     try assertEval("{ x in x }(42)", .literal(42))
     try assertEval("{ x, y in y }(0, 42)", .literal(42))
     try assertEval("{ x, y, z in if z { x } else { y }}(0, 42, false)", .literal(42))
+    try assertEval("{ x, y in { x, y in x }(y, x)}(false, 42)", .literal(42))
+    try assertEval("{ x, y in { x, y in { y, x in x }(x, y)}(y, x)}(false, 42)", .literal(false))
   }
 
   func testTuples() throws {
