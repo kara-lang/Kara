@@ -1,0 +1,192 @@
+Expr(
+  payload: Expr.Payload.closure(
+    Closure(
+      openBrace: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 ()
+      ),
+      parameters: Closure.Parameters.undelimited(
+        [
+          [0]: UndelimitedClosureParameter(
+            identifier: SyntaxNode(
+              leadingTrivia: [
+                [0]: Whitespace(" ")
+              ],
+              content: 0:2-0:2 Identifier(value: "x")
+            ),
+            comma: nil
+          )
+        ]
+      ),
+      inKeyword: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace(" ")
+        ],
+        content: 0:4-0:5 ()
+      ),
+      body: [
+        [0]: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("\n  ")
+          ],
+          content: 1:2-6:2 ExprBlock.Element.expr(
+            Expr(
+              payload: Expr.Payload.switch(
+                Switch(
+                  switchKeyword: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 1:2-1:7 ()
+                  ),
+                  subject: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 1:9-1:9 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "x")
+                      ),
+                      annotation: Type.constructor(
+                        Identifier(value: "Bool"),
+                        []
+                      )
+                    )
+                  ),
+                  openBrace: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 1:11-1:11 ()
+                  ),
+                  caseBlocks: [
+                    [0]: Switch.CaseBlock(
+                      casePattern: CasePattern(
+                        caseKeyword: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace("\n  ")
+                          ],
+                          content: 2:2-2:5 ()
+                        ),
+                        bindingKeyword: nil,
+                        pattern: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace(" ")
+                          ],
+                          content: 2:7-2:11 Expr(
+                            payload: Expr.Payload.literal(
+                              Literal.bool(false)
+                            ),
+                            annotation: Type.constructor(
+                              Identifier(value: "Bool"),
+                              []
+                            )
+                          )
+                        )
+                      ),
+                      colon: SyntaxNode(
+                        leadingTrivia: [],
+                        content: 2:12-2:12 ()
+                      ),
+                      body: [
+                        [0]: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace("\n    ")
+                          ],
+                          content: 3:4-3:10 ExprBlock.Element.expr(
+                            Expr(
+                              payload: Expr.Payload.literal(
+                                Literal.string("false")
+                              ),
+                              annotation: Type.constructor(
+                                Identifier(value: "String"),
+                                []
+                              )
+                            )
+                          )
+                        )
+                      ]
+                    ),
+                    [1]: Switch.CaseBlock(
+                      casePattern: CasePattern(
+                        caseKeyword: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace("\n  ")
+                          ],
+                          content: 4:2-4:5 ()
+                        ),
+                        bindingKeyword: nil,
+                        pattern: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace(" ")
+                          ],
+                          content: 4:7-4:10 Expr(
+                            payload: Expr.Payload.literal(
+                              Literal.bool(true)
+                            ),
+                            annotation: Type.constructor(
+                              Identifier(value: "Bool"),
+                              []
+                            )
+                          )
+                        )
+                      ),
+                      colon: SyntaxNode(
+                        leadingTrivia: [],
+                        content: 4:11-4:11 ()
+                      ),
+                      body: [
+                        [0]: SyntaxNode(
+                          leadingTrivia: [
+                            [0]: Whitespace("\n    ")
+                          ],
+                          content: 5:4-5:9 ExprBlock.Element.expr(
+                            Expr(
+                              payload: Expr.Payload.literal(
+                                Literal.string("true")
+                              ),
+                              annotation: Type.constructor(
+                                Identifier(value: "String"),
+                                []
+                              )
+                            )
+                          )
+                        )
+                      ]
+                    )
+                  ],
+                  closeBrace: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace("\n  ")
+                    ],
+                    content: 6:2-6:2 ()
+                  )
+                )
+              ),
+              annotation: Type.constructor(
+                Identifier(value: "String"),
+                []
+              )
+            )
+          )
+        )
+      ],
+      closeBrace: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace("\n")
+        ],
+        content: 7:0-7:0 ()
+      )
+    )
+  ),
+  annotation: Type.arrow(
+    [
+      [0]: Type.constructor(
+        Identifier(value: "Bool"),
+        []
+      )
+    ],
+    Type.constructor(
+      Identifier(value: "String"),
+      []
+    )
+  )
+)

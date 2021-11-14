@@ -7,40 +7,39 @@ SyntaxNode(
           leadingTrivia: [],
           content: 0:0-0:0 ()
         ),
-        parameters: [
-          [0]: Closure.Parameter(
-            identifier: SyntaxNode(
-              leadingTrivia: [
-                [0]: Whitespace(" ")
-              ],
-              content: 0:2-0:2 Identifier(value: "x")
+        parameters: Closure.Parameters.undelimited(
+          [
+            [0]: UndelimitedClosureParameter(
+              identifier: SyntaxNode(
+                leadingTrivia: [
+                  [0]: Whitespace(" ")
+                ],
+                content: 0:2-0:2 Identifier(value: "x")
+              ),
+              comma: SyntaxNode(
+                leadingTrivia: [],
+                content: 0:3-0:3 ()
+              )
             ),
-            typeSignature: nil,
-            comma: SyntaxNode(
-              leadingTrivia: [],
-              content: 0:3-0:3 ()
+            [1]: UndelimitedClosureParameter(
+              identifier: SyntaxNode(
+                leadingTrivia: [],
+                content: 0:4-0:4 Identifier(value: "y")
+              ),
+              comma: SyntaxNode(
+                leadingTrivia: [],
+                content: 0:5-0:5 ()
+              )
+            ),
+            [2]: UndelimitedClosureParameter(
+              identifier: SyntaxNode(
+                leadingTrivia: [],
+                content: 0:6-0:6 Identifier(value: "z")
+              ),
+              comma: nil
             )
-          ),
-          [1]: Closure.Parameter(
-            identifier: SyntaxNode(
-              leadingTrivia: [],
-              content: 0:4-0:4 Identifier(value: "y")
-            ),
-            typeSignature: nil,
-            comma: SyntaxNode(
-              leadingTrivia: [],
-              content: 0:5-0:5 ()
-            )
-          ),
-          [2]: Closure.Parameter(
-            identifier: SyntaxNode(
-              leadingTrivia: [],
-              content: 0:6-0:6 Identifier(value: "z")
-            ),
-            typeSignature: nil,
-            comma: nil
-          )
-        ],
+          ]
+        ),
         inKeyword: SyntaxNode(
           leadingTrivia: [
             [0]: Whitespace(" ")

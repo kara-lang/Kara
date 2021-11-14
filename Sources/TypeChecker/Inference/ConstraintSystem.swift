@@ -164,8 +164,8 @@ struct ConstraintSystem {
     )
   }
 
-  /// Temporarily extends the current `self.environment` with `environment` to
-  /// infer the type of `closure`, where `bindings` extending the environment represent closure parameters.
+  /// Temporarily extends the current `self.environment` with parameter bindings of `closure` to
+  /// infer its type.
   private mutating func annotate(
     closure: Closure<EmptyAnnotation>
   ) throws -> (Closure<TypeAnnotation>, [Type]) {
@@ -175,8 +175,22 @@ struct ConstraintSystem {
 
     defer { self.environment = old }
 
-    let ids = closure.parameters.map(\.identifier.content.content)
-    let parameterTypes = ids.map { _ in fresh() }
+    var ids = [Identifier]()
+    var parameterTypes = [Type]()
+    switch closure.parameters {
+    case let .undelimited(u):
+      for parameter in u {
+        ids.append(parameter.identifier.content.content)
+        parameterTypes.append(fresh())
+      }
+
+    case let .delimited(d):
+      for parameter in d.elementsContent {
+        ids.append(parameter.identifier.content.content)
+        let evalResult = try parameter.typeSignature?.signature.content.content.eval(environment)
+        try parameterTypes.append(evalResult?.type(environment) ?? fresh())
+      }
+    }
 
     environment.schemes.insert(bindings: zip(ids, parameterTypes.map { Scheme($0) }))
 

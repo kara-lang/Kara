@@ -56,7 +56,7 @@ extension Expr {
 
     case let .closure(c):
       return try .closure(
-        parameters: c.parameters.map(\.identifier.content.content),
+        parameters: c.parameters.identifiers.map(\.content.content),
         body: c.body.eval(environment)
       )
 

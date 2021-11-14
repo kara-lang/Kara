@@ -56,6 +56,10 @@ struct SchemeEnvironment<A: Annotation> {
     )
   }
 
+  /// Extends given environment with new bindings. This function
+  /// is intended to be only used when processing function or closure scope. Tt doesn't throw when an identifier
+  /// already exists in outer scope since it allows identifier shadowing.
+  /// - Parameter sequence: a sequence of identifier bindings and their corresponding schemes.
   mutating func insert<T>(bindings sequence: T) where T: Sequence, T.Element == (Identifier, Scheme) {
     for (identifier, scheme) in sequence {
       bindings[identifier] = (nil, scheme)

@@ -7,7 +7,7 @@ SyntaxNode(
           leadingTrivia: [],
           content: 0:0-0:0 ()
         ),
-        parameters: [],
+        parameters: Closure.Parameters.undelimited([]),
         inKeyword: nil,
         body: [],
         closeBrace: SyntaxNode(

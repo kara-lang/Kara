@@ -5,7 +5,7 @@ Expr(
         leadingTrivia: [],
         content: 0:0-0:0 ()
       ),
-      parameters: [],
+      parameters: Closure.Parameters.undelimited([]),
       inKeyword: nil,
       body: [
         [0]: SyntaxNode(

@@ -170,7 +170,7 @@ extension Expr.Payload {
     case let .closure(c):
       return
         """
-        (\(c.parameters.map(\.identifier.jsCodegen).joined(separator: ","))) =>
+        (\(c.parameters.identifiers.map(\.jsCodegen).joined(separator: ","))) =>
         \(c.exprBlock.jsCodegen);
         """
     case let .ifThenElse(ifThenElse):

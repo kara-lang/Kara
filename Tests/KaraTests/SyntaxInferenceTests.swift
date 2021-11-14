@@ -53,13 +53,22 @@ final class SyntaxInferenceTests: XCTestCase {
         "increment": ([], nil, .init(.int32 --> .int32)),
         "stringify": ([], nil, .init(.int32 --> .string)),
         "decode": ([], nil, .init(.string --> .int32)),
-      ])
+      ]),
+      types: .init(structs: ["Int32": .init()])
     )
 
     XCTAssertNoDifference(
       try
         """
         { x in decode(stringify(increment(x))) }
+        """
+        .inferParsedExpr(environment: e).annotation, .int32 --> .int32
+    )
+
+    XCTAssertNoDifference(
+      try
+        """
+        { (x: Int32) in x }
         """
         .inferParsedExpr(environment: e).annotation, .int32 --> .int32
     )
@@ -326,6 +335,42 @@ final class SyntaxInferenceTests: XCTestCase {
       }
       """
       .inferParsedExpr(environment: .init(schemes: .init(bindings: b), types: t))
+    )
+
+    try assertSnapshot(
+      """
+      { x in
+        switch x {
+        case false:
+          "false"
+        case true:
+          "true"
+        }
+      }
+      """
+      .inferParsedExpr(environment: .init())
+    )
+
+    try assertSnapshot(
+      """
+      {
+        struct Int32 {}
+        enum E {
+          case a
+          case b(Int32)
+        }
+
+        { x in
+          switch x {
+          case .a:
+            "a"
+          case .b:
+            "b"
+          }
+        }
+      }
+      """
+      .inferParsedExpr(environment: .init())
     )
 
     try assertError(

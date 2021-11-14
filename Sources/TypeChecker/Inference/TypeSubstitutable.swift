@@ -154,7 +154,7 @@ extension Closure: TypeSubstitutable where A == TypeAnnotation {
   }
 
   var freeTypeVariables: Set<TypeVariable> {
-    parameters.compactMap(\.typeSignature).reduce(into: exprBlock.freeTypeVariables) {
+    parameters.typeSignatures.reduce(into: exprBlock.freeTypeVariables) {
       $0.formUnion($1.freeTypeVariables)
     }
   }

@@ -7,16 +7,17 @@ SyntaxNode(
           leadingTrivia: [],
           content: 0:0-0:0 ()
         ),
-        parameters: [
-          [0]: Closure.Parameter(
-            identifier: SyntaxNode(
-              leadingTrivia: [],
-              content: 0:1-0:1 Identifier(value: "x")
-            ),
-            typeSignature: nil,
-            comma: nil
-          )
-        ],
+        parameters: Closure.Parameters.undelimited(
+          [
+            [0]: UndelimitedClosureParameter(
+              identifier: SyntaxNode(
+                leadingTrivia: [],
+                content: 0:1-0:1 Identifier(value: "x")
+              ),
+              comma: nil
+            )
+          ]
+        ),
         inKeyword: SyntaxNode(
           leadingTrivia: [
             [0]: Whitespace(" ")
