@@ -5,8 +5,8 @@
 import KIR
 import Syntax
 
-/// Mapping from an enum case identifier to an array of types of its associated values.
-typealias EnumCases = [Identifier: [KIRExpr]]
+/// Mapping from an enum case identifier to its tag and an array of types of its associated values.
+typealias EnumCases = [Identifier: (tag: Int, arguments: [KIRExpr])]
 
 @dynamicMemberLookup
 struct EnumEnvironment<A: Annotation> {
@@ -38,9 +38,9 @@ struct EnumEnvironment<A: Annotation> {
       throw TypeError.enumCaseModifiers(e.identifier.content)
     }
 
-    enumCases[e.identifier.content.content] = try e.associatedValues?.elementsContent.map {
+    enumCases[e.identifier.content.content] = try (enumCases.count, e.associatedValues?.elementsContent.map {
       try $0.eval(topLevel)
-    } ?? []
+    } ?? [])
 
     // Insert the enum case declaration as a static member to allow type inference to work it.
     try members.insert(declaration, container: container, topLevel)

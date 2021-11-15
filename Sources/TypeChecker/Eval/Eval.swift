@@ -50,6 +50,12 @@ extension Expr {
           .init(uniqueKeysWithValues: zip(parameters, arguments))
         )
 
+      case let .enumCase(typeID, tag: tag, arguments: []):
+        return .enumCase(typeID, tag: tag, arguments: arguments)
+
+      case .enumCase:
+        fatalError("`eval` can only apply unapplied enum cases.")
+
       default:
         return .application(function: function, arguments: arguments)
       }
@@ -71,7 +77,7 @@ extension Expr {
         return condition ? thenBranch : elseBranch
 
       case let .identifier(i):
-        return .ifThenElse(condition: i, then: thenBranch, else: elseBranch)
+        return .ifThenElse(condition: .identifier(i), then: thenBranch, else: elseBranch)
 
       default:
         fatalError()
@@ -114,16 +120,21 @@ extension Expr {
       default:
         fatalError()
       }
+
+      let memberID = l.member.content.content
       let staticMembers: SchemeEnvironment<A>
       if let structEnvironment = environment.types.structs[typeID] {
         staticMembers = structEnvironment.staticMembers
       } else if let enumEnvironment = environment.types.enums[typeID] {
-        staticMembers = enumEnvironment.staticMembers
+        if let enumCase = enumEnvironment.enumCases[memberID] {
+          return .enumCase(typeID, tag: enumCase.tag, arguments: [])
+        } else {
+          staticMembers = enumEnvironment.staticMembers
+        }
       } else {
         fatalError()
       }
 
-      let memberID = l.member.content.content
       if case let (parameters, body?, _)? = staticMembers.functions[memberID] {
         return try .closure(parameters: parameters, body: body.elements.eval(environment))
       } else if case let (value, _)? = staticMembers.bindings[memberID] {
@@ -140,39 +151,43 @@ extension Expr {
       let subject = try s.subject.content.content.eval(environment)
       let patterns = try s.caseBlocks.map(\.casePattern.pattern.content.content).map { try $0.eval(environment) }
 
-      let typeID: Identifier
-      let enumCase: Identifier
-      let associatedValues: [KIRExpr]
-
       switch subject {
-      case let .memberAccess(.identifier(baseTypeID), .identifier(memberEnumCase)):
-        typeID = baseTypeID
-        enumCase = memberEnumCase
-        associatedValues = []
-      case let .application(.memberAccess(.identifier(baseTypeID), .identifier(memberEnumCase)), arguments):
-        typeID = baseTypeID
-        enumCase = memberEnumCase
-        associatedValues = arguments
+      case let .enumCase(typeID, tag: tag, arguments: _):
+        guard
+          environment.types.enums[typeID] != nil,
+          let matchingCaseIndex = patterns.firstIndex(where: {
+            switch $0 {
+            case .enumCase(typeID, tag: tag, arguments: _):
+              return true
+            default:
+              return false
+            }
+          })
+        else {
+          fatalError()
+        }
+
+        return try s.caseBlocks[matchingCaseIndex].exprBlock.elements.eval(environment)
+
+      case .identifier:
+        var result = KIRExpr.unreachable
+
+        for i in stride(from: patterns.count - 1, to: -1, by: -1) {
+          guard case let .enumCase(typeID, tag, _) = patterns[i] else {
+            fatalError()
+          }
+          result = .ifThenElse(
+            condition: .caseMatch(typeID, tag: tag, subject: subject),
+            then: try s.caseBlocks[i].exprBlock.elements.eval(environment),
+            else: result
+          )
+        }
+
+        return result
 
       default:
         fatalError()
       }
-
-      guard
-        environment.types.enums[typeID] != nil,
-        let matchingCaseIndex = patterns.firstIndex(where: {
-          switch $0 {
-          case .memberAccess(.identifier(typeID), .identifier(enumCase)):
-            return true
-          default:
-            return false
-          }
-        })
-      else {
-        fatalError()
-      }
-
-      return try s.caseBlocks[matchingCaseIndex].exprBlock.elements.eval(environment)
 
     case .unit:
       return .tuple([])
@@ -225,8 +240,8 @@ extension MemberAccess {
       if let structEnvironment = environment.types.structs[typeID] {
         memberEnvironment = structEnvironment.members
       } else if let enumEnvironment = environment.types.enums[typeID] {
-        if enumEnvironment.enumCases[member] != nil {
-          return .memberAccess(.identifier(typeID), .identifier(member))
+        if let enumCase = enumEnvironment.enumCases[member] {
+          return .enumCase(typeID, tag: enumCase.tag, arguments: [])
         }
 
         memberEnvironment = enumEnvironment.members

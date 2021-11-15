@@ -31,7 +31,8 @@ extension KIRExpr {
     case let .block(b):
       return try b.expr.type(environment)
 
-    case .closure, .literal, .ifThenElse, .structLiteral, .memberAccess, .enumCase, .caseMatch, .application:
+    case .unreachable, .closure, .literal, .ifThenElse, .structLiteral, .memberAccess, .enumCase, .caseMatch,
+         .application:
       return nil
     }
   }

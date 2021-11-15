@@ -197,11 +197,8 @@ final class EvalTests: XCTestCase {
         parameters: [],
         body: .tuple(
           [
-            .memberAccess(.identifier("E"), .identifier("a")),
-            .application(
-              function: .memberAccess(.identifier("E"), .identifier("b")),
-              arguments: [.literal(42)]
-            ),
+            .enumCase("E", tag: 0, arguments: []),
+            .enumCase("E", tag: 1, arguments: [.literal(42)]),
           ]
         )
       )
@@ -237,6 +234,43 @@ final class EvalTests: XCTestCase {
       }
       """,
       .closure(parameters: [], body: .tuple([.literal("a"), .literal("b")]))
+    )
+
+    try assertEval(
+      """
+      {
+        struct Int32 {}
+        struct String {}
+        enum E {
+          case a
+          case b(Int32)
+        }
+
+        { (x: E) in
+          switch x {
+            case .a:
+              "a"
+            case .b:
+              "b"
+          }
+        }
+      }
+      """,
+      .closure(
+        parameters: [],
+        body: .closure(
+          parameters: ["x"],
+          body: .ifThenElse(
+            condition: .caseMatch("E", tag: 0, subject: .identifier("x")),
+            then: .literal("a"),
+            else: .ifThenElse(
+              condition: .caseMatch("E", tag: 1, subject: .identifier("x")),
+              then: .literal("b"),
+              else: .unreachable
+            )
+          )
+        )
+      )
     )
   }
 }

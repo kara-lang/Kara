@@ -11,17 +11,18 @@ import Syntax
  there are more cases in this `enum` than one would initially expect from complete evaluation of `Expr`.
  */
 public enum KIRExpr: Hashable {
+  case unreachable
   case identifier(Identifier)
   case literal(Literal)
   case tuple([KIRExpr])
   case structLiteral(Identifier, [Identifier: KIRExpr])
   case typeConstructor(Identifier, [KIRExpr])
-  indirect case enumCase(type: KIRExpr, tag: Int, arguments: [KIRExpr])
-  indirect case caseMatch(type: KIRExpr, tag: Int, subject: KIRExpr)
+  indirect case enumCase(Identifier, tag: Int, arguments: [KIRExpr])
+  indirect case caseMatch(Identifier, tag: Int, subject: KIRExpr)
   indirect case application(function: KIRExpr, arguments: [KIRExpr])
   indirect case memberAccess(KIRExpr, Member)
   indirect case closure(parameters: [Identifier], body: KIRExpr)
-  indirect case ifThenElse(condition: Identifier, then: KIRExpr, else: KIRExpr)
+  indirect case ifThenElse(condition: KIRExpr, then: KIRExpr, else: KIRExpr)
   indirect case arrow([KIRExpr], KIRExpr)
   indirect case block(KIRExprBlock)
 }

@@ -25,6 +25,9 @@ extension Array where Element: KIRSubstitutable {
 extension KIRExpr: KIRSubstitutable {
   public func apply(_ substitution: KIRSubstitution) -> Self {
     switch self {
+    case .unreachable:
+      return self
+
     case let .identifier(i):
       // FIXME: shouldn't this throw an error?
       return substitution[i] ?? .identifier(i)
@@ -41,14 +44,37 @@ extension KIRExpr: KIRSubstitutable {
       return .literal(l)
 
     case let .ifThenElse(condition, thenBranch, elseBranch):
-      if case let .literal(.bool(condition)) = substitution[condition] {
-        if condition {
-          return thenBranch.apply(substitution)
-        } else {
-          return elseBranch.apply(substitution)
+      let newCondition: Bool
+      switch condition.apply(substitution) {
+      case let .literal(.bool(b)):
+        newCondition = b
+
+      case let .caseMatch(caseTypeID, caseTag, subject):
+        switch subject {
+        case let .enumCase(subjectTypeID, subjectTag, _):
+          precondition(caseTypeID == subjectTypeID)
+          newCondition = caseTag == subjectTag
+
+        default:
+          return .ifThenElse(
+            condition: .caseMatch(caseTypeID, tag: caseTag, subject: subject),
+            then: elseBranch.apply(substitution),
+            else: thenBranch.apply(substitution)
+          )
         }
+
+      default:
+        return .ifThenElse(
+          condition: condition.apply(substitution),
+          then: thenBranch.apply(substitution),
+          else: elseBranch.apply(substitution)
+        )
+      }
+
+      if newCondition {
+        return thenBranch.apply(substitution)
       } else {
-        fatalError()
+        return elseBranch.apply(substitution)
       }
 
     case let .tuple(elements):
@@ -78,11 +104,11 @@ extension KIRExpr: KIRSubstitutable {
     case let .application(function: function, arguments: arguments):
       return .application(function: function.apply(substitution), arguments: arguments.apply(substitution))
 
-    case let .enumCase(type, tag, arguments):
-      return .enumCase(type: type.apply(substitution), tag: tag, arguments: arguments.apply(substitution))
+    case let .enumCase(typeID, tag, arguments):
+      return .enumCase(typeID, tag: tag, arguments: arguments.apply(substitution))
 
-    case let .caseMatch(type: type, tag: tag, subject: subject):
-      return .caseMatch(type: type.apply(substitution), tag: tag, subject: subject.apply(substitution))
+    case let .caseMatch(typeID, tag: tag, subject: subject):
+      return .caseMatch(typeID, tag: tag, subject: subject.apply(substitution))
 
     case let .block(b):
       return .block(b)
