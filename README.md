@@ -31,7 +31,11 @@ concatenation operator `++`. Its type signature looks like this:
 Here `Element`, `Length1`, and `Length2` are implicit generic arguments that refer to vector's element type and lengths of vectors.
 
 The concept of dependent types allows us to use expressions in generic arguments of other types, like in `Vector<Element, Length1 + Length2>`
-above.
+above. This is allows us to check not only OOB for simple one-dimensional collections, but also matrix/tensor operations, pointers etc.
+
+One other interesting application of dependent types are implementations of state machines where [illegal state transitions don't type
+check](https://stackoverflow.com/questions/33851598/using-idris-to-model-state-machine-of-open-close-door). 
+While this is something that's possible Swift with phantom types, we want it to feel much more natural in Kara with its type system.
 
 ## Current status
 
