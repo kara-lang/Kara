@@ -17,8 +17,8 @@ let a2 = [4,5,6]
 ```
 
 This is achieved by encoding length of a collection in its type. Here `[1, 2, 3]` has type `Vector<Int, 3>`, which requires 
-its subscript arguments to be less than vector's length. These constraints are checked at compile-time, but work even for 
-vector length computed at run-time. Vector length is propagated to new vectors created at run-time thanks to the generic vector
+its subscript arguments to be less than vector's length. These constraints are checked at compile time, but work even for 
+vector length computed at run time. Vector length is propagated to new vectors created at run time thanks to the generic vector
 concatenation operator `++`. Its type signature looks like this:
 
 ```swift
