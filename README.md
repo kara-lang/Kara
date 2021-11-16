@@ -53,3 +53,21 @@ If you'd like to contribute, please make sure you have a general understanding o
 of [Type-Driven Development with Idris](https://www.manning.com/books/type-driven-development-with-idris) book, which inspire
 development of Kara. This is not a hard requirement for working on the Kara compiler, but it would be very helpful for all contributors to
 be on the same page with the general approach to designing the language.
+
+### Code of Conduct
+
+This project adheres to the [Contributor Covenant Code of
+Conduct](https://github.com/kara-lang/Kara/blob/main/CODE_OF_CONDUCT.md).
+By participating, you are expected to uphold this code. Please report
+unacceptable behavior to conduct@kara-lang.org.
+
+## License
+
+Kara is available under the Apache 2.0 license.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the [LICENSE](https://github.com/kara-lang/Kara/blob/main/LICENSE) file for
+more info.
+
+
