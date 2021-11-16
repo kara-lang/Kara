@@ -35,7 +35,7 @@ above. This is allows us to check not only OOB for simple one-dimensional collec
 
 One other interesting application of dependent types are implementations of state machines where [illegal state transitions don't type
 check](https://stackoverflow.com/questions/33851598/using-idris-to-model-state-machine-of-open-close-door). 
-While this is something that's possible Swift with phantom types, we want it to feel much more natural in Kara with its type system.
+While this is something that's possible in Swift with phantom types, we want it to feel much more natural in Kara with its type system.
 
 ## Current status
 
