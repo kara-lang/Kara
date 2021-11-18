@@ -87,6 +87,12 @@ let package = Package(
       dependencies: []
     ),
 
+    // Logging support used in LSP modules.
+    .target(
+      name: "LSPServer",
+      dependencies: ["Driver"]
+    ),
+
     .target(
       name: "kara",
       dependencies: ["Driver"]
