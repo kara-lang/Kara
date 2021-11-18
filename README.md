@@ -11,7 +11,7 @@ Development of Kara is motivated by:
 3. **Portability**. Kara is developed with support for all major platforms in mind. We want Kara apps to be usable in the browser, as a system programming language, and potentially even in embedded settings, like Arduino, kernel extensions, audio DSP plugins etc.
 4. **Performance**. Where it's possible to compile Kara to native binary code, we want it to be as performant as Swift, but ideally it should as fast as Rust, Zig, or C/C++.
 5. **Language Minimalism**. Kara shouldn't ever become a huge language. Whatever can be implemented as a library should be implemented as a library instead of adding a new feature to the language, as long as it doesn't conflict with the rest of the goals.
-6. **Distribution Minimalism and Economic Accessibility**. A barebone distribution of Kara ready for basic development shouldn't take more than a hundred megabytes when installed as a native binary. Our users shouldn't need a ton of available storage, expensive hardware, and gigabit fiber broadband to get started. Additionally, Kara's toolchain should be available directly in the browser on any hardware released in the latest decade, with required components downloaded on demand.
+6. **Distribution Minimalism and Economic Accessibility**. A barebone distribution of Kara ready for basic development shouldn't take more than a hundred megabytes when installed as a native binary. Our users shouldn't need a ton of available storage, expensive hardware, and fiber broadband to get started. Additionally, Kara's toolchain should be available and working directly in a browser playground without a need for compiling anything on cloud servers.
 
 ## What's a dependent type?
 
