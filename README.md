@@ -7,7 +7,7 @@ An experimental functional programming language with dependent types, inspired b
 Development of Kara is motivated by:
 
 1. **Strong type safety**. Kara relies on dependent types to eliminate bugs at compile time that can't be caught by mainstream languages.
-2. **Familiar syntax**. Kara's syntax should be familiar to everyone experienced with C language family, including Rust, Swift, JavaScript etc.
+2. **Familiar syntax**. Kara's syntax should be familiar to everyone experienced with C language family, including Rust, Swift, TypeScript etc.
 3. **Portability**. Kara is developed with support for all major platforms in mind. We want Kara apps to be usable in the browser, as a system programming language, and potentially even in embedded settings, like Arduino, kernel extensions, audio DSP plugins etc.
 4. **Performance**. Where it's possible to compile Kara to native binary code, we want it to be as performant as Swift, but ideally it should as fast as Rust, Zig, or C/C++.
 5. **Language Minimalism**. Kara shouldn't ever become a huge language. Whatever can be implemented as a library should be implemented as a library instead of adding a new feature to the language, as long as it doesn't conflict with the rest of the goals.
