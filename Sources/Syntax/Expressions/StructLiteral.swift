@@ -49,14 +49,14 @@ public struct StructLiteral<A: Annotation>: SyntaxNodeContainer {
 
 let structLiteralElementParser = identifierParser()
   .take(colonParser)
-  .take(Lazy { exprParser })
+  .take(Lazy { exprParser() })
   .map {
     StructLiteral.Element(property: $0, colon: $1, value: $2).syntaxNode
   }
 
 let structLiteralParser = delimitedSequenceParser(
-  startParser: openSquareBracketParser,
-  endParser: closeSquareBracketParser,
+  startParser: openBraceParser,
+  endParser: closeBraceParser,
   separatorParser: commaParser,
   elementParser: structLiteralElementParser
 )

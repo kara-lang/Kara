@@ -163,7 +163,7 @@ final class TypeCheckerTests: XCTestCase {
         struct S {}
         struct Int {}
 
-        let s: S = S[]
+        let s: S = S{}
         let first: Int = s.0
         """
       ),

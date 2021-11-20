@@ -42,28 +42,28 @@ final class ParserTests: XCTestCase {
   }
 
   func testTuple() {
-    XCTAssertNil(exprParser.parse("(,)").output)
-    assertSnapshot(exprParser.parse("()"))
-    assertSnapshot(exprParser.parse("(1 ,2 ,3 ,)"))
-    assertSnapshot(exprParser.parse("(1,2,3,)"))
-    assertSnapshot(exprParser.parse("(1,2,3)"))
+    XCTAssertNil(exprParser().parse("(,)").output)
+    assertSnapshot(exprParser().parse("()"))
+    assertSnapshot(exprParser().parse("(1 ,2 ,3 ,)"))
+    assertSnapshot(exprParser().parse("(1,2,3,)"))
+    assertSnapshot(exprParser().parse("(1,2,3)"))
 
-    assertSnapshot(exprParser.parse("(1)"))
-    assertSnapshot(exprParser.parse(#"("foo")"#))
+    assertSnapshot(exprParser().parse("(1)"))
+    assertSnapshot(exprParser().parse(#"("foo")"#))
 
-    assertSnapshot(exprParser.parse(#"("foo", ("bar", "baz"))"#))
-    assertSnapshot(exprParser.parse(#"("foo", ("bar", "baz", (1, "fizz")))"#))
+    assertSnapshot(exprParser().parse(#"("foo", ("bar", "baz"))"#))
+    assertSnapshot(exprParser().parse(#"("foo", ("bar", "baz", (1, "fizz")))"#))
 
-    XCTAssertNil(exprParser.parse(#"("foo", ("bar", "baz", (1, "fizz"))"#).output)
+    XCTAssertNil(exprParser().parse(#"("foo", ("bar", "baz", (1, "fizz"))"#).output)
 
-    XCTAssertNil(exprParser.parse(#"("foo", ("bar")"#).output)
+    XCTAssertNil(exprParser().parse(#"("foo", ("bar")"#).output)
   }
 
   func testIfThenElse() {
-    assertSnapshot(exprParser.parse(#"if true { "true" } else { "false" }"#))
-    assertSnapshot(exprParser.parse(#"if foo { bar } else { baz }"#))
+    assertSnapshot(exprParser().parse(#"if true { "true" } else { "false" }"#))
+    assertSnapshot(exprParser().parse(#"if foo { bar } else { baz }"#))
     assertSnapshot(
-      exprParser.parse(
+      exprParser().parse(
         #"""
         if 42.isInteger {
           "is integer"
@@ -74,7 +74,7 @@ final class ParserTests: XCTestCase {
       )
     )
     assertSnapshot(
-      exprParser.parse(
+      exprParser().parse(
         #"""
         if 42.isInteger() {
           "is integer"
@@ -87,18 +87,18 @@ final class ParserTests: XCTestCase {
   }
 
   func testClosure() {
-    assertSnapshot(exprParser.parse("{}"))
-    assertSnapshot(exprParser.parse("{ 1 }"))
-    assertSnapshot(exprParser.parse("{1}"))
-    assertSnapshot(exprParser.parse("{ x in 1 }"))
-    assertSnapshot(exprParser.parse("{x in 1}"))
-    assertSnapshot(exprParser.parse("{xin1}"))
+    assertSnapshot(exprParser().parse("{}"))
+    assertSnapshot(exprParser().parse("{ 1 }"))
+    assertSnapshot(exprParser().parse("{1}"))
+    assertSnapshot(exprParser().parse("{ x in 1 }"))
+    assertSnapshot(exprParser().parse("{x in 1}"))
+    assertSnapshot(exprParser().parse("{xin1}"))
 
-    assertSnapshot(exprParser.parse("{ x, y, z in 1 }"))
-    assertSnapshot(exprParser.parse("{ x,y,z in 1 }"))
-    assertSnapshot(exprParser.parse("{x,y,z in 1}"))
+    assertSnapshot(exprParser().parse("{ x, y, z in 1 }"))
+    assertSnapshot(exprParser().parse("{ x,y,z in 1 }"))
+    assertSnapshot(exprParser().parse("{x,y,z in 1}"))
     assertSnapshot(
-      exprParser.parse(
+      exprParser().parse(
         """
         {x,y,z in
             let a = sum(x, y, z)
@@ -108,7 +108,7 @@ final class ParserTests: XCTestCase {
       )
     )
     assertSnapshot(
-      exprParser.parse(
+      exprParser().parse(
         """
         {
             f
@@ -118,7 +118,7 @@ final class ParserTests: XCTestCase {
       )
     )
     assertSnapshot(
-      exprParser.parse(
+      exprParser().parse(
         """
         { (x, y: Bool, z) in
             z
@@ -128,15 +128,15 @@ final class ParserTests: XCTestCase {
       )
     )
 
-    XCTAssertNil(exprParser.parse("{ x in y in 1 }").output)
-    XCTAssertNil(exprParser.parse("{x in1}").output)
+    XCTAssertNil(exprParser().parse("{ x in y in 1 }").output)
+    XCTAssertNil(exprParser().parse("{x in1}").output)
   }
 
   func testMemberAccess() {
-    assertSnapshot(exprParser.parse("5.description"))
-    assertSnapshot(exprParser.parse("5  .description"))
+    assertSnapshot(exprParser().parse("5.description"))
+    assertSnapshot(exprParser().parse("5  .description"))
     assertSnapshot(
-      exprParser.parse(
+      exprParser().parse(
         """
         5
         .description
@@ -144,46 +144,46 @@ final class ParserTests: XCTestCase {
       )
     )
 
-    assertSnapshot(exprParser.parse("{x,y,z in 1}.description"))
-    assertSnapshot(exprParser.parse("{x,y,z in 1}.description.description"))
-    assertSnapshot(exprParser.parse("( 1 , 2, 3 ).description"))
-    assertSnapshot(exprParser.parse("( 1, 2, 3 ).description"))
+    assertSnapshot(exprParser().parse("{x,y,z in 1}.description"))
+    assertSnapshot(exprParser().parse("{x,y,z in 1}.description.description"))
+    assertSnapshot(exprParser().parse("( 1 , 2, 3 ).description"))
+    assertSnapshot(exprParser().parse("( 1, 2, 3 ).description"))
   }
 
   func testTupleMembers() {
-    assertSnapshot(exprParser.parse("a.1"))
-    assertSnapshot(exprParser.parse("f().42"))
+    assertSnapshot(exprParser().parse("a.1"))
+    assertSnapshot(exprParser().parse("f().42"))
   }
 
   func testApplication() {
-    assertSnapshot(exprParser.parse("{x,y,z in x}(1,2,3)"))
-    assertSnapshot(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 )"))
-    assertSnapshot(exprParser.parse("{x,y,z in x} ( 1 , 2, 3 ).description"))
+    assertSnapshot(exprParser().parse("{x,y,z in x}(1,2,3)"))
+    assertSnapshot(exprParser().parse("{x,y,z in x} ( 1 , 2, 3 )"))
+    assertSnapshot(exprParser().parse("{x,y,z in x} ( 1 , 2, 3 ).description"))
   }
 
   func testTypeExpr() {
-    assertSnapshot(exprParser.parse("Array"))
-    assertSnapshot(exprParser.parse("Int32"))
+    assertSnapshot(exprParser().parse("Array"))
+    assertSnapshot(exprParser().parse("Int32"))
   }
 
   func testStructLiteral() {
-    assertSnapshot(exprParser.parse(#"S [a: 5, b: true, c: "c"]"#))
-    assertSnapshot(exprParser.parse(#"S []"#))
-    assertSnapshot(exprParser.parse(#"S[]"#))
-    assertSnapshot(exprParser.parse(#"S/*foo*/[]"#))
+    assertSnapshot(exprParser().parse(#"S {a: 5, b: true, c: "c"}"#))
+    assertSnapshot(exprParser().parse(#"S {}"#))
+    assertSnapshot(exprParser().parse(#"S{}"#))
+    assertSnapshot(exprParser().parse(#"S/*foo*/{}"#))
   }
 
   func testLeadingDot() {
-    assertSnapshot(exprParser.parse(".a"))
-    assertSnapshot(exprParser.parse(".a.b.c"))
-    assertSnapshot(exprParser.parse("./*foo*/a./*bar*/b/*baz*/.c"))
+    assertSnapshot(exprParser().parse(".a"))
+    assertSnapshot(exprParser().parse(".a.b.c"))
+    assertSnapshot(exprParser().parse("./*foo*/a./*bar*/b/*baz*/.c"))
   }
 
   func testSwitch() {
-    XCTAssertNil(exprParser.parse("switch {}").output)
-    assertSnapshot(exprParser.parse("switch x {}"))
+    XCTAssertNil(exprParser().parse("switch {}").output)
+    assertSnapshot(exprParser().parse("switch x {}"))
     assertSnapshot(
-      exprParser.parse(
+      exprParser().parse(
         """
         switch x{
         case true:
@@ -193,7 +193,7 @@ final class ParserTests: XCTestCase {
       )
     )
     assertSnapshot(
-      exprParser.parse(
+      exprParser().parse(
         """
         switch/*switch comment*/y{
         case 1:
@@ -206,7 +206,7 @@ final class ParserTests: XCTestCase {
     )
 
     assertSnapshot(
-      exprParser.parse(
+      exprParser().parse(
         """
         switch x.y.z {
         case let .binding(a, b):
@@ -217,6 +217,10 @@ final class ParserTests: XCTestCase {
         """
       )
     )
+  }
+
+  func testSwitchStructLiteral() {
+    assertSnapshot(exprParser().parse("switch x {} {}"))
   }
 
   func testFuncDecl() {
@@ -334,7 +338,7 @@ final class ParserTests: XCTestCase {
         case a(Float)
       }
 
-      func inner1() -> Inner1 { Inner1[a: 42.0] }
+      func inner1() -> Inner1 { Inner1{a: 42.0} }
       func inner2() -> Inner2 { .a(42.0) }
     }
     """))

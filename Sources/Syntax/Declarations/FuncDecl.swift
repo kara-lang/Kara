@@ -77,7 +77,7 @@ extension FuncDecl: SyntaxNodeContainer {
 let functionParameterParser = identifierParser()
   .take(Optional.parser(of: identifierParser(requiresLeadingTrivia: true)))
   .take(colonParser)
-  .take(exprParser)
+  .take(exprParser())
   .map { firstName, secondName, colon, type in
     SyntaxNode(
       leadingTrivia: firstName.leadingTrivia,

@@ -8,5 +8,5 @@ let tupleExprParser = delimitedSequenceParser(
   startParser: openParenParser,
   endParser: closeParenParser,
   separatorParser: commaParser,
-  elementParser: Lazy { exprParser }
+  elementParser: Lazy { exprParser() }
 )

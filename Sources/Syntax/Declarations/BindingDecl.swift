@@ -56,14 +56,14 @@ let bindingParser = Many(declModifierParser)
   .take(
     Optional.parser(
       of: colonParser
-        .take(exprParser)
+        .take(exprParser())
         .map(BindingDecl.TypeSignature.init)
     )
   )
   .take(
     Optional.parser(
       of: SyntaxNodeParser(Terminal("="))
-        .take(exprParser)
+        .take(exprParser())
         .map(BindingDecl.Value.init)
     )
   )

@@ -99,7 +99,7 @@ final class JSCodegenTests: XCTestCase {
       struct S { let a: Int }
 
       func f() -> S {
-          S [a: 42]
+          S {a: 42}
       }
       """
     )

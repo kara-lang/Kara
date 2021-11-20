@@ -26,7 +26,7 @@ final class EvalTests: XCTestCase {
   }
 
   func testStructLiterals() throws {
-    try assertEvalThrows("S [a: 0, b: 42, c: false].b", TypeError.unbound("S"))
+    try assertEvalThrows("S {a: 0, b: 42, c: false}.b", TypeError.unbound("S"))
     try assertEval(
       """
       {
@@ -37,7 +37,7 @@ final class EvalTests: XCTestCase {
         let b: Int32
         let c: Bool
       }
-      S [a: 0, b: 42, c: false].b
+      S {a: 0, b: 42, c: false}.b
       }
       """,
       .closure(parameters: [], body: .literal(42))
@@ -52,7 +52,7 @@ final class EvalTests: XCTestCase {
         let b: Int32
         let c: Bool
       }
-      S [a: 0, b: 42, c: false].c
+      S {a: 0, b: 42, c: false}.c
       }
       """,
       .closure(parameters: [], body: .literal(false))
@@ -71,7 +71,7 @@ final class EvalTests: XCTestCase {
         let c: Bool
       }
       let SAlias: Type = S
-      SAlias [a: 0, b: 42, c: false].a
+      SAlias {a: 0, b: 42, c: false}.a
       }
       """,
       .closure(parameters: [], body: .literal(0))
@@ -87,7 +87,7 @@ final class EvalTests: XCTestCase {
         let c: Bool
       }
       func SAlias() -> Type { S }
-      SAlias() [a: 0, b: 42, c: false].a
+      SAlias() {a: 0, b: 42, c: false}.a
       }
       """,
       .closure(parameters: [], body: .literal(0))
@@ -97,7 +97,7 @@ final class EvalTests: XCTestCase {
       {
       struct S {}
       let SAlias1: Type = S
-      SAlias2 [a: 0, b: 42, c: false].a
+      SAlias2 {a: 0, b: 42, c: false}.a
       }
       """,
       TypeError.unbound("SAlias2")
@@ -111,7 +111,7 @@ final class EvalTests: XCTestCase {
         struct Int {}
         struct S { let x: Int }
         func f(x: S) -> Int { x.x }
-        f(S[x: 42])
+        f(S{x: 42})
       }
       """,
       .closure(parameters: [], body: .literal(42))
@@ -145,7 +145,7 @@ final class EvalTests: XCTestCase {
           static func f() -> String { "static" }
         }
 
-        let s: S = S[]
+        let s: S = S{}
 
         func f(condition: Bool) -> String {
           if condition {

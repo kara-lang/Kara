@@ -23,5 +23,5 @@ public struct CasePattern<A: Annotation> {
 let casePatternParser =
   Keyword.case.parser
     .take(Optional.parser(of: Keyword.let.parser))
-    .take(Lazy { exprParser })
+    .take(Lazy { exprParser() })
     .map(CasePattern.init)

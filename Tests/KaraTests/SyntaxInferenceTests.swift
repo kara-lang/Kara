@@ -12,7 +12,7 @@ extension String {
     environment: ModuleEnvironment<EmptyAnnotation>
   ) throws -> Expr<TypeAnnotation> {
     var state = ParsingState(source: self)
-    guard let expr = exprParser.parse(&state) else {
+    guard let expr = exprParser().parse(&state) else {
       throw ParsingError.unknown(startIndex..<endIndex)
     }
 
@@ -82,7 +82,7 @@ final class SyntaxInferenceTests: XCTestCase {
     )
 
     assertError(
-      try exprParser.parse(
+      try exprParser().parse(
         """
         { x in stringify(decode(increment(x))) }
         """

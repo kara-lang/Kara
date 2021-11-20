@@ -12,4 +12,4 @@ struct Arrow<A: Annotation> {
 }
 
 let arrowTailParser = SyntaxNodeParser(Terminal("->"))
-  .take(Lazy { exprParser })
+  .take(Lazy { exprParser() })

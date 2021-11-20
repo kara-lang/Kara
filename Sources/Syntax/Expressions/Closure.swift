@@ -204,7 +204,7 @@ private let delimitedParameterParser =
     .take(
       Optional.parser(
         of: colonParser
-          .take(Lazy { exprParser })
+          .take(Lazy { exprParser() })
           .map(Closure<EmptyAnnotation>.DelimitedParameter.TypeSignature.init)
       )
     ).map {

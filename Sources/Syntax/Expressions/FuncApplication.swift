@@ -35,6 +35,6 @@ let applicationArgumentsParser =
     startParser: applicationArgumentsStartParser,
     endParser: closeParenParser,
     separatorParser: commaParser,
-    elementParser: Lazy { exprParser }
+    elementParser: Lazy { exprParser() }
   )
   .map(ExprSyntaxTail.applicationArguments)

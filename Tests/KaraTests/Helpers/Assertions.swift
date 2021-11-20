@@ -105,7 +105,7 @@ func assertEval(
   line: UInt = #line
 ) throws {
   var source = source
-  let parsingResult = exprParser.parse(&source)
+  let parsingResult = exprParser().parse(&source)
   assertFullyConsumed(source)
   let e = ModuleEnvironment<EmptyAnnotation>()
   let annotated = try parsingResult?.content.content.annotate(e)
@@ -124,7 +124,7 @@ func assertEvalThrows<E: Error & Equatable>(
   line: UInt = #line
 ) throws {
   var source = source
-  let parsingResult = exprParser.parse(&source)
+  let parsingResult = exprParser().parse(&source)
   assertFullyConsumed(source)
   let e = ModuleEnvironment<EmptyAnnotation>()
   try assertError(

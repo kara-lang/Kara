@@ -52,7 +52,7 @@ extension Expr: ExpressibleByIntegerLiteral where A == EmptyAnnotation {
 }
 
 /// Helper type used to avoid left recursion when parsing. Complex expressions such as member access `a.b`,
-/// function application `f(x)`, and struct literals `S [a: b]` contain subexpressions as their first part. If we
+/// function application `f(x)`, and struct literals `S {a: b}` contain subexpressions as their first part. If we
 /// naively parse subexpressions recursively, this will lead to an infinite loop. Therefore, we need to split the
 /// parsing process into two stages:
 /// 1. Parse expressions that don't have subexpressions as their first part.
@@ -64,7 +64,7 @@ enum ExprSyntaxTail {
   case structLiteral(DelimitedSequence<StructLiteral<EmptyAnnotation>.Element>)
 }
 
-let exprParser: AnyParser<ParsingState, SyntaxNode<Expr<EmptyAnnotation>>> =
+func exprParser(includeStructLiteral: Bool = true) -> AnyParser<ParsingState, SyntaxNode<Expr<EmptyAnnotation>>> {
   SyntaxNodeParser(literalParser.map(Expr.Payload.literal).stateful())
     .orElse(ifThenElseParser.map { $0.map(Expr.Payload.ifThenElse) })
     .orElse(identifierParser().map { $0.map(Expr.Payload.identifier) })
@@ -81,7 +81,7 @@ let exprParser: AnyParser<ParsingState, SyntaxNode<Expr<EmptyAnnotation>>> =
       Many(
         memberAccessParser
           .orElse(applicationArgumentsParser)
-          .orElse(structLiteralParser)
+          .orElse(includeStructLiteral ? Conditional.first(structLiteralParser) : Conditional.second(Fail()))
       )
     )
     .map { (expr: SyntaxNode<Expr<EmptyAnnotation>>, tail: [ExprSyntaxTail]) -> SyntaxNode<Expr<EmptyAnnotation>> in
@@ -112,6 +112,7 @@ let exprParser: AnyParser<ParsingState, SyntaxNode<Expr<EmptyAnnotation>>> =
         }
       }
     }
-    // We're required to give `exprParser` an explicit type signature, otherwise this won't compile due to mutual
+    // We're required to give `exprParser()` an explicit type signature, otherwise this won't compile due to mutual
     // recursion with subexpression parsers.
     .eraseToAnyParser()
+}

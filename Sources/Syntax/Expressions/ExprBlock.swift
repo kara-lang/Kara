@@ -45,7 +45,7 @@ extension ExprBlock: SyntaxNodeContainer {
 
 let exprBlockElementsParser = Many(
   Lazy { declarationParser }.map { $0.map(ExprBlock.Element.declaration) }
-    .orElse(Lazy { exprParser }.map { $0.map(ExprBlock.Element.expr) }),
+    .orElse(Lazy { exprParser() }.map { $0.map(ExprBlock.Element.expr) }),
   separator: newlineParser
 )
 

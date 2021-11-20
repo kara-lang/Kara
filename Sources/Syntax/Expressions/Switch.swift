@@ -60,7 +60,7 @@ private let caseBlockParser =
 
 let switchParser =
   Keyword.switch.parser
-    .take(Lazy { exprParser })
+    .take(Lazy { exprParser(includeStructLiteral: false) })
     .take(openBraceParser)
     .take(Many(caseBlockParser))
     .take(closeBraceParser)

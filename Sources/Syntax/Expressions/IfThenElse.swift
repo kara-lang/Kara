@@ -46,7 +46,7 @@ private let elseBranchParser = Keyword.else.parser
   }
 
 let ifThenElseParser = Keyword.if.parser
-  .take(Lazy { exprParser })
+  .take(Lazy { exprParser() })
   .take(Lazy { exprBlockParser })
   .take(Optional.parser(of: elseBranchParser))
   .map { tuple -> SyntaxNode<IfThenElse<EmptyAnnotation>> in
