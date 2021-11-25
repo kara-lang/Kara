@@ -8,6 +8,18 @@ import SnapshotTesting
 @testable import Syntax
 import XCTest
 
+extension Empty: CustomDumpStringConvertible {
+  public var customDumpDescription: String { "()" }
+}
+
+extension SourceRange: CustomDumpStringConvertible {
+  public var customDumpDescription: String {
+    var result = ""
+    customDump(content, to: &result)
+    return "\(start.line):\(start.column)-\(end.line):\(end.column) \(result)"
+  }
+}
+
 final class ParserTests: XCTestCase {
   func testNewline() {
     XCTAssertNil(newlineParser.parse("").output)

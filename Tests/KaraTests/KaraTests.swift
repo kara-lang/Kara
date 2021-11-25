@@ -46,6 +46,7 @@ final class KaraTests: XCTestCase {
 
       SUBCOMMANDS:
         run
+        lsp
 
         See 'kara help <subcommand>' for detailed help.
 

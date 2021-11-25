@@ -11,6 +11,7 @@
 //===----------------------------------------------------------------------===//
 
 import Dispatch
+import Foundation
 
 public protocol MessageType: Codable {}
 
@@ -25,9 +26,8 @@ public protocol _RequestType: MessageType {
   func _handle(
     _ handler: MessageHandler,
     id: RequestID,
-    connection: Connection,
-    reply: @escaping (LSPResult<ResponseType>, RequestID) -> ()
-  )
+    connection: Connection
+  ) async -> (LSPResult<ResponseType>, RequestID)
 }
 
 /// A request, which must have a unique `method` name as well as an associated response type.
@@ -49,18 +49,16 @@ public extension RequestType {
   func _handle(
     _ handler: MessageHandler,
     id: RequestID,
-    connection: Connection,
-    reply: @escaping (LSPResult<ResponseType>, RequestID) -> ()
-  ) {
-    handler.handle(self, id: id, from: ObjectIdentifier(connection)) { response in
-      reply(response.map { $0 as ResponseType }, id)
-    }
+    connection: Connection
+  ) async -> (LSPResult<ResponseType>, RequestID) {
+    let response = await handler.handle(self, id: id, from: ObjectIdentifier(connection))
+    return (response.map { $0 as ResponseType }, id)
   }
 }
 
 public extension NotificationType {
-  func _handle(_ handler: MessageHandler, connection: Connection) {
-    handler.handle(self, from: ObjectIdentifier(connection))
+  func _handle(_ handler: MessageHandler, connection: Connection) async {
+    await handler.handle(self, from: ObjectIdentifier(connection))
   }
 }
 

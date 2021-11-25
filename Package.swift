@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -41,7 +41,6 @@ let package = Package(
       name: "Syntax",
       dependencies: [
         "Basic",
-        .product(name: "CustomDump", package: "swift-custom-dump"),
         .product(name: "Parsing", package: "swift-parsing"),
       ]
     ),
@@ -65,7 +64,6 @@ let package = Package(
         "Syntax",
         "TypeChecker",
         "JSCodegen",
-        .product(name: "ArgumentParser", package: "swift-argument-parser"),
       ]
     ),
 
@@ -87,17 +85,20 @@ let package = Package(
       dependencies: []
     ),
 
-    // Logging support used in LSP modules.
     .target(
       name: "LSPServer",
-      dependencies: ["Driver"]
+      dependencies: ["Driver", "LanguageServerProtocolJSONRPC"]
     ),
 
-    .target(
+    .executableTarget(
       name: "kara",
-      dependencies: ["Driver"]
+      dependencies: [
+        "Driver",
+        "LSPServer",
+        .product(name: "ArgumentParser", package: "swift-argument-parser"),
+      ]
     ),
-    .target(
+    .executableTarget(
       name: "kara-benchmark",
       dependencies: ["Benchmark"]
     ),

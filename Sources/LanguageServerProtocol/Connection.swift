@@ -41,93 +41,12 @@ public extension Connection {
 /// An abstract message handler, such as a language server or client.
 public protocol MessageHandler: AnyObject {
   /// Handle a notification without a reply.
-  func handle<Notification>(_: Notification, from: ObjectIdentifier) where Notification: NotificationType
+  func handle<Notification>(_: Notification, from: ObjectIdentifier) async where Notification: NotificationType
 
   /// Handle a request and (asynchronously) receive a reply.
   func handle<Request>(
     _: Request,
     id: RequestID,
-    from: ObjectIdentifier,
-    reply: @escaping (LSPResult<Request.Response>) -> ()
-  ) where Request: RequestType
-}
-
-/// A connection between two message handlers in the same process.
-///
-/// You must call `start(handler:)` before sending any messages, and must call `close()` when finished to avoid a memory
-/// leak.
-///
-/// ```
-/// let client: MessageHandler = ...
-/// let server: MessageHandler = ...
-/// let conn = LocalConnection()
-/// conn.start(handler: server)
-/// conn.send(...) // handled by server
-/// conn.close()
-/// ```
-public final class LocalConnection {
-  enum State {
-    case ready, started, closed
-  }
-
-  let queue = DispatchQueue(label: "local-connection-queue")
-
-  var _nextRequestID: Int = 0
-
-  var state: State = .ready
-
-  var handler: MessageHandler?
-
-  public init() {}
-
-  deinit {
-    if state != .closed {
-      close()
-    }
-  }
-
-  public func start(handler: MessageHandler) {
-    precondition(state == .ready)
-    state = .started
-    self.handler = handler
-  }
-
-  public func close() {
-    precondition(state != .closed)
-    handler = nil
-    state = .closed
-  }
-
-  func nextRequestID() -> RequestID {
-    queue.sync {
-      _nextRequestID += 1
-      return .number(_nextRequestID)
-    }
-  }
-}
-
-extension LocalConnection: Connection {
-  public func send<Notification>(_ notification: Notification) where Notification: NotificationType {
-    handler?.handle(notification, from: ObjectIdentifier(self))
-  }
-
-  public func send<Request>(
-    _ request: Request,
-    queue: DispatchQueue,
-    reply: @escaping (LSPResult<Request.Response>) -> ()
-  ) -> RequestID where Request: RequestType {
-    let id = nextRequestID()
-    guard let handler = handler else {
-      queue.async { reply(.failure(.cancelled)) }
-      return id
-    }
-
-    precondition(state == .started)
-    handler.handle(request, id: id, from: ObjectIdentifier(self)) { result in
-      queue.async {
-        reply(result)
-      }
-    }
-    return id
-  }
+    from: ObjectIdentifier
+  ) async -> LSPResult<Request.Response> where Request: RequestType
 }

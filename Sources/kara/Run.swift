@@ -3,13 +3,8 @@
 //
 
 import ArgumentParser
-import Basic
+import Driver
 import Foundation
-import JSCodegen
-import Syntax
-import TypeChecker
-
-public let driverPass = syntaxPass | typeCheckerPass | jsModuleFileCodegen
 
 struct Run: ParsableCommand {
   @Argument(help: "The file to run.")
