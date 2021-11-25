@@ -18,15 +18,6 @@ public typealias Notification = LanguageServerProtocol.Notification
 
 /// An abstract language client or server.
 actor LanguageServer {
-  /// The server's request queue.
-  ///
-  /// All incoming requests start on this queue, but should reply or move to another queue as soon as possible to avoid blocking.
-  public let queue = DispatchQueue(label: "language-server-queue", qos: .userInitiated)
-
-  private var requestHandlers: [ObjectIdentifier: Any] = [:]
-
-  private var notificationHandlers: [ObjectIdentifier: Any] = [:]
-
   public struct RequestCancelKey: Hashable {
     public var client: ObjectIdentifier
     public var request: RequestID
@@ -71,46 +62,5 @@ actor LanguageServer {
       )
       """
     }
-  }
-}
-
-extension LanguageServer {
-  // MARK: Request registration.
-
-  /// Register the given request handler, which must be a method on `self`.
-  ///
-  /// Must be called on `queue`.
-  public func _register<Server, R>(_ requestHandler: @escaping (Server) -> (Request<R>) -> ()) {
-    // We can use `unowned` here because the handler is run synchronously on `queue`.
-    precondition(self is Server)
-    requestHandlers[ObjectIdentifier(R.self)] = { [unowned self] request in
-      // swiftlint:disable:next force_cast
-      requestHandler(self as! Server)(request)
-    }
-  }
-
-  /// Register the given notification handler, which must be a method on `self`.
-  ///
-  /// Must be called on `queue`.
-  public func _register<Server, N>(_ noteHandler: @escaping (Server) -> (Notification<N>) -> ()) {
-    // We can use `unowned` here because the handler is run synchronously on `queue`.
-    notificationHandlers[ObjectIdentifier(N.self)] = { [unowned self] note in
-      // swiftlint:disable:next force_cast
-      noteHandler(self as! Server)(note)
-    }
-  }
-
-  /// Register the given request handler.
-  ///
-  /// Must be called on `queue`.
-  public func _register<R>(_ requestHandler: @escaping (Request<R>) -> ()) {
-    requestHandlers[ObjectIdentifier(R.self)] = requestHandler
-  }
-
-  /// Register the given notification handler.
-  ///
-  /// Must be called on `queue`.
-  public func _register<N>(_ noteHandler: @escaping (Notification<N>) -> ()) {
-    notificationHandlers[ObjectIdentifier(N.self)] = noteHandler
   }
 }
