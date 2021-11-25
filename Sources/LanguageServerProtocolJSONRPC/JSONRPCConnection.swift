@@ -216,7 +216,6 @@ public final class JSONRPCConnection {
         )
 
         handle(message)
-
       } catch let error as MessageDecodingError {
         switch error.messageKind {
         case .request:
@@ -266,10 +265,13 @@ public final class JSONRPCConnection {
   func handle(_ message: JSONRPCMessage) {
     switch message {
     case let .notification(notification):
-      notification._handle(receiveHandler!, connection: self)
+      Task {
+        await notification._handle(receiveHandler!, connection: self)
+      }
     case let .request(request, id: id):
       let semaphore: DispatchSemaphore? = syncRequests ? .init(value: 0) : nil
-      request._handle(receiveHandler!, id: id, connection: self) { response, id in
+      Task {
+        let (response, id) = await request._handle(receiveHandler!, id: id, connection: self)
         self.sendReply(response, id: id)
         semaphore?.signal()
       }

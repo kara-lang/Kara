@@ -2,7 +2,6 @@
 //  Created by Max Desiatov on 10/08/2021.
 //
 
-import CustomDump
 import Parsing
 
 public struct SourceLocation: Hashable {
@@ -17,10 +16,6 @@ public struct SourceLocation: Hashable {
 
 /// Workaround for `()` not being `Hashable`.
 public struct Empty: Hashable {}
-
-extension Empty: CustomDumpStringConvertible {
-  public var customDumpDescription: String { "()" }
-}
 
 public struct SourceRange<Content> {
   let start: SourceLocation
@@ -46,13 +41,5 @@ extension SourceRange where Content == Empty {
 
   public func merge(_ other: Self) -> Self {
     .init(start: start, end: other.end)
-  }
-}
-
-extension SourceRange: CustomDumpStringConvertible {
-  public var customDumpDescription: String {
-    var result = ""
-    customDump(content, to: &result)
-    return "\(start.line):\(start.column)-\(end.line):\(end.column) \(result)"
   }
 }

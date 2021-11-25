@@ -8,6 +8,19 @@ import SnapshotTesting
 @testable import Syntax
 import XCTest
 
+extension Trivia: CustomDumpStringConvertible {
+  public var customDumpDescription: String {
+    switch self {
+    case let .comment(content):
+      var result = ""
+      customDump(content, to: &result)
+      return result
+    case let .whitespace(content):
+      return "Whitespace(\(String(Substring(content)).debugDescription))"
+    }
+  }
+}
+
 final class TriviaParsersTests: XCTestCase {
   func testComments() {
     assertSnapshot(commentParser.parse("// Hello, world!"))
