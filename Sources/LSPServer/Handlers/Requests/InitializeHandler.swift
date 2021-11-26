@@ -5,7 +5,7 @@
 import LanguageServerProtocol
 
 extension InitializeRequest: RequestHandler {
-  static var witness: RequestHandlingWitness<InitializeRequest> {
+  static var witness: RequestHandlingWitness<Self> {
     .init(
       handle: { _, _ in
         .success(

@@ -28,7 +28,10 @@ actor LanguageServer {
   }
 
   /// The set of outstanding requests that may be cancelled.
-  private var requestCancellation: [RequestCancelKey: CancellationToken] = [:]
+  private var requestCancellation = [RequestCancelKey: CancellationToken]()
+
+  /// Mapping from opened document URIs to their text content.
+  private var documents = [DocumentURI: String]()
 
   /// Creates a language server for the given client.
   public init() {}
@@ -62,5 +65,12 @@ actor LanguageServer {
       )
       """
     }
+  }
+}
+
+/// Notification handlers
+extension LanguageServer {
+  func openDocument(uri: DocumentURI, text: String) {
+    documents[uri] = text
   }
 }
