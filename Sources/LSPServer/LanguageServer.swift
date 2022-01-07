@@ -19,8 +19,8 @@ public typealias Notification = LanguageServerProtocol.Notification
 /// An abstract language client or server.
 actor LanguageServer {
   public struct RequestCancelKey: Hashable {
-    public var client: ObjectIdentifier
-    public var request: RequestID
+    public let client: ObjectIdentifier
+    public let request: RequestID
     public init(client: ObjectIdentifier, request: RequestID) {
       self.client = client
       self.request = request
@@ -33,8 +33,18 @@ actor LanguageServer {
   /// Mapping from opened document URIs to their text content.
   private var documents = [DocumentURI: String]()
 
+  private(set) var shouldSendDiagnostics = false
+
   /// Creates a language server for the given client.
   public init() {}
+
+  func setShouldSendDiagnostics(_ newValue: Bool) {
+    shouldSendDiagnostics = newValue
+  }
+
+  func openDocument(uri: DocumentURI, text: String) {
+    documents[uri] = text
+  }
 
   func _logRequest<R>(_ request: Request<R>) {
     logAsync { currentLevel in
@@ -65,12 +75,5 @@ actor LanguageServer {
       )
       """
     }
-  }
-}
-
-/// Notification handlers
-extension LanguageServer {
-  func openDocument(uri: DocumentURI, text: String) {
-    documents[uri] = text
   }
 }

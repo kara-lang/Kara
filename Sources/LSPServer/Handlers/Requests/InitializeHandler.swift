@@ -7,8 +7,12 @@ import LanguageServerProtocol
 extension InitializeRequest: RequestHandler {
   static var witness: RequestHandlingWitness<Self> {
     .init(
-      handle: { _, _ in
-        .success(
+      handle: { request, server in
+        await server.setShouldSendDiagnostics(
+          request.capabilities.textDocument?.publishDiagnostics?.relatedInformation ?? false
+        )
+
+        return .success(
           .init(
             capabilities:
             .init(
