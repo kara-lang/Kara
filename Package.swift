@@ -28,7 +28,7 @@ let package = Package(
       .branch("windows")
     ),
     .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "0.2.0"),
-    .package(path: "../LLVMSwift")
+//    .package(path: "../LLVMSwift"),
   ],
   targets: [
     // Targets are the basic building blocks of a package. A target can define a module or a test
