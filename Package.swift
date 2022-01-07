@@ -20,7 +20,7 @@ let package = Package(
     .package(
       name: "swift-parsing",
       url: "https://github.com/pointfreeco/swift-parsing.git",
-      .upToNextMinor(from: "0.3.1")
+      .upToNextMinor(from: "0.4.1")
     ),
     .package(
       name: "SnapshotTesting",
@@ -28,6 +28,7 @@ let package = Package(
       .branch("windows")
     ),
     .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "0.2.0"),
+    .package(path: "../LLVMSwift")
   ],
   targets: [
     // Targets are the basic building blocks of a package. A target can define a module or a test
