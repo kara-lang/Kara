@@ -383,6 +383,7 @@ SyntaxNode(
                   ],
                   content: 12:7-12:12 Identifier(value: "inner1")
                 ),
+                genericParameters: nil,
                 parameters: DelimitedSequence(
                   start: SyntaxNode(
                     leadingTrivia: [],
@@ -413,6 +414,7 @@ SyntaxNode(
                     )
                   )
                 ),
+                genericConstraints: nil,
                 body: ExprBlock(
                   openBrace: SyntaxNode(
                     leadingTrivia: [
@@ -515,6 +517,7 @@ SyntaxNode(
                   ],
                   content: 13:7-13:12 Identifier(value: "inner2")
                 ),
+                genericParameters: nil,
                 parameters: DelimitedSequence(
                   start: SyntaxNode(
                     leadingTrivia: [],
@@ -545,6 +548,7 @@ SyntaxNode(
                     )
                   )
                 ),
+                genericConstraints: nil,
                 body: ExprBlock(
                   openBrace: SyntaxNode(
                     leadingTrivia: [

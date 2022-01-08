@@ -55,6 +55,7 @@ ModuleFile(
             ],
             content: 2:5-2:5 Identifier(value: "f")
           ),
+          genericParameters: nil,
           parameters: DelimitedSequence(
             start: SyntaxNode(
               leadingTrivia: [],
@@ -114,6 +115,7 @@ ModuleFile(
               )
             )
           ),
+          genericConstraints: nil,
           body: ExprBlock(
             openBrace: SyntaxNode(
               leadingTrivia: [

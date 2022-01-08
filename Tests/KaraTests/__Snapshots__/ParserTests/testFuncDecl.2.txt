@@ -12,6 +12,7 @@ SyntaxNode(
       ],
       content: 0:5-0:5 Identifier(value: "f")
     ),
+    genericParameters: nil,
     parameters: DelimitedSequence(
       start: SyntaxNode(
         leadingTrivia: [],
@@ -76,6 +77,7 @@ SyntaxNode(
         )
       )
     ),
+    genericConstraints: nil,
     body: ExprBlock(
       openBrace: SyntaxNode(
         leadingTrivia: [

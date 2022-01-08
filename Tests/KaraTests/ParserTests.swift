@@ -262,6 +262,21 @@ final class ParserTests: XCTestCase {
     assertSnapshot(funcDeclParser.parse("static public func f(x: Int) -> Int { x }"))
   }
 
+  func testGenericFuncDecl() {
+    assertSnapshot(funcDeclParser.parse("func f<T>(x: T) -> T { x }"))
+    assertSnapshot(funcDeclParser.parse("func f<T1, T2>(x: T1, y: T2) -> T1 { x }"))
+    assertSnapshot(funcDeclParser.parse("func f<T1, T2 , T3 ,T4>(x: T1, y: T2) -> T1 { x }"))
+    assertSnapshot(
+      funcDeclParser.parse(
+        """
+        func f<T1, T2 , T3 ,T4>(x: T1, y: T2) -> T1 where T2 is P1 /* 1*/, T1 is P2 /* 2 */ , T3 /*3*/ is P3 {
+          x
+        }
+        """
+      )
+    )
+  }
+
   func testStructDecl() throws {
     assertSnapshot(structParser.parse("struct Foo {}"))
     assertSnapshot(structParser.parse("struct  Bar{}"))

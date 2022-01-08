@@ -34,10 +34,13 @@ public struct FuncDecl<A: Annotation>: ModifiersContainer {
   public let modifiers: [SyntaxNode<DeclModifier>]
   public let funcKeyword: SyntaxNode<Empty>
   public let identifier: SyntaxNode<Identifier>
+  public let genericParameters: DelimitedSequence<Identifier>?
   public let parameters: DelimitedSequence<Parameter>
 
   public let arrow: Arrow?
-  public var body: ExprBlock<A>?
+  public let genericConstraints: GenericConstraints?
+
+  public let body: ExprBlock<A>?
 
   public func addAnnotation<NewAnnotation: Annotation>(
     parameterType parameterTypeTransform: (Expr<A>) throws -> Expr<NewAnnotation>,
@@ -48,6 +51,7 @@ public struct FuncDecl<A: Annotation>: ModifiersContainer {
       modifiers: modifiers,
       funcKeyword: funcKeyword,
       identifier: identifier,
+      genericParameters: genericParameters,
       parameters: parameters.map {
         try .init(
           externalName: $0.externalName,
@@ -62,6 +66,7 @@ public struct FuncDecl<A: Annotation>: ModifiersContainer {
           returns: $0.returns.map(arrowTransform)
         )
       },
+      genericConstraints: genericConstraints,
       body: body.map(bodyTransform)
     )
   }
@@ -74,7 +79,9 @@ extension FuncDecl: SyntaxNodeContainer {
   } ?? parameters.end }
 }
 
-let functionParameterParser = identifierParser()
+func f<T>(x: T) -> T where T: Equatable { x }
+
+private let functionParameterParser = identifierParser()
   .take(Optional.parser(of: identifierParser(requiresLeadingTrivia: true)))
   .take(colonParser)
   .take(exprParser())
@@ -100,6 +107,16 @@ let funcDeclParser =
     .take(Keyword.func.parser)
     .take(identifierParser(requiresLeadingTrivia: true))
     .take(
+      Optional.parser(
+        of: delimitedSequenceParser(
+          startParser: openAngleBracketParser,
+          endParser: closeAngleBracketParser,
+          separatorParser: commaParser,
+          elementParser: identifierParser()
+        )
+      )
+    )
+    .take(
       delimitedSequenceParser(
         startParser: openParenParser,
         endParser: closeParenParser,
@@ -108,15 +125,17 @@ let funcDeclParser =
       )
     )
     .take(Optional.parser(of: arrowTailParser.map(FuncDecl.Arrow.init)))
+    .take(Optional.parser(of: genericConstraintParser))
     .take(Optional.parser(of: exprBlockParser))
     .map {
       FuncDecl(
         modifiers: $0,
         funcKeyword: $1,
         identifier: $2,
-        // FIXME: fix generic parameters parsing
-        parameters: $3,
-        arrow: $4,
-        body: $5?.content.content
+        genericParameters: $3,
+        parameters: $4,
+        arrow: $5,
+        genericConstraints: $6,
+        body: $7?.content.content
       ).syntaxNode
     }
