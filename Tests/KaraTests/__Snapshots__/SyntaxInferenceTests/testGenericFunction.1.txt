@@ -1,0 +1,233 @@
+Expr(
+  payload: Expr.Payload.closure(
+    Closure(
+      openBrace: SyntaxNode(
+        leadingTrivia: [],
+        content: 0:0-0:0 ()
+      ),
+      parameters: Closure.Parameters.undelimited([]),
+      inKeyword: nil,
+      body: [
+        [0]: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("\n  ")
+          ],
+          content: 1:2-1:28 ExprBlock.Element.declaration(
+            Declaration.function(
+              FuncDecl(
+                modifiers: [],
+                funcKeyword: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace("\n  ")
+                  ],
+                  content: 1:2-1:5 ()
+                ),
+                identifier: SyntaxNode(
+                  leadingTrivia: [
+                    [0]: Whitespace(" ")
+                  ],
+                  content: 1:7-1:8 Identifier(value: "id")
+                ),
+                genericParameters: DelimitedSequence(
+                  start: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 1:9-1:9 ()
+                  ),
+                  elements: [
+                    [0]: DelimitedSequence.Element(
+                      content: SyntaxNode(
+                        leadingTrivia: [],
+                        content: 1:10-1:10 Identifier(value: "T")
+                      ),
+                      separator: nil
+                    )
+                  ],
+                  end: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 1:11-1:11 ()
+                  )
+                ),
+                parameters: DelimitedSequence(
+                  start: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 1:12-1:12 ()
+                  ),
+                  elements: [
+                    [0]: DelimitedSequence.Element(
+                      content: SyntaxNode(
+                        leadingTrivia: [],
+                        content: 1:13-1:16 FuncDecl.Parameter(
+                          externalName: nil,
+                          internalName: SyntaxNode(
+                            leadingTrivia: [],
+                            content: 1:13-1:13 Identifier(value: "x")
+                          ),
+                          colon: SyntaxNode(
+                            leadingTrivia: [],
+                            content: 1:14-1:14 ()
+                          ),
+                          type: SyntaxNode(
+                            leadingTrivia: [
+                              [0]: Whitespace(" ")
+                            ],
+                            content: 1:16-1:16 Expr(
+                              payload: Expr.Payload.identifier(
+                                Identifier(value: "T")
+                              ),
+                              annotation: Type.constructor(
+                                Identifier(value: "Type"),
+                                []
+                              )
+                            )
+                          )
+                        )
+                      ),
+                      separator: nil
+                    )
+                  ],
+                  end: SyntaxNode(
+                    leadingTrivia: [],
+                    content: 1:17-1:17 ()
+                  )
+                ),
+                arrow: FuncDecl.Arrow(
+                  arrowSymbol: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 1:19-1:20 ()
+                  ),
+                  returns: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 1:22-1:22 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "T")
+                      ),
+                      annotation: Type.constructor(
+                        Identifier(value: "Type"),
+                        []
+                      )
+                    )
+                  )
+                ),
+                genericConstraints: nil,
+                body: ExprBlock(
+                  openBrace: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 1:24-1:24 ()
+                  ),
+                  elements: [
+                    [0]: SyntaxNode(
+                      leadingTrivia: [
+                        [0]: Whitespace(" ")
+                      ],
+                      content: 1:26-1:26 ExprBlock.Element.expr(
+                        Expr(
+                          payload: Expr.Payload.identifier(
+                            Identifier(value: "x")
+                          ),
+                          annotation: Type.variable(
+                            TypeVariable(value: "T0")
+                          )
+                        )
+                      )
+                    )
+                  ],
+                  closeBrace: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace(" ")
+                    ],
+                    content: 1:28-1:28 ()
+                  )
+                )
+              )
+            )
+          )
+        ),
+        [1]: SyntaxNode(
+          leadingTrivia: [
+            [0]: Whitespace("  ")
+          ],
+          content: 2:2-2:6 ExprBlock.Element.expr(
+            Expr(
+              payload: Expr.Payload.application(
+                FuncApplication(
+                  function: SyntaxNode(
+                    leadingTrivia: [
+                      [0]: Whitespace("  ")
+                    ],
+                    content: 2:2-2:3 Expr(
+                      payload: Expr.Payload.identifier(
+                        Identifier(value: "id")
+                      ),
+                      annotation: Type.arrow(
+                        [
+                          [0]: Type.constructor(
+                            Identifier(value: "Int32"),
+                            []
+                          )
+                        ],
+                        Type.constructor(
+                          Identifier(value: "Int32"),
+                          []
+                        )
+                      )
+                    )
+                  ),
+                  arguments: DelimitedSequence(
+                    start: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 2:4-2:4 ()
+                    ),
+                    elements: [
+                      [0]: DelimitedSequence.Element(
+                        content: SyntaxNode(
+                          leadingTrivia: [],
+                          content: 2:5-2:5 Expr(
+                            payload: Expr.Payload.literal(
+                              Literal.int32(5)
+                            ),
+                            annotation: Type.constructor(
+                              Identifier(value: "Int32"),
+                              []
+                            )
+                          )
+                        ),
+                        separator: nil
+                      )
+                    ],
+                    end: SyntaxNode(
+                      leadingTrivia: [],
+                      content: 2:6-2:6 ()
+                    )
+                  )
+                )
+              ),
+              annotation: Type.constructor(
+                Identifier(value: "Int32"),
+                []
+              )
+            )
+          )
+        )
+      ],
+      closeBrace: SyntaxNode(
+        leadingTrivia: [
+          [0]: Whitespace("\n")
+        ],
+        content: 3:0-3:0 ()
+      )
+    )
+  ),
+  annotation: Type.arrow(
+    [],
+    Type.constructor(
+      Identifier(value: "Int32"),
+      []
+    )
+  )
+)

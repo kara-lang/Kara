@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/pointfreeco/swift-custom-dump.git",
         "state": {
           "branch": null,
-          "revision": "c2dd2c64b753dda592f5619303e02f741cd3e862",
-          "version": "0.2.0"
+          "revision": "51698ece74ecf31959d3fa81733f0a5363ef1b4e",
+          "version": "0.3.0"
         }
       },
       {
@@ -38,11 +38,11 @@
         }
       },
       {
-        "package": "SnapshotTesting",
-        "repositoryURL": "https://github.com/MaxDesiatov/swift-snapshot-testing.git",
+        "package": "swift-snapshot-testing",
+        "repositoryURL": "https://github.com/pointfreeco/swift-snapshot-testing.git",
         "state": {
-          "branch": "windows",
-          "revision": "d2ebed11adc54266803259c6c1d8db3b00aed615",
+          "branch": "main",
+          "revision": "070e9cec0d6efb518b730676b76308808ef19164",
           "version": null
         }
       },

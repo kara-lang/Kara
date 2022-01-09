@@ -9,7 +9,7 @@ struct ModuleEnvironment<A: Annotation> {
   var schemes: SchemeEnvironment<A>
 
   /// Environment of structs available in this declaration.
-  private(set) var types: TypeEnvironment<A>
+  var types: TypeEnvironment<A>
 
   init(
     schemes: SchemeEnvironment<A> = .init(),

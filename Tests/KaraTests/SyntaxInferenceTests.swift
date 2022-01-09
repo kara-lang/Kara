@@ -443,4 +443,17 @@ final class SyntaxInferenceTests: XCTestCase {
       )
     )
   }
+
+  func testGenericFunction() throws {
+    let e = ModuleEnvironment<EmptyAnnotation>()
+    try assertSnapshot(
+      """
+      {
+        func id<T>(x: T) -> T { x }
+        id(5)
+      }
+      """
+      .inferParsedExpr(environment: e)
+    )
+  }
 }

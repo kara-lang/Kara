@@ -105,8 +105,14 @@ struct ConstraintSystem {
     defer { self.environment = old }
 
     let ids = funcDecl.parameters.elementsContent.map(\.internalName.content.content)
-    let parameterTypes = try funcDecl.parameterTypes(environment)
-    environment.schemes.insert(bindings: zip(ids, parameterTypes.map { Scheme($0) }))
+    let typeVariables = funcDecl.typeVariables
+    let parameterTypes = try funcDecl.parameterTypes(environment, typeVariables)
+
+    environment.schemes.insert(bindings: zip(ids, parameterTypes.map { Scheme($0, typeVariables) }))
+
+    let oldTypeVariables = environment.types.variables
+    environment.types.variables.formUnion(typeVariables)
+    defer { environment.types.variables = oldTypeVariables }
 
     return try funcDecl.addAnnotation(
       parameterType: { try annotate(expr: $0) },

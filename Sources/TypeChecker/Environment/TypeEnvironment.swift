@@ -11,9 +11,14 @@ typealias StructDeclEnvironment<A: Annotation> = [Identifier: StructEnvironment<
 typealias EnumDeclEnvironment<A: Annotation> = [Identifier: EnumEnvironment<A>]
 
 struct TypeEnvironment<A: Annotation> {
-  init(structs: StructDeclEnvironment<A> = [:], enums: EnumDeclEnvironment<A> = [:]) {
+  init(
+    structs: StructDeclEnvironment<A> = [:],
+    enums: EnumDeclEnvironment<A> = [:],
+    variables: Set<TypeVariable> = .init()
+  ) {
     self.structs = structs
     self.enums = enums
+    self.variables = variables
   }
 
   /// Environment of structs available in this declaration.
@@ -22,8 +27,11 @@ struct TypeEnvironment<A: Annotation> {
   /// Environment of enums available in this declaration.
   private(set) var enums: EnumDeclEnvironment<A>
 
+  /// Environment of type variables available in this declaration.
+  var variables: Set<TypeVariable>
+
   func contains(_ typeIdentifier: Identifier) -> Bool {
-    structs[typeIdentifier] != nil || enums[typeIdentifier] != nil
+    structs[typeIdentifier] != nil || enums[typeIdentifier] != nil || variables.contains(.init(typeIdentifier))
   }
 
   func shadow(with local: TypeEnvironment<A>) -> TypeEnvironment {

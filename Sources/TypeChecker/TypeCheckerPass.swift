@@ -11,7 +11,8 @@ extension FuncDecl where A == EmptyAnnotation {
 
     // FIXME: this call to `parameterTypes` is possibly duplicate,
     // it's already called when inferring `Scheme` for this `FuncDecl` while collecting passed `DeclEnvironment`?
-    let parameterSchemes = try parameterTypes(environment).map { Scheme($0) }
+    let typeVariables = typeVariables
+    let parameterSchemes = try parameterTypes(environment, typeVariables).map { Scheme($0, typeVariables) }
     let parameters = self.parameters.elementsContent.map(\.internalName.content.content)
     functionEnvironment.schemes.insert(bindings: zip(parameters, parameterSchemes))
 
@@ -21,7 +22,7 @@ extension FuncDecl where A == EmptyAnnotation {
       return annotated
     }
 
-    let expectedType = try returnType(environment)
+    let expectedType = try returnType(environment, typeVariables)
 
     guard expectedType == inferredType else {
       throw TypeError.typeMismatch(identifier.content.content, expected: expectedType, actual: inferredType)

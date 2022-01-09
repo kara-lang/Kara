@@ -23,11 +23,10 @@ let package = Package(
       .upToNextMinor(from: "0.4.1")
     ),
     .package(
-      name: "SnapshotTesting",
-      url: "https://github.com/MaxDesiatov/swift-snapshot-testing.git",
-      .branch("windows")
+      url: "https://github.com/pointfreeco/swift-snapshot-testing.git",
+      .branch("main")
     ),
-    .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "0.2.0"),
+    .package(url: "https://github.com/pointfreeco/swift-custom-dump.git", from: "0.3.0"),
 //    .package(path: "../LLVMSwift"),
   ],
   targets: [
@@ -107,7 +106,7 @@ let package = Package(
       name: "KaraTests",
       dependencies: [
         "Driver",
-        "SnapshotTesting",
+        .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
         .product(name: "CustomDump", package: "swift-custom-dump"),
       ],
       exclude: ["__Snapshots__"]

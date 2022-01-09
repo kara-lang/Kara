@@ -2,6 +2,7 @@
 //  Created by Max Desiatov on 27/05/2019.
 //
 
+import KIR
 import Syntax
 
 /** Schemes are types containing one or more generic variables. A scheme
@@ -14,21 +15,32 @@ struct Scheme {
   let type: Type
 
   /// Variables bound in the scheme
-  let variables: [TypeVariable]
+  let variables: Set<TypeVariable>
 
   init(
     _ type: Type,
-    variables: [TypeVariable] = []
+    _ variables: Set<TypeVariable> = .init()
   ) {
     self.type = type
     self.variables = variables
   }
 }
 
-extension Expr {
-  func evalToType(_ environment: ModuleEnvironment<A>, _ range: SourceRange<Empty>) throws -> Type {
-    let kir = try eval(environment)
-    if let type = try kir.type(environment) {
+/// Helper protocol allowing us to implement `evalToType` on `SyntaxNode` and add `Content: ExprType` constraint on it.
+/// Note that `Content == Expr` extension constraint to implement `evalToType` wouldn't work since `Expr` is a generic
+/// type.
+private protocol ExprType {
+  associatedtype A: Annotation
+
+  func eval(_ environment: ModuleEnvironment<A>) throws -> KIRExpr
+}
+
+extension Expr: ExprType {}
+
+private extension SyntaxNode where Content: ExprType {
+  func evalToType(_ environment: ModuleEnvironment<Content.A>, _ variables: Set<TypeVariable>) throws -> Type {
+    let kir = try content.content.eval(environment)
+    if let type = try kir.type(environment, variables) {
       return type
     } else if case let .identifier(i) = kir {
       throw TypeError.unbound(i)
@@ -39,23 +51,29 @@ extension Expr {
 }
 
 extension FuncDecl {
-  func returnType(_ environment: ModuleEnvironment<A>) throws -> Type {
+  func returnType(_ environment: ModuleEnvironment<A>, _ variables: Set<TypeVariable>) throws -> Type {
     guard let node = arrow?.returns else { return .unit }
 
-    return try node.content.content.evalToType(environment, node.range)
+    return try node.evalToType(environment, variables)
   }
 
-  func parameterTypes(_ environment: ModuleEnvironment<A>) throws -> [Type] {
+  func parameterTypes(_ environment: ModuleEnvironment<A>, _ variables: Set<TypeVariable>) throws -> [Type] {
     try parameters.elementsContent.map {
-      try $0.type.content.content.evalToType(environment, $0.type.range)
+      try $0.type.evalToType(environment, variables)
     }
   }
 
   func scheme(_ environment: ModuleEnvironment<A>) throws -> Scheme {
-    try .init(
-      .arrow(parameterTypes(environment), returnType(environment)),
-      variables: []
+    let variables = typeVariables
+
+    return try .init(
+      .arrow(parameterTypes(environment, variables), returnType(environment, variables)),
+      variables
     )
+  }
+
+  var typeVariables: Set<TypeVariable> {
+    Set(genericParameters?.elementsContent.map(\.value).map(TypeVariable.init(value:)) ?? [])
   }
 }
 

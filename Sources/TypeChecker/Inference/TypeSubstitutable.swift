@@ -74,7 +74,7 @@ extension Scheme: TypeSubstitutable {
       result[$1] = nil
       return result
     })
-    return Scheme(type, variables: variables)
+    return Scheme(type, variables)
   }
 
   var freeTypeVariables: Set<TypeVariable> {
